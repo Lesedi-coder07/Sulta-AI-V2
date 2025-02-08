@@ -19,7 +19,7 @@ interface Agent {
 export function ChatInterface({ agent_id }: { agent_id: string }) {
     const [currentUser, setCurrentUser] = useState<string | null>(null);
     const [exists, setExists] = useState<false | true>(true);
-    const [agent, setAgent] = useState<Agent | null >(null);
+    const [agent, setAgent] = useState<Agent >();
     const [loading, setLoading] = useState<boolean>(false);
     const [profileImage, setProfileImage ] = useState<string | null>(null)
 
@@ -102,30 +102,32 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
             //     content: dummyResponse.content,
             //     timestamp: "just now",
             // }]);
+
+
         try {
-            const response = await fetch('/api/LLM/openai', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    previousMessages: messages,
-                    currentUser: auth.currentUser?.displayName,
-                    prompt: content,
-                    systemMessage: agent?.systemMessage
-                })
-            });
+            // const response = await fetch('/api/LLM/openai', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({
+            //         previousMessages: messages,
+            //         currentUser: auth.currentUser?.displayName,
+            //         prompt: content,
+            //         systemMessage: agent?.systemMessage
+            //     })
+            // });
     
-            if (!response.ok) {
-                throw new Error('Failed to get AI response');
-            }
+            // if (!response.ok) {
+            //     throw new Error('Failed to get AI response');
+            // }
     
-            const aiMessage = await response.json();
+            const aiMessage = await generateWithGemini(messages, agent?.systemMessage ?? '', content, auth.currentUser?.displayName ?? '');
             setLoading(false)
             setMessages((prev) => [...prev, {
                 id: (Date.now() + 1).toString(),
                 role: "assistant",
-                content: aiMessage.content,
+                content: aiMessage,
                 timestamp: "just now",
             }]);
     
@@ -147,4 +149,28 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
         </div> ) : <h1 className="text-center text-2xl">Agent not found</h1>
     );
       
+}
+
+const generateWithGemini = async (messages: Array<Message>, systemMessage: string, prompt: string, userName: string): Promise<string> => {
+    try {
+        const ai = await fetch('/api/LLM/gemini', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                history: messages.map(message => ({
+                  ...message,
+                  role: message.role === 'assistant' ? 'model' : message.role
+                })),
+                currentUser: userName,
+                prompt: prompt,
+                systemMessage: systemMessage
+            })
+        });
+        const data = await ai.json();
+        return data.response;
+    } catch (error) {
+        throw error;
+    }
 }

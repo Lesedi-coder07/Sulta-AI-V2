@@ -7,11 +7,14 @@ import AgentCards from '@/components/dashboard/AgentCards'
 import { AgentSelector } from '@/components/dashboard/agent-selector';
 import { GradientText } from "@/components/ui/gradient-text";
 import { useRouter } from 'next/navigation';
+import { User } from 'firebase/auth';
+import { Textarea } from '@/components/ui/textarea';
 
 function Dashboard() {
 
     const router = useRouter();
     const [auth, setAuth] = useState<any>(null);
+
 
     useEffect(() => {
         import('@/app/api/firebase/firebaseConfig').then((firebaseModule) => {
@@ -25,12 +28,15 @@ function Dashboard() {
                 if (!user) {
                     router.push('/auth/login');
                 }
+                
             });
 
             return () => unsubscribe();
         }
     }, [auth, router]);
     
+
+
     return (
         <div>
             <SidebarProvider>
@@ -38,8 +44,8 @@ function Dashboard() {
                 <main className=''>
                     <SidebarTrigger />
                     <div className='p-3 flex flex-col justify-between  w-full gap-9 wz'>
-                 
-                        <h1 className='mx-4 text-lg font-bold'>Hi, John</h1>
+           
+                        
                         <AgentSelector />
                     </div>
                 </main>

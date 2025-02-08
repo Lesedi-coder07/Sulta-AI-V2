@@ -47,7 +47,7 @@ export function AgentCreationForm() {
   const [agentType, setAgentType] = useState<"text" | "voice">("text");
   const [showLink, setShowLink] = useState<false | true>(false);
   const [agentLink, setAgentLink] = useState<string | null>(null);
-  const [AgentCreated, setAgentCreated] = useState<false | true>(true);
+  const [AgentCreated, setAgentCreated] = useState<false | true>(false);
   const  user  = auth.currentUser;
 
   const form = useForm<AgentFormValues>({

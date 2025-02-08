@@ -49,9 +49,9 @@ export function AgentSelector() {
   const [agentTabOpen, setAgentTabOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const updateSelectedAgent = (agent: Agent | null) => {
+  const updateSelectedAgent = (agent: Agent | null, agentTabOpen: boolean) => {
     setSelectedAgent(agent);
-    setAgentTabOpen(true);
+    setAgentTabOpen(agentTabOpen);
   };
 
   useEffect(() => {
@@ -117,7 +117,7 @@ export function AgentSelector() {
   }, []);
 
   return (
-    agentTabOpen ? <AgentOptions agent={selectedAgent as Agent} /> : (
+    agentTabOpen ? <AgentOptions updateSelectedAgent={updateSelectedAgent} agent={selectedAgent as Agent} /> : (
       <div className="w-full border-r border-none p-4 dark:border-neutral-800 dark:bg-none bg-inherit overflow-hidden">
         <div className="space-y-4 w-full flex flex-col">
           <div>
@@ -147,7 +147,7 @@ export function AgentSelector() {
                   type={agent.type}
                   status={agent.isPublic ? "online" : "offline"}
                   selected={selectedAgent?.name === agent.name}
-                  onClick={() => updateSelectedAgent(agent)}
+                  onClick={() => updateSelectedAgent(agent, true)}
                 />
               ))
             )}

@@ -1,6 +1,6 @@
 "use client"
 import { Message } from "@/types/chat";
-import { cn } from "@/lib/utils";
+import { cn, formatToHtml } from "@/lib/utils";
 import { Bot } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -20,13 +20,13 @@ export function ChatMessages({
 
 
   return (
-    <div className="flex-1 overflow-y-auto p-4">
+    <div className="flex-1 overflow-y-auto pt-5 px-8 pb-36 h-full">
       <div className="space-y-4">
         {messages.map((message) => (
           <div
             key={message.id}
             className={cn(
-              "flex w-fit gap-3 rounded-lg p-4 shadow-sm md:w-fit",
+              "flex w-fit gap-3 rounded-lg p-4  shadow-sm md:w-fit",
               message.role === "user"
                 ? "flex-row-reverse bg-[#444]   ml-auto" 
                 : "bg-white dark:bg-neutral-800 text-lg"
@@ -58,8 +58,12 @@ export function ChatMessages({
                     ? "text-white dark:text-neutral-300"
                     : "text-neutral-800 dark:text-neutral-200"
                 )}
+                dangerouslySetInnerHTML={{
+                  __html: message.role === 'user' 
+                    ? message.content 
+                    : formatToHtml(message.content)  }}
               >
-                {message.content}
+           
       
               </p>
               {/* <p className="text-xs text-neutral-500">{message.timestamp}</p> */}

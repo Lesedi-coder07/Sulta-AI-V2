@@ -9,9 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "react": "^18",
-    "react-dom": "^18",
-    "next": "14.2.23",
+    "@google/generative-ai": "^0.21.0",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
@@ -55,11 +53,14 @@
     "langchain": "^0.3.6",
     "lucide-react": "^0.363.0",
     "mammoth": "^1.8.0",
+    "next": "14.2.23",
     "next-themes": "^0.3.0",
     "openai": "^4.72.0",
     "papaparse": "^5.4.1",
     "pdf-parse": "^1.1.1",
+    "react": "^18",
     "react-day-picker": "^8.10.0",
+    "react-dom": "^18",
     "react-hook-form": "^7.53.2",
     "react-resizable-panels": "^2.0.16",
     "react-syntax-highlighter": "^15.6.1",
@@ -71,13 +72,13 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.23",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.23"
+    "typescript": "^5"
   }
 }

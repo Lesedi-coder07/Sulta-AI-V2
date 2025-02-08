@@ -37,7 +37,8 @@ export function AgentCard({ name, type, status, onClick, selected }: AgentCardPr
         "relative cursor-pointer transition-all hover:shadow-md",
         "border border-neutral-200 dark:border-neutral-800",
         selected && "border-primary dark:border-primary",
-        "p-4 space-y-3"
+        "p-4 space-y-3",
+        "w-64 h-32"
       )}
     >
       <div className="flex items-start justify-between">

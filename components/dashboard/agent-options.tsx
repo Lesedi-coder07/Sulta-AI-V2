@@ -21,11 +21,12 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { collection, updateDoc, doc, getDoc } from 'firebase/firestore'
 import { db } from '@/app/api/firebase/firebaseConfig'
+import ContextSheet from '@/components/dashboard/context-sheet'
 
 
 
 
-function AgentOptions ({agent}: {agent: Agent}) {
+function AgentOptions ({agent, updateSelectedAgent}: {agent: Agent, updateSelectedAgent: Function}) {
   const [editing, setEditing] = useState<boolean>(false);
  
 
@@ -69,9 +70,11 @@ function AgentOptions ({agent}: {agent: Agent}) {
     }).then(() => {
       agent.isPublic = !agent.isPublic;
     })
-   
+  
    } 
-
+   const handleExit = () => {
+    updateSelectedAgent(null, false )
+   }
   return (
     <div className="w-full overflow-x-hidden space-y-4">
       <div className="space-y-6 p-2 sm:p-4">
@@ -97,7 +100,7 @@ function AgentOptions ({agent}: {agent: Agent}) {
 
             <button 
               className="p-2 text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors"
-              onClick={() => {/* Handle exit */}}
+              onClick={() => {handleExit()}}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -123,7 +126,65 @@ function AgentOptions ({agent}: {agent: Agent}) {
         </div>
 
         {/* Deploy Modal */}
-        <Dialog>
+        {/* <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="default">Deploy</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] lg:max-w-[800px]">
+            <DialogHeader>
+              <DialogTitle>Deploy Agent to your website</DialogTitle>
+              <DialogDescription>
+                Copy and paste this code to embed your agent on any website.
+              </DialogDescription>
+            </DialogHeader>
+
+
+            <div className="grid gap-4 py-4">
+             <div className="grid gap-2">
+  <Label htmlFor="embed">Embed Code</Label>
+  <div className="relative">
+    <SyntaxHighlighter
+      language="javascript"
+      style={vs2015}
+      customStyle={{
+        padding: '1rem',
+        borderRadius: '0.375rem',
+        height: '200px',
+        width: '700px',
+        overflow: 'auto',
+        fontSize: '11px'
+      }}
+    >
+      {createEmbedCode()}
+    </SyntaxHighlighter>
+    {/* <Button
+      className="absolute top-2 right-2"
+      variant="secondary"
+      size="sm"
+      onClick={() => navigator.clipboard.writeText(createEmbedCode())}
+    >
+      Copy
+    </Button> 
+  </div>
+</div>
+            </div>
+            <DialogFooter>
+              <Button type="button" onClick={() => {
+                navigator.clipboard.writeText(createEmbedCode());
+              }}>
+                Copy Code
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog> */}
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap flex-row gap-3">
+{/* 
+            <Button variant="default">
+              Deploy
+            </Button> */}
+             <Dialog>
           <DialogTrigger asChild>
             <Button variant="default">Deploy</Button>
           </DialogTrigger>
@@ -174,13 +235,7 @@ function AgentOptions ({agent}: {agent: Agent}) {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap gap-3">
-{/* 
-            <Button variant="default">
-              Deploy
-            </Button> */}
+            
     
           <Link href={`/ai/chat/${agent.id}`}>
             <Button variant="default" className="bg-blue-600 hover:bg-blue-700">
@@ -200,7 +255,8 @@ function AgentOptions ({agent}: {agent: Agent}) {
         </div>
       </div>
       <div className="max-w-full overflow-x-auto">
-        <FileUploader />
+        {/* <FileUploader /> */}
+        <ContextSheet />
       </div>
 
       {/* Collapsible Edit Form - Initially hidden */}
