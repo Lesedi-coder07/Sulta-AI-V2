@@ -121,7 +121,7 @@ export default function Home() {
 
             {/* Pricing */}
 
-            <FeaturesSection />
+            {/* <FeaturesSection /> */}
 
             <section
                 className="border-b dark border-border bg-background">
