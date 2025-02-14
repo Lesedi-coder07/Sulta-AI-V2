@@ -6,7 +6,7 @@ export const navLinks = [
  
     {
         title: "XEV 1.0!",
-        href: "https://sultatech.com",
+        href: "/chat",
     },
     {
         title: "Contact",
