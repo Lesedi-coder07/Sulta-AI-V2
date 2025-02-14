@@ -24,13 +24,6 @@ export function ChatMessages({
   return (
     <div className="flex-1 overflow-y-auto pt-5 px-8 pb-36 h-full">
       <div className="space-y-4">
-      <SyntaxHighlighter language='javascript'>
-          let x = 0
-          
-          function name(params:type) {
-            
-          }
-        </SyntaxHighlighter>
         {messages.map((message) => (
           <div
             key={message.id}
@@ -75,9 +68,7 @@ export function ChatMessages({
                     : formatToHtml(message.content)  }}
               >
            
-        <SyntaxHighlighter>
-          let x = 0
-        </SyntaxHighlighter>
+        
               </p>
               {/* <p className="text-xs text-neutral-500">{message.timestamp}</p> */}
             </div>

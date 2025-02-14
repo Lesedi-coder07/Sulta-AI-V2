@@ -1,54 +1,24 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { ChatHeader } from "./chat-header";
-import { ChatMessages } from "./chat-messages";
-import { ChatInput } from "./chat-input";
+'use client'
+import { ChatInterface } from "@/components/ai/chat/chat-interface";
+import { Metadata } from "next";
+import { useEffect, useState } from "react";
+import { Sidebar, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/Sidebar/app-sidebar";
+import { ChatHeader } from "@/components/ai/chat/chat-header";
+import { ChatInput } from "@/components/ai/chat/chat-input";
+import { ChatMessages } from "@/components/ai/chat/chat-messages";
+import { Agent } from "@/components/ai/chat/chat-interface";
 import { Message } from "@/types/chat";
-import { auth, db } from '@/app/api/firebase/firebaseConfig';
+import { generateWithGemini } from "@/components/ai/chat/chat-interface";
+import { auth } from "../api/firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-
-export interface Agent {
-    isPublic: boolean;
-    ownerID: string;
-    systemMessage: string;
-}
 
 
-export function ChatInterface({ agent_id }: { agent_id: string }) {
+
+export default function ChatPage() {
     const [currentUser, setCurrentUser] = useState<string | null>(null);
-    const [exists, setExists] = useState<false | true>(true);
-    const [agent, setAgent] = useState<Agent >();
     const [loading, setLoading] = useState<boolean>(false);
     const [profileImage, setProfileImage ] = useState<string | null>(null)
-
-
-    useEffect( ()  => {
-        async function checkAgent() {
-            const agentRef = doc(db, 'agents', agent_id)
-            let snapshot = await getDoc(agentRef)
-            if(snapshot.exists()) {
-                setExists(true)
-                setAgent(snapshot.data() as Agent)
-                if (agent?.isPublic == false) {
-                    if (agent.ownerID != currentUser) {
-                       setExists(false)
-                    }
-                }
-            } else {
-                setExists(false)
-            }
-        }
-
-
-        checkAgent()
-    
-    })
-
-
-
-
     const [messages, setMessages] = useState<Message[]>([
         // {
         //     id: "1",
@@ -58,6 +28,25 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
         // },
     ]);
 
+    const xevronSystemMessage = `You are Xev 1.0, a helpful and capable AI agent developed by Sulta Tech, a South African software company founded by Lesedi David Rammutla and Mmakopano Kgaditswe. The team is young, talented, and passionate about making beautiful software and AI accessible to everyone.
+
+You’re part of Sulta AI, a no-code platform that lets businesses build custom AI agents to automate tasks, boost productivity, and enhance operations—all without writing code. Users can deploy their agents on their websites for free.
+
+While some of your advanced abilities are still in development, Xev may soon be able to send emails, reply to social media messages in a human-like way, and offer real-time investment advice and signals.
+
+You are currently available on the Sulta AI web app, where users are chatting with you. Helpful links:
+	•	Main Website: sultatech.com
+	•	Sulta AI: ai.sultatech.com
+	•	Bookings & Enquiries: sultatech.com/book
+
+Tone & Style Guidelines:
+
+	•	Keep responses concise, natural, and conversational—like a helpful assistant, not a robot.
+	•	When asked “Who are you?” or similar, provide a brief intro without overexplaining unless the user asks for more details.
+
+Your goal: Be helpful, efficient, and human-like in every interaction.
+    `
+  
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -70,11 +59,10 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
         })
         return () => unsubscribe()
     }, []);
-
-
-
-
     const handleSendMessage = async (content: string) => {
+
+
+
 
 
         setLoading(true)
@@ -122,7 +110,7 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
             //     throw new Error('Failed to get AI response');
             // }
     
-            const aiMessage = await generateWithGemini(messages, agent?.systemMessage ?? '', content, auth.currentUser?.displayName ?? '');
+            const aiMessage = await generateWithGemini(messages, xevronSystemMessage, content, auth.currentUser?.displayName ?? '');
             setLoading(false)
             setMessages((prev) => [...prev, {
                 id: (Date.now() + 1).toString(),
@@ -139,38 +127,22 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
        
     };
 
-
-    return (
-
-        exists ?   (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
-            <ChatHeader agent={agent} />
+  return( 
+    // <SidebarProvider>
+    //     <AppSidebar /> 
+        <main>
+            {/* <SidebarTrigger /> */}
+            <div>
+            <div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
+            <ChatHeader agent={{name: 'Xev 1.0'}} />
             <ChatMessages messages={messages} profileImage={profileImage} loadingState={loading} />
             <ChatInput onSendMessage={handleSendMessage} />
-        </div> ) : <h1 className="text-center text-2xl">Agent not found</h1>
-    );
-      
-}
+        </div>
+            </div>
+        </main>
+    // </SidebarProvider>
+  
 
-export const generateWithGemini = async (messages: Array<Message>, systemMessage: string, prompt: string, userName: string): Promise<string> => {
-    try {
-        const ai = await fetch('/api/LLM/gemini', {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                history: messages.map(message => ({
-                  ...message,
-                  role: message.role === 'assistant' ? 'model' : message.role
-                })),
-                currentUser: userName,
-                prompt: prompt,
-                systemMessage: systemMessage
-            })
-        });
-        const data = await ai.json();
-        return data.response;
-    } catch (error) {
-        throw error;
-    }
+
+);
 }
