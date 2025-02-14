@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai"
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
 
 const profmpt = "Explain how AI works";
 
@@ -12,6 +12,7 @@ export async function POST(req: Request) {
         }
 
         const { prompt, history, systemMessage } = await req.json();
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction: systemMessage });
         
         if (!prompt) {
             throw new Error('Prompt is required');
@@ -19,14 +20,16 @@ export async function POST(req: Request) {
         
          // Prepend system message to the prompt if it exists
          const fullPrompt = systemMessage 
-         ? `${systemMessage}\n\nUser message: ${prompt}`
+         ? `User message: ${prompt}`
          : prompt;
 
 
         const formattedHistory = history ? history.map((msg: any) => ({
-            role: msg.role,
-            parts: [{ text: msg.content , systemMessage: "You are an AI Agent made by Sulta Tech PTY (LTD) "}]
+            role: msg.role === 'assistant' ? 'model': msg.role,
+            parts: [{ text: msg.content }]
         })) : [];
+
+        console.log(formattedHistory)
 
         const chat = model.startChat({
             history: formattedHistory,

@@ -3,6 +3,8 @@ import { Message } from "@/types/chat";
 import { cn, formatToHtml } from "@/lib/utils";
 import { Bot } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import Image from 'next/image'
+import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -22,6 +24,13 @@ export function ChatMessages({
   return (
     <div className="flex-1 overflow-y-auto pt-5 px-8 pb-36 h-full">
       <div className="space-y-4">
+      <SyntaxHighlighter language='javascript'>
+          let x = 0
+          
+          function name(params:type) {
+            
+          }
+        </SyntaxHighlighter>
         {messages.map((message) => (
           <div
             key={message.id}
@@ -41,10 +50,12 @@ export function ChatMessages({
               )}
             >
               {message.role === "user" ? (
-                <img 
+                <Image 
                   src={profileImage ? profileImage : `/icons/user-profile-icon.jpg`} 
                   alt={profileImage ? 'User Profile Picture' : 'generic'}
                   className="h-[80%]  w-[80%] rounded-full object-cover"
+                  width={32}
+                  height={32}
                 />
               ) : (
                 <Bot className="h-5 w-5" />
@@ -64,7 +75,9 @@ export function ChatMessages({
                     : formatToHtml(message.content)  }}
               >
            
-      
+        <SyntaxHighlighter>
+          let x = 0
+        </SyntaxHighlighter>
               </p>
               {/* <p className="text-xs text-neutral-500">{message.timestamp}</p> */}
             </div>

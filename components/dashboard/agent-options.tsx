@@ -23,10 +23,12 @@ import { collection, updateDoc, doc, getDoc } from 'firebase/firestore'
 import { db } from '@/app/api/firebase/firebaseConfig'
 import ContextSheet from '@/components/dashboard/context-sheet'
 
+interface AgentOptionsProps {
+  agent: Agent;
+  updateSelectedAgent: (agent: Agent | null, isEditing: boolean) => void;
+}
 
-
-
-function AgentOptions ({agent, updateSelectedAgent}: {agent: Agent, updateSelectedAgent: Function}) {
+function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
   const [editing, setEditing] = useState<boolean>(false);
  
 

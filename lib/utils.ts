@@ -5,10 +5,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-
+const codeBlockRegex = /```([\w+]+)?\n([\s\S]*?)```/g;
 export function formatToHtml(text: string): string {
   if (!text) return '';
   return text
+  .replace(codeBlockRegex, (_match, lang = "plaintext", code) => {
+    return `<SyntaxHighlighter language="${lang}" style={"materialDark"}>{\`${code.trim() + 'This kinda works.'}\ }</SyntaxHighlighter>`;
+  })
     // Convert bold
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     // Convert italics

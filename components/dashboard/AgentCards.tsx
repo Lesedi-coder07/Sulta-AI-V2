@@ -33,9 +33,9 @@ function AgentCards() {
     <div className='flex flex-col gap-1'>
       <Heading text='Your Agents' />
       <div className='flex flex-row gap-1 justify-evenly items-center'>
-        {agents.map(agent => {
+        {agents.map((agent, index) => {
           return (
-            <div className='flex w-[300px] flex-col gap-1 justify-evenly  border-2 border-gray-200 rounded-md p-2'>
+            <div key={agent.agent_unique_name || index} className='flex w-[300px] flex-col gap-1 justify-evenly  border-2 border-gray-200 rounded-md p-2'>
 
               <div className='flex flex-row justify-between'>
                 <h1 className='text-lg font-bold'>{agent.name}</h1>
