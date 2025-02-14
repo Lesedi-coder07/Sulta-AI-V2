@@ -31,7 +31,7 @@ export default function Home() {
                                 className="flex flex-row items-center justify-center gap-5 p-1 text-xs bg-card/60 backdrop-blur-lg rounded-md border border-border">
                                 <Badge className="font-semibold">New</Badge>
                                 <h5>Create Custom AI Agents in Minutes</h5>
-                                <Link href="/" className="flex flex-row items-center">
+                                <Link href="/chat" className="flex flex-row items-center">
                                     Explore Agents
                                     <ArrowRightIcon className="w-6 h-6 ml-2" />
                                 </Link>

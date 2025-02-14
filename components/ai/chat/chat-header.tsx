@@ -24,7 +24,7 @@ export function ChatHeader({ agent }: { agent: any }) {
 
 
             <div>
-              <Link href='/ai/dashboard'>
+              <Link href='/'>
                 <Button>
                   <ArrowLeft className="h-4 w-4" />
                   Back

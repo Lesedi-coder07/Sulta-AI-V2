@@ -5,7 +5,7 @@ export const navLinks = [
     },
  
     {
-        title: "Services",
+        title: "XEV 1.0!",
         href: "https://sultatech.com",
     },
     {
