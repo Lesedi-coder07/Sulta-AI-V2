@@ -14,6 +14,9 @@ import { GradientText } from "@/components/ui/gradient-text";
 import { Check } from "lucide-react";
 import PricingSection from "@/components/Sections/Pricing-Section";
 import { FeaturesSection } from "@/components/Sections/Features-Section";
+import { Metadata } from "next";
+
+
 
 export default function Home() {
   return (
@@ -65,8 +68,8 @@ export default function Home() {
                     </div>
 
                     <div className="max-w-2xl mx-auto mb-8">
-                        <Image className="w-3/4 mx-auto rounded-md"  src="/dash-ui-2.png" alt="Dashboard ui design" priority
-                            width={570}
+                        <Image className="w-3/4 mx-auto rounded-md"  src="/hero/appScreenshot.jpeg" alt="Dashboard ui design" priority
+                            width={700}
                             height={494} />
                     </div>
                 </main>

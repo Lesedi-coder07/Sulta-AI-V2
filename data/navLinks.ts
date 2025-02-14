@@ -6,10 +6,10 @@ export const navLinks = [
  
     {
         title: "Services",
-        href: "/",
+        href: "https://sultatech.com",
     },
     {
         title: "Contact",
-        href: "/",
+        href: "https://sultatech.com/book",
     },
 ];
