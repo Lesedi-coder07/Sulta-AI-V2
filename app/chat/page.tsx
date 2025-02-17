@@ -11,7 +11,7 @@ import { Agent } from "@/components/ai/chat/chat-interface";
 import { Message } from "@/types/chat";
 import { generateWithGemini } from "@/components/ai/chat/chat-interface";
 import { auth } from "../api/firebase/firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, updateCurrentUser } from "firebase/auth";
 
 
 
@@ -41,7 +41,6 @@ You are currently available on the Sulta AI web app, where users are chatting wi
 
 Tone & Style Guidelines:
 
-	•	Keep responses concise, natural, and conversational—like a helpful assistant, not a robot.
 	•	When asked “Who are you?” or similar, provide a brief intro without overexplaining unless the user asks for more details.
 
 Your goal: Be helpful, efficient, and human-like in every interaction.
@@ -59,6 +58,8 @@ Your goal: Be helpful, efficient, and human-like in every interaction.
         })
         return () => unsubscribe()
     }, []);
+
+    
     const handleSendMessage = async (content: string) => {
 
 
@@ -134,8 +135,8 @@ Your goal: Be helpful, efficient, and human-like in every interaction.
             {/* <SidebarTrigger /> */}
             <div>
             <div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
-            <ChatHeader agent={{name: 'Xev 1.0'}} />
-            <ChatMessages messages={messages} profileImage={profileImage} loadingState={loading} />
+            <ChatHeader showImage={true} showButton={false} agent={{name: 'Xev 1.0'}} />
+            <ChatMessages updateMessageArray={handleSendMessage} messages={messages} profileImage={profileImage} loadingState={loading} />
             <ChatInput onSendMessage={handleSendMessage} />
         </div>
             </div>

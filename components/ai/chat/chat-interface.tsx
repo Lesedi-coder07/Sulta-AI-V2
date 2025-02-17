@@ -143,8 +143,8 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
     return (
 
         exists ?   (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
-            <ChatHeader agent={agent} />
-            <ChatMessages messages={messages} profileImage={profileImage} loadingState={loading} />
+            <ChatHeader showImage={false} agent={agent} showButton={true} />
+            <ChatMessages updateMessageArray={handleSendMessage} messages={messages} profileImage={profileImage} loadingState={loading} />
             <ChatInput onSendMessage={handleSendMessage} />
         </div> ) : <h1 className="text-center text-2xl">Agent not found</h1>
     );

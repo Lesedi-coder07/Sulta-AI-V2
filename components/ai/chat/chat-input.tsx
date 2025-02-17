@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { SendHorizonal } from "lucide-react";
+import { ArrowUp, SendHorizonal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -45,7 +45,7 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type your message..."
-            className="min-h-[20px] max-h-[200px] rounded-none resize-none bg-neutral-100 dark:bg-neutral-800"
+            className="min-h-[20px] max-h-[200px] rounded-small resize-none bg-neutral-100 dark:bg-neutral-800"
             rows={1}
           />
           <Button
@@ -54,7 +54,7 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
             className="h-10 w-10 shrink-0 bg-blue-600 hover:bg-primary/90"
             disabled={!message.trim()}
           >
-            <SendHorizonal className="h-5 w-5" />
+            <ArrowUp />
           </Button>
         </div>
         <p className="mt-2 text-xs text-neutral-500">
