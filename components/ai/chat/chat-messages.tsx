@@ -22,11 +22,9 @@ const promptSuggestions = [
     suggestion: 'Explain trigonometry for beginners'
   },
   {
-    suggestion: 'What are the benefits of AI in healthcare?'
+    suggestion: 'Write a simple python script calculator '
   },
-  {
-    suggestion: 'How does blockchain work?'
-  }
+ 
 ]
 
 export function ChatMessages({
@@ -92,7 +90,7 @@ export function ChatMessages({
           >
             <div
               className={cn(
-                "flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full",
+                "flex h-8 w-8 max-w-10 shrink-0 select-none items-center justify-center rounded-full",
                 message.role === "user"
                   ? "bg-neutral-300 text-white"
                   : "bg-blue-600 text-white"
@@ -110,7 +108,7 @@ export function ChatMessages({
                 <Bot className="h-5 w-5" />
               )}
             </div>
-            <div className="w-fit max-w-[500px] flex-1">
+            <div className="w-fit max-w-[500px] sm:max-w-[80%] flex-1">
               {/* <p
                 className={cn(
                   "text-sm w-fit max-w-[500px]",

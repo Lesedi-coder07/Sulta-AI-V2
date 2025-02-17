@@ -6,7 +6,7 @@ import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 export default function GeminiResponse({ content }: { content: string }) {
   return (
-    <ReactMarkdown className={'text-sm'}
+    <ReactMarkdown className={'text-sm max-w-[64vw] md:max-w-[70vw]'}
       components={{
         code({ className, children, ...props }) {
           const isInline = !className;
@@ -17,7 +17,7 @@ export default function GeminiResponse({ content }: { content: string }) {
           }
 
           return match ? (
-            <SyntaxHighlighter className='rounded-sm text-sm' style={undefined} language={match[1]} PreTag="div">
+            <SyntaxHighlighter className='rounded-sm text-sm max-w-full' style={undefined} language={match[1]} PreTag="div">
               {String(children).replace(/\n$/, '')}
             </SyntaxHighlighter>
           ) : (
