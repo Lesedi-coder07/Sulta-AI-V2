@@ -122,6 +122,96 @@ export default function Home() {
                 </div>
             </section>
 
+            <section className="py-24 overflow-hidden border-b border-border">
+                <div className="container px-4 mx-auto">
+                    <div className="max-w-3xl mx-auto text-center mb-16">
+                        <span className="inline-block py-1 px-3 mb-4 text-xs font-semibold tracking-wider text-primary uppercase rounded-full bg-primary/10">
+                            XEV AI AGENT
+                        </span>
+                        <h2 className="text-4xl md:text-5xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">
+                            Unlock Your AI Potential
+                        </h2>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                            Introducing Xev, our in-house AI agent built by Sulta AI, designed to revolutionize your workflow with AI agency as its primary goal.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-8">
+                        <Card className="relative group hover:shadow-lg transition-all duration-300 border border-border/50 backdrop-blur-sm bg-background/50">
+                            <CardHeader>
+                                <div className="w-16 h-16 mx-auto mb-6 relative">
+                                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                                    <div className="relative w-full h-full flex items-center justify-center text-primary-foreground bg-primary rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <CardTitle className="text-xl font-bold mb-4 group-hover:text-primary transition-colors duration-300">
+                                    Automatic Messaging
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <CardDescription className="text-muted-foreground leading-relaxed">
+                                    Coming soon: Automatic email and social media messaging capabilities that mimic human interaction.
+                                </CardDescription>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="relative group hover:shadow-lg transition-all duration-300 border border-border/50 backdrop-blur-sm bg-background/50">
+                            <CardHeader>
+                                <div className="w-16 h-16 mx-auto mb-6 relative">
+                                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                                    <div className="relative w-full h-full flex items-center justify-center text-primary-foreground bg-primary rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h4m1 8l2-2m-2-2l2-2" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <CardTitle className="text-xl font-bold mb-4 group-hover:text-primary transition-colors duration-300">
+                                    Document Analysis
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <CardDescription className="text-muted-foreground leading-relaxed">
+                                    Coming soon: Legal and Academic document analyzer and summarizer capabilities.
+                                </CardDescription>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="relative group hover:shadow-lg transition-all duration-300 border border-border/50 backdrop-blur-sm bg-background/50">
+                            <CardHeader>
+                                <div className="w-16 h-16 mx-auto mb-6 relative">
+                                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                                    <div className="relative w-full h-full flex items-center justify-center text-primary-foreground bg-primary rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h4m1 8l2-2m-2-2l2-2" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <CardTitle className="text-xl font-bold mb-4 group-hover:text-primary transition-colors duration-300">
+                                    Quick Deployments
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <CardDescription className="text-muted-foreground leading-relaxed">
+                                    Coming soon: Quick WhatsApp deployments for seamless integration. Web deployments are already available.
+                                </CardDescription>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    <div className="text-center mt-16">
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                            Xev 1.0 is still in its extremely beta phase. We'll continue to release new iterations as time goes on, refining and expanding its capabilities.
+                        </p>
+                        <a href="/chat" className="inline-block px-6 py-3 mt-6 text-sm font-semibold leading-relaxed text-white bg-primary rounded-full hover:bg-primary/90 transition-colors duration-300">
+                            Try it out
+                        </a>
+                    </div>
+                </div>
+            </section>
+
             {/* Pricing */}
 
             {/* <FeaturesSection /> */}
