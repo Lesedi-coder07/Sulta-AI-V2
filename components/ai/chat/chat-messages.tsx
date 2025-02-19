@@ -82,9 +82,9 @@ export function ChatMessages({
           <div
             key={message.id}
             className={cn(
-              "flex w-fit gap-3 rounded-lg p-4  shadow-sm md:w-fit",
+              "flex w-fit gap-3 rounded-lg  lg:p-2 shadow-sm md:w-fit",
               message.role === "user"
-                ? "flex-row-reverse bg-[#444]   ml-auto"
+                ? "flex-row-reverse bg-[#444] max-w-[50vw]   ml-auto"
                 : "bg-white dark:bg-neutral-800 text-lg"
             )}
           >
@@ -125,7 +125,7 @@ export function ChatMessages({
         
               </p> */}
 
-              {message.role != "user" ? <GeminiResponse content={message.content} /> : <p className="text-white bg-red">{message.content}</p>}
+              {message.role != "user" ? <GeminiResponse content={message.content} /> : <p className="text-white mb-2 bg-red">{message.content}</p>}
               {/* <p className="text-xs text-neutral-500">{message.timestamp}</p> */}
             </div>
           </div>

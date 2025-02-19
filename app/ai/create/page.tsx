@@ -21,7 +21,7 @@ export default function CreateAgentPage() {
         if (auth) {
             const unsubscribe = auth.onAuthStateChanged((user: any) => {
                 if (!user) {
-                    router.push('/auth/login');
+                    router.push('/login');
                 }
             });
 

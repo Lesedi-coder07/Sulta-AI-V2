@@ -42,7 +42,7 @@ export default function Home() {
                             From students to CEOs, create custom AI agents for any task. Access pre-made agents, build your own, and share with others - all without writing a single line of code.
                         </p>
                         <div className="flex flex-row justify-center items-center space-x-4 my-8">
-                            <Link href={"/auth/login"}>
+                            <Link href={"/login"}>
                                 <Button>
                                     Get Started
                                 </Button>

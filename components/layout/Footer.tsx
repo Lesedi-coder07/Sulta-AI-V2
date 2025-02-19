@@ -11,7 +11,7 @@ const Footer = () => {
                        Sulta AI is a platform built by the Team at Sulta Tech to help you create your own AI Agents.
                     </p>
                     <div className="items-center gap-x-3 space-y-3 sm:flex sm:justify-center sm:space-y-0">
-                        <Link href={"/auth/login"}>
+                        <Link href={"/login"}>
                         <Button>
                             Get started
                         </Button>

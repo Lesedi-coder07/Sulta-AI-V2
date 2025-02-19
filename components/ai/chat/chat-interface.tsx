@@ -13,6 +13,9 @@ export interface Agent {
     isPublic: boolean;
     ownerID: string;
     systemMessage: string;
+    totalQueries: number;
+    tokensUsed: number;
+    totalChats: number
 }
 
 
@@ -122,7 +125,7 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
             //     throw new Error('Failed to get AI response');
             // }
     
-            const aiMessage = await generateWithGemini(messages, agent?.systemMessage ?? '', content, auth.currentUser?.displayName ?? '');
+            const aiMessage = await generateWithGemini(messages, agent?.systemMessage ?? 'You are a helpful AI agent.', content, auth.currentUser?.displayName ?? '');
             setLoading(false)
             setMessages((prev) => [...prev, {
                 id: (Date.now() + 1).toString(),

@@ -43,12 +43,12 @@ const Navbar = () => {
 
                 <div className="md:flex hidden flex-row justify-end space-x-2">
                     <div className="flex flex-row space-x-2">
-                        <Link href={'/auth/login'}>
+                        <Link href={'/login'}>
                         <Button>
                             Login
                         </Button>
                         </Link>
-                        <Link href={'/auth/signup'}>
+                        <Link href={'/signup'}>
                         <Button variant="default" className="border-black border-solid border border-1 shadow-md bg-blue-700 text-white rounded-sm">
                             Sign Up
                         </Button>
@@ -68,12 +68,12 @@ const Navbar = () => {
                             </li>
                         ))}
                         <div className="flex flex-row space-x-2">
-                            <Link href={'/auth/login'}>
+                            <Link href={'/login'}>
                             <Button>
                                 Login
                             </Button>
                             </Link>
-                            <Link href={'/auth/signup'}>
+                            <Link href={'/signup'}>
                             <Button variant="default" className="border-black border-solid border border-1 shadow-md bg-blue-700 text-white rounded-sm">
                                 Sign Up
                             </Button>

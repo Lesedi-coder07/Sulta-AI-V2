@@ -7,6 +7,7 @@ import { doc, collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/app/api/firebase/firebaseConfig";
 import { log } from "console";
 import AgentOptions from "./agent-options";
+import { useRouter } from "next/navigation";
 
 const agents1 = [
   {
@@ -116,6 +117,13 @@ export function AgentSelector() {
     };
   }, []);
 
+  const router = useRouter()
+
+const handlePublicAgentClick = (url : string) => {
+  
+  router.push(url)
+}
+
   return (
     agentTabOpen ? <AgentOptions updateSelectedAgent={updateSelectedAgent} agent={selectedAgent as Agent} /> : (
       <div className="w-full border-r border-none p-4 dark:border-neutral-800 dark:bg-none bg-inherit overflow-hidden">
@@ -151,6 +159,29 @@ export function AgentSelector() {
                 />
               ))
             )}
+          </div>
+        </div>
+
+        <div className="space-y-4 mt-7 w-full flex flex-col">
+        <div>
+            <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+              Public Agents
+            </h2>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              The most popular agents
+            </p>
+          </div>
+
+          <div className="flex flex-row flex-wrap gap-4 w-full">
+          <AgentCard
+                  key={'Xev'}
+                  name={'Xev 1.0'}
+                  type={'text'}
+                  status={"online"}
+                  selected={false}
+                  onClick={() => handlePublicAgentClick('/chat')}
+                />
+
           </div>
         </div>
       </div>

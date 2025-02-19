@@ -50,7 +50,7 @@ function SignUp() {
             await updateProfile(response.user, { displayName: name })
             alert('Account Created Successfully!')
             writeUserToDatabase()
-            router.push('/waitlist')
+            router.push('/ai/create')
          
         } catch (error) {
             console.error('Error: Cannot Create Account!', error);
@@ -147,7 +147,7 @@ function SignUp() {
 
                         <p className="px-8 text-center text-sm text-muted-foreground">
                             Already have an account?{" "}
-                            <Link href="/auth/login" className="underline underline-offset-4 hover:text-primary">
+                            <Link href="/login" className="underline underline-offset-4 hover:text-primary">
                                 Sign in
                             </Link>
                         </p>

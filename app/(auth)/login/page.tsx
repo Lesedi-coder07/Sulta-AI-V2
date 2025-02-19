@@ -53,7 +53,7 @@ function Login () {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       alert('Logged in Successfully!')
-      router.push('/waitlist');
+      router.push('/ai/dashboard');
     } catch {
       return 'Error: Cannot Login with Google!'
     } finally {
@@ -127,7 +127,7 @@ function Login () {
 
             <p className="px-8 text-center text-sm text-muted-foreground">
               New to Sulta AI?{" "}
-              <Link href="/auth/signup" className="underline underline-offset-4 hover:text-primary">
+              <Link href="/signup" className="underline underline-offset-4 hover:text-primary">
                 Create an account
               </Link>
             </p>

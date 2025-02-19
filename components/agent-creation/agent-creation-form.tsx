@@ -156,7 +156,7 @@ export function AgentCreationForm() {
 
             <TabsContent value="voice" className="space-y-8">
               <CallAgentOptions form={form} />
-              <ExtraContextField form={form} /> 
+              {/* <ExtraContextField form={form} />  */}
             </TabsContent>
 
             <div className="flex justify-end space-x-4">

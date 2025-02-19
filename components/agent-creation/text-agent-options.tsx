@@ -150,9 +150,9 @@ export function TextAgentOptions({ form }: { form: any }) {
                 <FormLabel>Context Memory (in messages)</FormLabel>
                 <FormControl>
                   <Slider
-                    min={1}
-                    max={10}
-                    step={1}
+                    min={50}
+                    max={2000}
+                    step={200}
                     value={[field.value]}
                     onValueChange={(value) => field.onChange(value[0])}
                     className="py-4"
