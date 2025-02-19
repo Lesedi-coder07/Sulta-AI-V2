@@ -82,9 +82,9 @@ export function ChatMessages({
           <div
             key={message.id}
             className={cn(
-              "flex w-fit gap-3 rounded-lg  lg:p-2 shadow-sm md:w-fit",
+              "flex w-fit gap-3 rounded-lg p-6 sm:p-3 lg:p-2 shadow-sm md:w-fit",
               message.role === "user"
-                ? "flex-row-reverse bg-[#444] max-w-[50vw]   ml-auto"
+                ? "flex-row-reverse bg-[#444] lg:max-w-[50vw] max-w-[80vw] sm:w-fit   ml-auto"
                 : "bg-white dark:bg-neutral-800 text-lg"
             )}
           >
