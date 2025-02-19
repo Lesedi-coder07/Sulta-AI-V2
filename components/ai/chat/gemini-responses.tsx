@@ -20,6 +20,8 @@ export default function GeminiResponse({ content }: { content: string }) {
               
             );
           },
+     
+          
         code({ className, children, ...props }) {
           const isInline = !className;
           const match = /language-(\w+)/.exec(className || '');

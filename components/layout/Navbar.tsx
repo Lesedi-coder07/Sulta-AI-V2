@@ -1,16 +1,32 @@
 'use client'
 import Link from "next/link";
-import {Button} from "@/components/ui/button";
-import {navLinks} from "@/data/navLinks";
-import {ThemeChanger} from "@/app/Theme-changer";
+import { Button } from "@/components/ui/button";
+import { navLinks } from "@/data/navLinks";
+import { ThemeChanger } from "@/app/Theme-changer";
 import { useTheme } from "next-themes";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { auth } from "@/app/api/firebase/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
 
 const Navbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [loggedIn, setLoggedIn] = useState<boolean>(false);
     const { resolvedTheme } = useTheme();
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setLoggedIn(true);
+            } else {
+                setLoggedIn(false);
+            }
+        })
+        return () => unsubscribe()
+    }, []);
+
+
+
 
     return (
         <nav className="py-4 bg-background/30 backdrop-blur-sm">
@@ -43,18 +59,23 @@ const Navbar = () => {
 
                 <div className="md:flex hidden flex-row justify-end space-x-2">
                     <div className="flex flex-row space-x-2">
-                        <Link href={'/login'}>
-                        <Button>
-                            Login
-                        </Button>
-                        </Link>
-                        <Link href={'/signup'}>
-                        <Button variant="default" className="border-black border-solid border border-1 shadow-md bg-blue-700 text-white rounded-sm">
-                            Sign Up
-                        </Button>
-                        </Link>
+                       
+                    {loggedIn  ? (<Link href={'/ai/dashboard'}>
+                                <Button>
+                                    Go to App
+                                </Button>
+                            </Link>) : (<><Link href={'/login'}>
+                                <Button>
+                                    Login
+                                </Button>
+                            </Link>
+                                <Link href={'/signup'}>
+                                    <Button variant="default" className="border-black border-solid border border-1 shadow-md bg-blue-700 text-white rounded-sm">
+                                        Sign Up
+                                    </Button>
+                                </Link></>)}
                     </div>
-                  
+
                 </div>
             </div>
             {mobileMenuOpen && (
@@ -68,16 +89,22 @@ const Navbar = () => {
                             </li>
                         ))}
                         <div className="flex flex-row space-x-2">
-                            <Link href={'/login'}>
-                            <Button>
-                                Login
-                            </Button>
+
+                            {loggedIn === false ? (<Link href={'/ai/dashboard'}>
+                                <Button>
+                                    Go to App
+                                </Button>
+                            </Link>) : (<><Link href={'/login'}>
+                                <Button>
+                                    Login
+                                </Button>
                             </Link>
-                            <Link href={'/signup'}>
-                            <Button variant="default" className="border-black border-solid border border-1 shadow-md bg-blue-700 text-white rounded-sm">
-                                Sign Up
-                            </Button>
-                            </Link>
+                                <Link href={'/signup'}>
+                                    <Button variant="default" className="border-black border-solid border border-1 shadow-md bg-blue-700 text-white rounded-sm">
+                                        Sign Up
+                                    </Button>
+                                </Link></>)}
+
                         </div>
                     </ul>
                 </div>
