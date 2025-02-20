@@ -113,7 +113,9 @@ export function AgentCreationForm() {
         await setDoc(userRef, {
           agents: [agentRef.id],
           ownerID: user.uid,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          queries: 0,
+          userCount: 0,
         });
       }
 

@@ -62,12 +62,12 @@ Your goal: Be helpful, efficient, and human-like in every interaction.
     }, []);
 
     
-    const handleSendMessage = async (content: string) => {
+    const handleSendMessage = async (content: string, base64String: string | null = null) => {
 
 
 
 
-
+        console.log(base64String)
         setLoading(true)
         const userMessage: Message = {
             id: Date.now().toString(),
@@ -113,7 +113,7 @@ Your goal: Be helpful, efficient, and human-like in every interaction.
             //     throw new Error('Failed to get AI response');
             // }
     
-            const aiMessage = await generateWithGemini(messages, xevronSystemMessage, content, auth.currentUser?.displayName ?? '');
+            const aiMessage = await generateWithGemini(messages, xevronSystemMessage, content, auth.currentUser?.displayName ?? '', base64String);
             setLoading(false)
             setMessages((prev) => [...prev, {
                 id: (Date.now() + 1).toString(),

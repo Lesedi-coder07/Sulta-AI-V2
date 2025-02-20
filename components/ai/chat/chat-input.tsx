@@ -1,17 +1,25 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ArrowUp, SendHorizonal } from "lucide-react";
+import { ArrowUp, SendHorizonal, Plus, File, Image} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { convertFileToBase64 } from "@/lib/utils";
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string, base64String: string | null ) => void;
 }
+
+
 
 export function ChatInput({ onSendMessage }: ChatInputProps) {
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLDivElement>(null);
+  const [uploadedFileName, setUploadFileName] = useState<string | null>(null)
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [fileBase64String, setFileBase64String ] = useState<string | null>(null)
+
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -20,10 +28,26 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
     }
   }, [message]);
 
+   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0]
+      console.log('Hello Worlds')
+      setUploadFileName(file.name)
+      
+      const base64String = await convertFileToBase64(file)
+      setFileBase64String(base64String)
+   
+    }
+   
+  }
+const handleDocUpload = () => {
+   
+}
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
-      onSendMessage(message.trim());
+      onSendMessage(message.trim(), fileBase64String);
       setMessage("");
     }
   };
@@ -35,10 +59,65 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
     }
   };
 
+  const handleToggleFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.classList.toggle('hidden');
+    }
+  };
+
   return (
     <div className="fixed bottom-0 left-0 right-0 border-t border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
       <form onSubmit={handleSubmit} className="mx-auto max-w-3xl">
         <div className="flex items-end gap-4 pb-[env(safe-area-inset-bottom)]">
+          <div className="relative">
+          <div ref={fileInputRef} className="hidden p-3 absolute bottom-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2">
+            {uploadedFileName ? (<div className="flex flex-row gap-2">
+               <File />
+               <p className="text-xs">{uploadedFileName}</p>
+            </div>) : (<>
+              <input 
+                type="file" 
+                accept=".jpg, .jpeg, .png" 
+                className="hidden" 
+                id="fileInput1" 
+                onChange={handleImageUpload}
+              />
+              <label 
+                htmlFor="fileInput1" 
+                className="flex flex-row gap-2 w-full px-4 hover:bg-slate-200 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
+              >
+                Upload Image
+              
+              </label>
+              <input 
+                type="file" 
+                accept=".doc, .docx, .pdf" 
+                className="hidden" 
+                id="fileInput2" 
+                onChange={() => handleImageUpload}
+              />
+              <label 
+                htmlFor="fileInput2" 
+                className="mt-2 block w-full hover:bg-slate-200 px-4 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
+              >
+                Upload Document
+             
+              </label>
+
+            </>) } 
+          
+
+            </div>
+            <Button
+              type="button"
+              size="icon"
+              className="h-10 w-10 bg-neutral-200 hover:bg-neutral-300"
+              onClick={handleToggleFileInput}
+            >
+              <Plus />
+            </Button>
+           
+          </div>
           <Textarea
             ref={textareaRef}
             value={message}

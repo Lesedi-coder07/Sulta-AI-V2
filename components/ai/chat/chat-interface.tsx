@@ -49,7 +49,8 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
     
     })
 
-
+    
+    
 
 
     const [messages, setMessages] = useState<Message[]>([
@@ -154,7 +155,7 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
       
 }
 
-export const generateWithGemini = async (messages: Array<Message>, systemMessage: string, prompt: string, userName: string): Promise<string> => {
+export const generateWithGemini = async (messages: Array<Message>, systemMessage: string, prompt: string, userName: string, base64String: string | null = null): Promise<string> => {
     try {
         const ai = await fetch('/api/LLM/gemini', {
             method: "POST",
@@ -168,7 +169,8 @@ export const generateWithGemini = async (messages: Array<Message>, systemMessage
                 })),
                 currentUser: userName,
                 prompt: prompt,
-                systemMessage: systemMessage
+                systemMessage: systemMessage,
+                base64String: base64String
             })
         });
         const data = await ai.json();
