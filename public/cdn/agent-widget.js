@@ -31,7 +31,7 @@ class AIAgentWidget {
 
         const data = await response.json();
         this.systemMessage = data.systemMessage;
-        console.log(this.systemMessage)
+       
       } catch (error) {
         console.error('Error fetching system message:', error);
         this.systemMessage = null;
@@ -253,7 +253,7 @@ class AIAgentWidget {
         });
   
         const data = await response.json();
-        console.log(data)
+       
 
         const botMessage = data.choices[0].message.content
         // Remove typing indicator and add response
@@ -379,4 +379,3 @@ function initAIWidget (config) {
     new AIAgentWidget(config);
   };
 
-  console.log('hbrebf!')

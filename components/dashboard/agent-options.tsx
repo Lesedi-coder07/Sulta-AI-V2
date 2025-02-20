@@ -33,7 +33,7 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
  
 
   const toggleEditing = () => {
-    console.log('toggleEditing')
+    
     setEditing(!editing)
   }
 

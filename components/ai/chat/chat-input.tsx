@@ -32,7 +32,7 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
     
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0]
-      console.log('Hello Worlds')
+     
       setUploadFileName(file.name)
       
       const base64String = await convertFileToBase64(file)

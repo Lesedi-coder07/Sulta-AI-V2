@@ -119,7 +119,7 @@ export function AgentCreationForm() {
         });
       }
 
-      console.log('Agent created successfully with ID:', agentRef.id);
+      
       setAgentLink(agentRef.id as string)
       setShowLink(true)
       toggleAgentCreated()

@@ -3,7 +3,7 @@
 import CallControls from '@/components/ai/call/call-controls'
 
 export default function CallInterface({agent_id} : {agent_id: string}) {
-  console.log(agent_id)
+  
     return (
     <>
 

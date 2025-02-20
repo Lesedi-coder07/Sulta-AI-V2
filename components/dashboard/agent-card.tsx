@@ -28,7 +28,7 @@ const statusColors = {
 
 export function AgentCard({ name, type, status, onClick, selected }: AgentCardProps) {
   const IconComponent = agentIcons.content;
-  console.log(name, type, status)
+
 
   return (
     <Card

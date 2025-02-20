@@ -21,7 +21,7 @@ export async function POST(req: Request) {
         let newParts = [{ text: prompt },]
 
          if( base64String ){
-            console.log('Image Found.' + base64String.split(',')[1])
+            
            let imagePart = {
                 inlineData: {
                     mimeType: "image/png", // Or the correct mime type for your image
@@ -43,8 +43,7 @@ export async function POST(req: Request) {
             parts: [{ text: msg.content }]
         })) : [];
 
-        console.log(formattedHistory)
-
+        
         const chat = model.startChat({
             history: formattedHistory,
             generationConfig: {

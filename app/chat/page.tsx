@@ -67,7 +67,7 @@ Your goal: Be helpful, efficient, and human-like in every interaction.
 
 
 
-        console.log(base64String)
+       
         setLoading(true)
         const userMessage: Message = {
             id: Date.now().toString(),
