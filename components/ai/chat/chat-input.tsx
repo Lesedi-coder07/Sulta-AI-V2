@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { convertFileToBase64 } from "@/lib/utils";
 
 interface ChatInputProps {
-  onSendMessage: (message: string, base64String: string | null ) => void;
+  onSendMessage: (message: string, base64String: string | null, image: string | null ) => void;
 }
 
 
@@ -19,6 +19,9 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
   const [uploadedFileName, setUploadFileName] = useState<string | null>(null)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [fileBase64String, setFileBase64String ] = useState<string | null>(null)
+  const [imageUrl, setImageUrl] = useState<string | null>(null); // New state for image URL
+  const imageInputRef = useRef<HTMLInputElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
 
 
   useEffect(() => {
@@ -37,6 +40,9 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
       
       const base64String = await convertFileToBase64(file)
       setFileBase64String(base64String)
+
+      const url = URL.createObjectURL(file);
+      setImageUrl(url);
    
     }
    
@@ -47,8 +53,18 @@ const handleDocUpload = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
-      onSendMessage(message.trim(), fileBase64String);
+      onSendMessage(message.trim(), fileBase64String, imageUrl);
       setMessage("");
+      setFileBase64String(null)
+      setUploadFileName(null)
+      setImageUrl(null)
+      if (imageInputRef.current ) {
+        imageInputRef.current.value = ""
+      }
+
+      if (formRef.current) {
+        formRef.current.reset()
+       }
     }
   };
 
@@ -65,9 +81,13 @@ const handleDocUpload = () => {
     }
   };
 
+
+
+ 
+
   return (
     <div className="fixed bottom-0 left-0 right-0 border-t border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
-      <form onSubmit={handleSubmit} className="mx-auto max-w-3xl">
+      <form ref={formRef} onSubmit={handleSubmit} className="mx-auto max-w-3xl">
         <div className="flex items-end gap-4 pb-[env(safe-area-inset-bottom)]">
           <div className="relative">
           <div ref={fileInputRef} className="hidden p-3 absolute bottom-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2">
@@ -77,10 +97,11 @@ const handleDocUpload = () => {
             </div>) : (<>
               <input 
                 type="file" 
-                accept=".jpg, .jpeg, .png" 
+                accept=".jpg, .jpeg, .png, .heic" 
                 className="hidden" 
                 id="fileInput1" 
                 onChange={handleImageUpload}
+                ref={imageInputRef}
               />
               <label 
                 htmlFor="fileInput1" 
@@ -111,7 +132,7 @@ const handleDocUpload = () => {
             <Button
               type="button"
               size="icon"
-              className="h-10 w-10 bg-neutral-200 hover:bg-neutral-300"
+              className="h-8 w-8 bg-neutral-200 hover:bg-neutral-300"
               onClick={handleToggleFileInput}
             >
               <Plus />

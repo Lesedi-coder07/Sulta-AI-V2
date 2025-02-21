@@ -79,6 +79,9 @@ export function ChatMessages({
 
 
         {messages.map((message) => (
+          <> 
+          {message.image ? ( <div className="flex flex-row-reverse"> <img className="w-[120px] h-[120px] rounded-sm right-0 cover" src={message.image} alt="AI Photo" /> </div> ) : <> </>}
+        
           <div
             key={message.id}
             className={cn(
@@ -128,7 +131,7 @@ export function ChatMessages({
               {message.role != "user" ? <GeminiResponse content={message.content} /> : <p className="text-white mb-2 bg-red">{message.content}</p>}
               {/* <p className="text-xs text-neutral-500">{message.timestamp}</p> */}
             </div>
-          </div>
+          </div> </>
         ))}
 
         {loadingState && <div className="flex w-full gap-3 rounded-lg p-4 shadow-sm">

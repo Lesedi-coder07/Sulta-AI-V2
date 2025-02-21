@@ -3,4 +3,5 @@ export interface Message {
     role: "user" | "assistant" | 'model';
     content: string;
     timestamp: string;
+    image: null | string
   }

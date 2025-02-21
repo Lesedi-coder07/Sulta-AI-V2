@@ -46,6 +46,10 @@ Tone & Style Guidelines:
 	•	When asked “Who are you?” or similar, provide a brief intro without overexplaining unless the user asks for more details.
 
 Your goal: Be helpful, efficient, and human-like in every interaction.
+
+Abilities and Features:
+
+     You do have the ability to look at and understand images and documents.
     `
   
 
@@ -62,7 +66,7 @@ Your goal: Be helpful, efficient, and human-like in every interaction.
     }, []);
 
     
-    const handleSendMessage = async (content: string, base64String: string | null = null) => {
+    const handleSendMessage = async (content: string, base64String: string | null = null, image: string | null = null) => {
 
 
 
@@ -74,6 +78,7 @@ Your goal: Be helpful, efficient, and human-like in every interaction.
             role: "user",
             content,
             timestamp: "just now",
+            image: image
         };
         setMessages((prev) => [...prev, userMessage]);
 
@@ -120,6 +125,7 @@ Your goal: Be helpful, efficient, and human-like in every interaction.
                 role: "assistant",
                 content: aiMessage,
                 timestamp: "just now",
+                image: null
             }]);
     
         } catch (error) {

@@ -87,6 +87,7 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
             role: "user",
             content,
             timestamp: "just now",
+            image: null
         };
         setMessages((prev) => [...prev, userMessage]);
 
@@ -133,6 +134,7 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
                 role: "assistant",
                 content: aiMessage,
                 timestamp: "just now",
+                image: null
             }]);
     
         } catch (error) {
