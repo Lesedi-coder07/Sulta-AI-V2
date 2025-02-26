@@ -42,6 +42,8 @@ export function ChatMessages({
 
   return (
     <div className="flex-1 overflow-y-auto pt-5 px-8 pb-36 h-full">
+
+      
       <div className="space-y-4">
 
 
@@ -80,7 +82,7 @@ export function ChatMessages({
 
         {messages.map((message) => (
           <> 
-          {message.image ? ( <div className="flex flex-row-reverse"> <img className="w-[120px] h-[120px] rounded-sm right-0 cover" src={message.image} alt="AI Photo" /> </div> ) : <> </>}
+          {message.image ? ( <div key={message.image} className="flex flex-row-reverse"> <img className="w-[120px] h-[120px] rounded-sm right-0 cover" src={message.image} alt="AI Photo" /> </div> ) : <> </>}
         
           <div
             key={message.id}
