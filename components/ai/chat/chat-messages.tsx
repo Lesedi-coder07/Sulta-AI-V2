@@ -40,6 +40,13 @@ export function ChatMessages({
 }) {
 
 
+  const messageReversed = messages.reverse();
+
+  const orderedMessages = [...messages].sort((a, b) => {
+    return Number(a.id) - Number(b.id);
+  });
+
+
   return (
     <div className="flex-1 overflow-y-auto pt-5 px-8 pb-36 h-full">
 
@@ -80,7 +87,7 @@ export function ChatMessages({
 
 
 
-        {messages.map((message) => (
+        {orderedMessages.map((message) => (
           <> 
           {message.image ? ( <div key={message.image} className="flex flex-row-reverse"> <img className="w-[120px] h-[120px] rounded-sm right-0 cover" src={message.image} alt="AI Photo" /> </div> ) : <> </>}
         
@@ -89,7 +96,7 @@ export function ChatMessages({
             className={cn(
               "flex w-fit gap-3 rounded-lg p-6 sm:p-3 lg:p-2 shadow-sm md:w-fit",
               message.role === "user"
-                ? "flex-row-reverse bg-[#444] lg:max-w-[50vw] max-w-[80vw] sm:w-fit   ml-auto"
+                ? "flex-row-reverse bg-blue-600 lg:max-w-[50vw] max-w-[80vw] sm:w-fit ml-auto"
                 : "bg-white dark:bg-neutral-800 text-lg"
             )}
           >
@@ -97,7 +104,7 @@ export function ChatMessages({
               className={cn(
                 "flex h-8 w-8 max-w-10 shrink-0 select-none items-center justify-center rounded-full",
                 message.role === "user"
-                  ? "bg-neutral-300 text-white"
+                  ? "bg-white text-white"
                   : "bg-blue-600 text-white"
               )}
             >
@@ -105,7 +112,7 @@ export function ChatMessages({
                 <Image
                   src={profileImage ? profileImage : `/icons/user-profile-icon.jpg`}
                   alt={profileImage ? 'User Profile Picture' : 'generic'}
-                  className="h-[80%]  w-[80%] rounded-full object-cover"
+                  className="h-[80%] w-[80%] rounded-full object-cover"
                   width={32}
                   height={32}
                 />
@@ -114,24 +121,7 @@ export function ChatMessages({
               )}
             </div>
             <div className="w-fit max-w-[500px] sm:max-w-[80%] flex-1">
-              {/* <p
-                className={cn(
-                  "text-sm w-fit max-w-[500px]",
-                  message.role === "user"
-                    ? "text-white dark:text-neutral-300"
-                    : "text-neutral-800 dark:text-neutral-200"
-                )}
-                dangerouslySetInnerHTML={{
-                  __html: message.role === 'user' 
-                    ? message.content 
-                    : formatToHtml(message.content)  }}
-              >
-           
-        
-              </p> */}
-
-              {message.role != "user" ? <GeminiResponse content={message.content} /> : <p className="text-white mb-2 bg-red">{message.content}</p>}
-              {/* <p className="text-xs text-neutral-500">{message.timestamp}</p> */}
+              {message.role != "user" ? <GeminiResponse content={message.content} /> : <p className="text-white mb-2">{message.content}</p>}
             </div>
           </div> </>
         ))}

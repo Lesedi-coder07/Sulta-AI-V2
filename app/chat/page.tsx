@@ -43,7 +43,7 @@ export default function ChatPage() {
         const q = query(
             chatListRef, 
             where('userID', '==', currentUser),
-            orderBy('lastMessageAt', 'desc')
+            orderBy('lastMessageAt', 'asc')
         );
         
         const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -152,7 +152,6 @@ Abilities and Features:
     const handleSendMessage = async (content: string, base64String: string | null = null, image: string | null = null) => {
         setLoading(true);
         if (!chat?.chatID) {
-            // Create new chat if none exists
             const chatID = await createNewChat(currentUser ?? '', 'bdjfweohwnon3082482764');
             setChat({ chatID, ...defaultChatConfig, userID: currentUser ?? '' } as Chat);
         }
@@ -165,7 +164,7 @@ Abilities and Features:
             image: image
         };
 
-        // Update messages locally first
+        // Update messages array with user message
         setMessages(prev => [...prev, userMessage]);
         
         // Save to database
