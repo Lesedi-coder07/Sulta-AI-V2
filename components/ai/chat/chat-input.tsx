@@ -5,10 +5,13 @@ import { ArrowUp, SendHorizonal, Plus, File, Image} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { convertFileToBase64 } from "@/lib/utils";
-
+import { db } from "@/app/api/firebase/firebaseConfig"; // Import your Firebase configuration
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 interface ChatInputProps {
   onSendMessage: (message: string, base64String: string | null, image: string | null ) => void;
 }
+
+
 
 
 
@@ -22,8 +25,10 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null); // New state for image URL
   const imageInputRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
+  const [showFileInput, setShowFileInput] = useState(false);
 
 
+  
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "inherit";
@@ -86,75 +91,153 @@ const handleDocUpload = () => {
  
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 border-t border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
-      <form ref={formRef} onSubmit={handleSubmit} className="mx-auto max-w-3xl">
-        <div className="flex items-end gap-4 pb-[env(safe-area-inset-bottom)]">
-          <div className="relative">
-          <div ref={fileInputRef} className="hidden p-3 absolute bottom-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2">
-            {uploadedFileName ? (<div className="flex flex-row gap-2">
-               <File />
-               <p className="text-xs">{uploadedFileName}</p>
-            </div>) : (<>
-              <input 
-                type="file" 
-                accept=".jpg, .jpeg, .png, .heic" 
-                className="hidden" 
-                id="fileInput1" 
-                onChange={handleImageUpload}
-                ref={imageInputRef}
-              />
-              <label 
-                htmlFor="fileInput1" 
-                className="flex flex-row gap-2 w-full px-4 hover:bg-slate-200 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
-              >
-                Upload Image
+    // <div className="fixed bottom-0 right-0 md:flex md:flex-row-reverse pl-44  border-neutral-200 md:flex-center w-full p-4 dark:border-neutral-800 dark:bg-neutral-900 flex justify-center">
+    //   <form ref={formRef} onSubmit={handleSubmit}  className="bg-red-500 max-w-3xl">
+    //     <div className="flex items-end gap-4 pb-[env(safe-area-inset-bottom)]">
+    //       <div className="relative">
+    //       <div ref={fileInputRef} className="hidden p-3 absolute bottom-full  mt-2 w-48 bg-white shadow-lg rounded-md py-2">
+    //         {uploadedFileName ? (<div className="flex flex-row gap-2">
+    //            <File />
+    //            <p className="text-xs">{uploadedFileName}</p>
+    //         </div>) : (<>
+    //           <input 
+    //             type="file" 
+    //             accept=".jpg, .jpeg, .png, .heic" 
+    //             className="hidden" 
+    //             id="fileInput1" 
+    //             onChange={handleImageUpload}
+    //             ref={imageInputRef}
+    //           />
+    //           <label 
+    //             htmlFor="fileInput1" 
+    //             className="flex flex-row gap-2 w-full px-4 hover:bg-slate-200 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
+    //           >
+    //             Upload Image
               
-              </label>
-              <input 
-                type="file" 
-                accept=".doc, .docx, .pdf" 
-                className="hidden" 
-                id="fileInput2" 
-                onChange={() => handleImageUpload}
-              />
-              <label 
-                htmlFor="fileInput2" 
-                className="mt-2 block w-full hover:bg-slate-200 px-4 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
-              >
-                Upload Document
+    //           </label>
+    //           <input 
+    //             type="file" 
+    //             accept=".doc, .docx, .pdf" 
+    //             className="hidden" 
+    //             id="fileInput2" 
+    //             onChange={() => handleImageUpload}
+    //           />
+    //           <label 
+    //             htmlFor="fileInput2" 
+    //             className="mt-2 block w-full hover:bg-slate-200 px-4 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
+    //           >
+    //             Upload Document
              
-              </label>
+    //           </label>
 
-            </>) } 
+    //         </>) } 
           
 
-            </div>
-            <Button
-              type="button"
-              size="icon"
-              className="h-8 w-8 bg-neutral-200 hover:bg-neutral-300"
-              onClick={handleToggleFileInput}
-            >
-              <Plus />
-            </Button>
+    //         </div>
+    //         <Button
+    //           type="button"
+    //           size="icon"
+    //           className="h-8 w-8 bg-neutral-200 hover:bg-neutral-300"
+    //           onClick={handleToggleFileInput}
+    //         >
+    //           <Plus />
+    //         </Button>
            
+    //       </div>
+    //       <Textarea
+    //         ref={textareaRef}
+    //         value={message}
+    //         onChange={(e) => setMessage(e.target.value)}
+    //         onKeyDown={handleKeyDown}
+    //         placeholder="Type your message..."
+    //         className="min-h-[20px] max-h-[200px] rounded-small resize-none bg-neutral-100 dark:bg-neutral-800"
+    //         rows={1}
+    //       />
+    //       <Button
+    //         type="submit"
+    //         size="icon"
+    //         className="h-10 w-10 shrink-0 bg-blue-600 hover:bg-primary/90"
+    //         disabled={!message.trim()}
+    //       >
+    //         <ArrowUp />
+    //       </Button>
+    //     </div>
+    //     <p className="mt-2 text-xs text-neutral-500">
+    //       Press Enter to send, Shift + Enter for new line
+    //     </p>
+    //   </form>
+    // </div>
+    <div className="fixed bottom-0 left-0 right-0 md:pl-64 border-neutral-200 w-full p-4 dark:border-neutral-800 dark:bg-neutral-900">
+      <form ref={formRef} onSubmit={handleSubmit} className="mx-auto max-w-4xl w-full">
+        <div className="flex items-center gap-2 pb-[env(safe-area-inset-bottom)] relative">
+          {/* Textarea with integrated send button styling */}
+          <div className="flex-grow relative">
+            <Textarea
+              ref={textareaRef}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Type your message..."
+              className="min-h-[40px] max-h-[300px] h-[100px] py-10 rounded-md resize-none bg-neutral-100 dark:bg-neutral-800 w-full shadow-md pr-12 pl-3"
+              rows={1}
+            />
+            {/* Send Button (positioned inside textarea) */}
+            <Button
+              type="submit"
+              size="icon"
+              className="absolute top-1/2 right-2 -translate-y-1/2 h-10 w-10 shrink-0 bg-blue-600 hover:bg-primary/90 rounded-md"
+              disabled={!message.trim()}
+            >
+              <ArrowUp />
+            </Button>
           </div>
-          <Textarea
-            ref={textareaRef}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your message..."
-            className="min-h-[20px] max-h-[200px] rounded-small resize-none bg-neutral-100 dark:bg-neutral-800"
-            rows={1}
-          />
+
+          {/* Plus Button (file upload toggle) */}
+          <div ref={fileInputRef} className={`absolute bottom-full right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2 z-10 ${showFileInput ? '' : 'hidden'}`}>
+            {uploadedFileName ? (
+              <div className="flex flex-row gap-2 px-4 py-2">
+                <File />
+                <p className="text-xs">{uploadedFileName}</p>
+              </div>
+            ) : (
+              <>
+                <input
+                  type="file"
+                  accept=".jpg, .jpeg, .png, .heic"
+                  className="hidden"
+                  id="fileInput1"
+                  onChange={handleImageUpload}
+                  ref={imageInputRef}
+                />
+                <label
+                  htmlFor="fileInput1"
+                  className="flex flex-row gap-2 w-full px-4 hover:bg-slate-200 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
+                >
+                  Upload Image
+                </label>
+                <input
+                  type="file"
+                  accept=".doc, .docx, .pdf"
+                  className="hidden"
+                  id="fileInput2"
+                  onChange={handleImageUpload}
+                />
+                <label
+                  htmlFor="fileInput2"
+                  className="mt-2 block w-full hover:bg-slate-200 px-4 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
+                >
+                  Upload Document
+                </label>
+              </>
+            )}
+          </div>
           <Button
-            type="submit"
+            type="button"
             size="icon"
-            className="h-10 w-10 shrink-0 bg-blue-600 hover:bg-primary/90"
-            disabled={!message.trim()}
+            className="h-8 w-8 bg-neutral-200 hover:bg-neutral-300"
+            onClick={handleToggleFileInput}
           >
-            <ArrowUp />
+            <Plus />
           </Button>
         </div>
         <p className="mt-2 text-xs text-neutral-500">
@@ -164,3 +247,24 @@ const handleDocUpload = () => {
     </div>
   );
 }
+
+export const writeMessageToDb = async (chatId: string , messageContent:string , sender: string, imageUrl: string | null) => {
+  try {
+      const messagesRef = collection(db, `chats/${chatId}/messages`);
+      const newMessage = {
+          content: messageContent,
+          id: Date.now().toString(),
+          role: sender,
+          timestamp: serverTimestamp(),
+          image: imageUrl
+      };
+
+      console.log(newMessage)
+
+      // Add the new message to the messages subcollection
+      await addDoc(messagesRef, newMessage);
+      console.log('Message sent successfully!');
+  } catch (error) {
+      console.error('Error sending message: ', error);
+  }
+};

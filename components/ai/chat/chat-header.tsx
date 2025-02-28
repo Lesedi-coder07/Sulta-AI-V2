@@ -11,7 +11,7 @@ export function ChatHeader({ agent, showButton, showImage }: { agent: any , show
           <Bot className="h-5 w-5" />
         </div> */}
         <div>
-          <div className="flex flex-row justify-between w-[85vw] lg:w-[95vw] flex-wrap">
+          <div className="flex flex-row justify-between w-[35vw] lg:w-[75vw] flex-wrap">
 
 
             <div >

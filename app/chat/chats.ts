@@ -1,0 +1,31 @@
+import { collection, setDoc } from "firebase/firestore";
+
+import { doc } from "firebase/firestore";
+import { db } from "../api/firebase/firebaseConfig";
+
+    export async function createNewChat(userId: string, agentId: string) {
+    try {
+        const newChatRef = doc(collection(db, 'chats'));
+        const newChat = {
+            chatID: newChatRef.id,
+            userID: userId,
+            agentID: agentId,
+            messages: [],
+            title: 'New Thread',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            status: 'active',
+            metadata: {
+                model: 'gemini-pro',
+                temperature: 0.7
+            },
+            lastMessageAt: new Date().toISOString(),
+        };
+
+        await setDoc(newChatRef, newChat);
+        return newChatRef.id;
+      
+    } catch (error) {
+        console.error('Error creating new chat: ', error);
+    }
+}
