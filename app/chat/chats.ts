@@ -1,4 +1,4 @@
-import { collection, setDoc } from "firebase/firestore";
+import { collection, setDoc, updateDoc } from "firebase/firestore";
 
 import { doc } from "firebase/firestore";
 import { db } from "../api/firebase/firebaseConfig";
@@ -27,5 +27,15 @@ import { db } from "../api/firebase/firebaseConfig";
       
     } catch (error) {
         console.error('Error creating new chat: ', error);
+    }
+}
+
+
+export async function updateChatTitle(chatId: string, title: string) {
+    try {
+        const chatRef = doc(db, 'chats', chatId);
+        await updateDoc(chatRef, { title: title });
+    } catch (error) {
+        console.error('Error updating chat title: ', error);
     }
 }

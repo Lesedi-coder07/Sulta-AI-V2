@@ -1,6 +1,6 @@
 "use client"
 import { Message } from "@/types/chat";
-import { cn, formatToHtml } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Bot } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Image from 'next/image'
@@ -8,6 +8,7 @@ import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlig
 import GeminiResponse from "./gemini-responses";
 import { Card, CardContent } from "@/components/ui/card";
 import { GradientText } from "@/components/ui/gradient-text";
+import { TextShimmer } from '@/components/ui/text-shimmer';
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -48,7 +49,7 @@ export function ChatMessages({
 
 
   return (
-    <div className="flex-1 overflow-y-auto pt-5 px-8 pb-36 h-full">
+    <div className="flex-1 overflow-y-auto mb-7 pt-5 px-8 pb-36 h-full">
 
       
       <div className="space-y-4">
@@ -126,16 +127,35 @@ export function ChatMessages({
           </div> </>
         ))}
 
-        {loadingState && <div className="flex w-full gap-3 rounded-lg p-4 shadow-sm">
+        {loadingState && <div className="flex w-full gap-3 ml-4 rounded-lg p-4 ">
           <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full  text-primary">
-            <span className="flex space-x-1">
+            {/* <span className="flex space-x-1">
               <span className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:-0.3s]"></span>
               <span className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:-0.15s]"></span>
               <span className="h-2 w-2 rounded-full bg-primary animate-bounce"></span>
-            </span>
+            </span> */}
+
+            <TextShimmerColor text="Thinking..." />
           </div>
         </div>}
       </div>
     </div>
   );
+}
+
+
+
+function TextShimmerColor({text}: {text: string}) {
+  return (
+    <TextShimmer
+      duration={1.2}
+      className='text-xl font-medium [--base-color:theme(colors.blue.600)] [--base-gradient-color:theme(colors.blue.200)] dark:[--base-color:theme(colors.blue.700)] dark:[--base-gradient-color:theme(colors.blue.400)]'
+    >
+      {text}
+    </TextShimmer>
+  );
+}
+
+export default {
+TextShimmerColor
 }

@@ -14,9 +14,12 @@ import { auth } from "../api/firebase/firebaseConfig";
 import { onAuthStateChanged, updateCurrentUser } from "firebase/auth";
 import { doc, setDoc, serverTimestamp, collection, onSnapshot, getDocs, getDoc,  where, query, orderBy } from 'firebase/firestore';
 import { db } from "@/app/api/firebase/firebaseConfig";
-import { Plus, MessageSquare } from "lucide-react";
+import { Plus, MessageSquare, Menu } from "lucide-react";
 import Image from "next/image";
-import { createNewChat } from "./chats";
+import { createNewChat, updateChatTitle } from "./chats";
+import { xevronSystemMessage } from "./xev";
+import { toast } from 'sonner'
+import Link from "next/link";
 
 
 
@@ -24,18 +27,10 @@ export default function ChatPage() {
     const [currentUser, setCurrentUser] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [profileImage, setProfileImage] = useState<string | null>(null)
-    const [messages, setMessages] = useState<Message[]>([
-
-    
-        // {    
-        //     id: "1",
-        //     role: "assistant",
-        //     content: "Hello! How can I assist you today?",
-        //     timestamp: "just now",
-        // },
-    ]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [chatList, setChatList] = useState<Chat[]>([])
-    const [chat, setChat] = useState<Chat>()
+    const [chat, setChat] = useState<Chat | null>(null)
+    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
 
     useEffect(() => {
         if (!currentUser) return;
@@ -59,6 +54,28 @@ export default function ChatPage() {
     }, [currentUser, chat]);
 
 
+// This is the effect that listens to the user's auth state
+useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+            setCurrentUser(user.uid);
+            setProfileImage(user.photoURL);
+            // Check if user has any chats, if not create one
+            const userChatsQuery = query(
+                collection(db, 'chats'),
+                where('userID', '==', user.uid)
+            );
+            getDocs(userChatsQuery).then((snapshot) => {
+                if (snapshot.empty) {
+                    handleNewChat();
+                }
+            });
+        } else {
+            setCurrentUser(null);
+        }
+    })
+    return () => unsubscribe()
+}, []);
     
 
 
@@ -72,80 +89,46 @@ export default function ChatPage() {
     }
     
 
-    // This is the effect that listens to the chat messages
-    useEffect(() => {
-        if (chat) {
-            const messagesRef = collection(doc(db, 'chats', chat.chatID!), 'messages')
-            const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
-                const messages = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                } as Message))
-                console.log(messages)
-                console.log(chat)
-                setMessages(messages)
-            })
-            return () => unsubscribe()
-        }
-    }, [chat])
+    // // This is the effect that listens to the chat messages
+    // useEffect(() => {
+    //     if (chat) {
+    //         const messagesRef = collection(doc(db, 'chats', chat.chatID!), 'messages')
+    //         const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
+    //             const messages = snapshot.docs.map(doc => ({
+    //                 id: doc.id,
+    //                 ...doc.data()
+    //             } as Message))
+    //             console.log(messages + "running from useEffect")
+    //             console.log(chat)
+    //             setMessages(messages)
+    //         })
+    //         return () => unsubscribe()
+    //     }
+    // }, [chat])
 
 
-    const xevronSystemMessage = `You are Xev 1.0, a helpful and capable AI agent developed by Sulta Tech, a South African software company founded by Lesedi David Rammutla and Mmakopano Kgaditswe. The team is young, talented, and passionate about making beautiful software and AI accessible to everyone.
+ 
 
-You're part of Sulta AI, a no-code platform that lets businesses build custom AI agents to automate tasks, boost productivity, and enhance operations—all without writing code. Users can deploy their agents on their websites for free.
-
-While some of your advanced abilities are still in development, Xev may soon be able to send emails, reply to social media messages in a human-like way, and offer real-time investment advice and signals.
-
-You are currently available on the Sulta AI web app, where users are chatting with you. Helpful links:
-	•	Main Website: sultatech.com
-	•	Sulta AI: ai.sultatech.com
-	•	Bookings & Enquiries: sultatech.com/book
-
-Tone & Style Guidelines:
-    
-    • Try to not talk about Sulta AI or the Sulta Tech randomly. Only Mention it when a user asks about it. Try to be a helpful agent first
-
-	•	When asked "Who are you?" or similar, provide a brief intro without overexplaining unless the user asks for more details.
-
-Your goal: Be helpful, efficient, and human-like in every interaction.
-
-Abilities and Features:
-
-     You do have the ability to look at and understand images and documents.
-     You do not have the ability to generate images.
-     
-    `
+    const handleSidebarToggle = () => {
+        setIsDrawerOpen(!isDrawerOpen);
+    }
 
 
 
 
-// This is the effect that listens to the user's auth state
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setCurrentUser(user.uid);
-                setProfileImage(user.photoURL);
-                // Check if user has any chats, if not create one
-                const userChatsQuery = query(
-                    collection(db, 'chats'),
-                    where('userID', '==', user.uid)
-                );
-                getDocs(userChatsQuery).then((snapshot) => {
-                    if (snapshot.empty) {
-                        handleNewChat();
-                    }
-                });
-            } else {
-                setCurrentUser(null);
-            }
-        })
-        return () => unsubscribe()
-    }, []);
 
   const handleChatSelect = async (selectedChat: Chat) => {
+    if (!currentUser) {
+        toast.error('Please log in to create a new thread', {
+            description: 'Authentication required'
+        })
+        return;
+    }
     setChat(selectedChat);
     setMessages([]); // Clear messages before loading new ones
-    await fetchMessages(selectedChat.chatID!);
+    
+    if (currentUser) {
+    await fetchMessages(selectedChat.chatID!); }
   };
 
 
@@ -155,6 +138,12 @@ Abilities and Features:
         if (!chat?.chatID) {
             const chatID = await createNewChat(currentUser ?? '', 'bdjfweohwnon3082482764');
             setChat({ chatID, ...defaultChatConfig, userID: currentUser ?? '' } as Chat);
+            
+        }
+
+        if (messages.length === 0 && chat) {
+            chat.title = content;
+            await updateChatTitle(chat.chatID!, content);
         }
 
         const userMessage: Message = {
@@ -196,7 +185,14 @@ Abilities and Features:
 
     
 const handleNewChat = async () => {
-   const chatID = await createNewChat(currentUser ?? '', 'bdjfweohwnon3082482764')
+    if (!currentUser) {
+        toast.error('Please log in to create a new thread', {
+            description: 'Authentication required'
+        })
+        return;
+    }
+    
+    const chatID = await createNewChat(currentUser, 'bdjfweohwnon3082482764')
     setChatList([...chatList, {
         chatID: chatID,
         title: 'New Thread',
@@ -236,12 +232,66 @@ const fetchMessages = async (chatId: string) => {
         //     <AppSidebar /> 
         <main>
             {/* <SidebarTrigger /> */}
-            <div className="flex flex-row flex-nowrap  bg-red w-screen">
+            <div className="flex flex-row flex-nowrap overflow-hidden bg-red w-screen">
+                {/* Mobile slide-out drawer */}
+                <aside className="fixed inset-y-0 left-0 md:hidden transform transition-transform duration-300 ease-in-out z-20 w-64 bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 flex-shrink-0"
+                    style={{ transform: isDrawerOpen ? 'translateX(0)' : 'translateX(-100%)' }}>
+                    <div className="flex flex-col h-full p-3">
+                        <div className="flex items-center justify-between mb-6 px-2">
+                            <Image src="/logos/sulta/logoLight.png" width={150} height={150} alt="Sulta AI Logo" />
+                            {/* <Image src={"/logos/sulta/logoLight.png"}  width={150} height={150} alt="Sulta AI Logo"/> */}
+                           
+                        </div>
+                        <nav className="flex-1 overflow-y-auto space-y-1">
+                            {chatList.length === 0 && (
+                                <div className="px-3 py-4 rounded-lg bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700">
+                                    <p className="text-sm text-neutral-500 font-medium">No threads yet</p>
+                                    {currentUser === null && (
+                                    <div className="mt-3">
+                                        <p className="text-sm text-neutral-500">
+                                            <Link href="/login" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
+                                                Sign in
+                                            </Link>
+                                            {" "}to start a new thread
+                                        </p>
+                                    </div>
+                                )}
+                                </div>
+                               
+                            )}
+                            {chatList.map((chatItem) => (
+                                <div key={chatItem.chatID} className="px-1">
+                                    
+                                    <button
+                                        onClick={() => handleChatSelect(chatItem)}
+                                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg w-full text-left ${
+                                            chat?.chatID === chatItem.chatID 
+                                                ? 'bg-neutral-200 dark:bg-neutral-700' 
+                                                : 'hover:bg-neutral-200 dark:hover:bg-neutral-700'
+                                        }`}
+                                    >
+                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                            <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                        </div>
+                                        <span className="text-sm font-medium truncate">{chatItem.title}</span>
+                                    </button>
+                                </div>
+                            ))}
+                        </nav>
+                        <div className="pt-4 px-2">
+                            <button onClick={() => handleNewChat()} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium mb-7 py-2.5 px-4 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
+                                <Plus className="h-5 w-5" />
+                                New Thread
+                            </button>
+                        </div>
+                    </div>
+                </aside>
 
+                {/* Desktop sidebar */}
                 <aside className="hidden md:block z-10 md:w-64 bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 flex-shrink-0">
                     <div className="flex flex-col h-full p-3">
                         <div className="flex items-center justify-between mb-6 px-2">
-                            <h2 className="text-xl font-semibold text-neutral-800 dark:text-neutral-100">Threads</h2>
+                            <Image src="/logos/sulta/logoLight.png" width={150} height={150} alt="Sulta AI Logo" />
                             {/* <Image src={"/logos/sulta/logoLight.png"}  width={150} height={150} alt="Sulta AI Logo"/> */}
                             <button className="p-2 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-full transition-colors">
                                 <Plus className="h-5 w-5 text-neutral-600 dark:text-neutral-300" />
@@ -275,8 +325,26 @@ const fetchMessages = async (chatId: string) => {
                     </div>
                 </aside>
 
-                <div className=" shadow-sm flex rounded-md h-screen max-w-full w-full flex-col bg-peach-500 dark:bg-neutral-900">
-                    <ChatHeader showImage={false} showButton={false} agent={{ name: 'Xev 1.0' }} />
+                {/* Mobile overlay */}
+                {isDrawerOpen && (
+                    <div 
+                        className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
+                        onClick={() => setIsDrawerOpen(false)}
+                    />
+                )}
+
+                {/* Main chat area */}
+                <div className="shadow-sm flex rounded-md h-screen max-w-full w-full flex-col bg-peach-500 dark:bg-neutral-900">
+                    {/* Add mobile menu button */}
+                    <div className="md:hidden absolute top-4 left-4 z-10">
+                        {/* <button 
+                            onClick={() => setIsDrawerOpen(!isDrawerOpen)}
+                            className="p-2 rounded-lg bg-neutral-200 dark:bg-neutral-800"
+                        >
+                            <Menu className="h-6 w-6" />
+                        </button> */}
+                    </div>
+                    <ChatHeader showImage={false} handleSidebarToggle={handleSidebarToggle} showButton={false} agent={{ name: 'Xev 1.0' }} />
                     <ChatMessages updateMessageArray={handleSendMessage} messages={messages} profileImage={profileImage} loadingState={loading} />
                     <ChatInput onSendMessage={handleSendMessage} />
                 </div>
