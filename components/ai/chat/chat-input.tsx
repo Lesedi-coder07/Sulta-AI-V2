@@ -4,9 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import { ArrowUp, SendHorizonal, Plus, File, Image} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { convertFileToBase64 } from "@/lib/utils";
 import { db } from "@/app/api/firebase/firebaseConfig"; // Import your Firebase configuration
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { convertFileToBase64 } from "@/lib/utils";
 interface ChatInputProps {
   onSendMessage: (message: string, base64String: string | null, image: string | null ) => void;
 }
@@ -167,7 +167,7 @@ const handleDocUpload = () => {
     //     </p>
     //   </form>
     // </div>
-    <div className="fixed bottom-0 left-0 right-0 md:pl-64 border-neutral-200 w-full p-4 dark:border-neutral-800 dark:bg-neutral-900">
+    <div className="fixed bottom-0 left-0 right-0 md:pl-64 bg-white border-neutral-200 w-full p-4 dark:border-neutral-800 dark:bg-neutral-900">
       <form ref={formRef} onSubmit={handleSubmit} className="mx-auto max-w-4xl w-full">
         <div className="flex items-center gap-2 pb-[env(safe-area-inset-bottom)] relative">
           {/* Textarea with integrated send button styling */}
