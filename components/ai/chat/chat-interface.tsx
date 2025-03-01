@@ -25,6 +25,7 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
     const [agent, setAgent] = useState<Agent >();
     const [loading, setLoading] = useState<boolean>(false);
     const [profileImage, setProfileImage ] = useState<string | null>(null)
+    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
 
 
     useEffect( ()  => {
@@ -145,11 +146,15 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
        
     };
 
+    const handleSidebarToggle = () => {
+        setIsDrawerOpen(!isDrawerOpen);
+    }
+
 
     return (
 
         exists ?   (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
-            <ChatHeader showImage={false} agent={agent} showButton={true} />
+            <ChatHeader handleSidebarToggle={handleSidebarToggle} showImage={false} agent={agent} showButton={true} />
             <ChatMessages updateMessageArray={handleSendMessage} messages={messages} profileImage={profileImage} loadingState={loading} />
             <ChatInput onSendMessage={handleSendMessage} />
         </div> ) : <h1 className="text-center text-2xl">Agent not found</h1>

@@ -22,6 +22,7 @@ import { toast } from 'sonner'
 import Link from "next/link";
 
 
+
 export default function ChatPage() {
     const [currentUser, setCurrentUser] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
