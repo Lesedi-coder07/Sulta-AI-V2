@@ -230,7 +230,7 @@ const fetchMessages = async (chatId: string) => {
     return (
         // <SidebarProvider>
         //     <AppSidebar /> 
-        <main>
+        <main className="overflow-hidden">
             {/* <SidebarTrigger /> */}
             <div className="flex flex-row flex-nowrap overflow-hidden bg-red w-screen">
                 {/* Mobile slide-out drawer */}
@@ -238,7 +238,7 @@ const fetchMessages = async (chatId: string) => {
                     style={{ transform: isDrawerOpen ? 'translateX(0)' : 'translateX(-100%)' }}>
                     <div className="flex flex-col h-full p-3">
                         <div className="flex items-center justify-between mb-6 px-2">
-                            <Image src="/logos/sulta/logoLight.png" width={150} height={150} alt="Sulta AI Logo" />
+                            <Image src="/logos/Sulta/logoLight.png" width={150} height={150} alt="Sulta AI Logo" />
                             {/* <Image src={"/logos/sulta/logoLight.png"}  width={150} height={150} alt="Sulta AI Logo"/> */}
                            
                         </div>

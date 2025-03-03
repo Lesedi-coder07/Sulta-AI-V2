@@ -48,8 +48,27 @@ export function ChatMessages({
   });
 
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'end',
+    });
+  }
+
+  useEffect(() => {
+    if (messages[messages.length -1]?.role === 'user') {
+      // Find the messages container and scroll it
+      const messagesContainer = messagesEndRef.current?.closest('.messages-container');
+      if (messagesContainer) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+    }
+  }, [messages]);
+
   return (
-    <div className="flex-1 overflow-y-auto mb-7 pt-5 px-8 pb-36 h-full">
+    <div className="flex-1 overflow-y-auto mb-7 pt-5 px-8 pb-36 h-full messages-container">
 
       
       <div className="space-y-4">
@@ -136,8 +155,11 @@ export function ChatMessages({
             </span> */}
 
             <TextShimmerColor text="Thinking..." />
+            <div ref={messagesEndRef} />
           </div>
         </div>}
+
+        
       </div>
     </div>
   );
