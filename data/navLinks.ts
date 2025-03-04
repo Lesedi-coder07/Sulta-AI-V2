@@ -5,7 +5,7 @@ export const navLinks = [
     },
  
     {
-        title: "Try XEV 1.0!",
+        title: "Try AI Chat",
         href: "/chat",
     },
     {

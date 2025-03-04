@@ -115,15 +115,15 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="p-4 bg-neutral-100 dark:bg-neutral-800 rounded-lg">
             <h3 className="text-sm font-medium text-neutral-500">Total Queries</h3>
-            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">1,234</p>
+            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">0</p>
           </div>
           <div className="p-4 bg-neutral-100 dark:bg-neutral-800 rounded-lg">
             <h3 className="text-sm font-medium text-neutral-500">Tokens Used</h3>
-            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">45.2K</p>
+            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">0</p>
           </div>
           <div className="p-4 bg-neutral-100 dark:bg-neutral-800 rounded-lg">
             <h3 className="text-sm font-medium text-neutral-500">Avg Response Time</h3>
-            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">1.2s</p>
+            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">0</p>
           </div>
         </div>
 

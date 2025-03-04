@@ -68,7 +68,7 @@ export function ChatMessages({
   }, [messages]);
 
   return (
-    <div className="flex-1 overflow-y-auto mb-7 pt-5 px-8 pb-36 h-full messages-container">
+    <div className="flex-1 overflow-y-auto mb-7 sm:mb-[180px] pt-5 px-8 pb-36 h-full messages-container">
 
       
       <div className="space-y-4">

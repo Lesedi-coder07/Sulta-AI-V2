@@ -14,7 +14,7 @@ import { auth } from "../api/firebase/firebaseConfig";
 import { onAuthStateChanged, updateCurrentUser } from "firebase/auth";
 import { doc, setDoc, serverTimestamp, collection, onSnapshot, getDocs, getDoc,  where, query, orderBy } from 'firebase/firestore';
 import { db } from "@/app/api/firebase/firebaseConfig";
-import { Plus, MessageSquare, Menu } from "lucide-react";
+import { Plus, MessageSquare, Menu, LayoutDashboard, Bot, Settings } from "lucide-react";
 import Image from "next/image";
 import { createNewChat, updateChatTitle } from "./chats";
 import { xevronSystemMessage } from "./xev";
@@ -238,7 +238,9 @@ const fetchMessages = async (chatId: string) => {
                     style={{ transform: isDrawerOpen ? 'translateX(0)' : 'translateX(-100%)' }}>
                     <div className="flex flex-col h-full p-3">
                         <div className="flex items-center justify-between mb-6 px-2">
+                        <Link href="/ai/dashboard">
                             <Image src="/logos/Sulta/logoLight.png" width={150} height={150} alt="Sulta AI Logo" />
+                            </Link>
                             {/* <Image src={"/logos/sulta/logoLight.png"}  width={150} height={150} alt="Sulta AI Logo"/> */}
                            
                         </div>
@@ -290,14 +292,63 @@ const fetchMessages = async (chatId: string) => {
                 {/* Desktop sidebar */}
                 <aside className="hidden md:block z-10 md:w-64 bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 flex-shrink-0">
                     <div className="flex flex-col h-full p-3">
+
                         <div className="flex items-center justify-between mb-6 px-2">
+                            <Link href="/ai/dashboard">
                             <Image src={"/logos/Sulta/logoLight.png"} width={150} height={150} alt="Sulta AI Logo" priority />
-                            {/* <Image src={"/logos/sulta/logoLight.png"}  width={150} height={150} alt="Sulta AI Logo"/> */}
+                            </Link>
                             <button className="p-2 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-full transition-colors">
                                 <Plus className="h-5 w-5 text-neutral-600 dark:text-neutral-300" />
                             </button>
                         </div>
+
+    
+                        <div className="flex flex-col gap-1 mb-4 px-2">
+                            <Link href="/ai/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
+                                    <LayoutDashboard className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                                </div>
+                                <span className="text-sm font-medium">Dashboard</span>
+                            </Link>
+
+                            <Link href="/ai/create" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
+                                    <Bot className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                                </div>
+                                <span className="text-sm font-medium">Create Agent</span>
+                            </Link>
+
+                            <Link href="/settings" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
+                                    <Settings className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                                </div>
+                                <span className="text-sm font-medium">Settings</span>
+                            </Link>
+                        </div>
+
                         <nav className="flex-1 overflow-y-auto space-y-1">
+                            {chatList.length === 0 && (
+                                <div className="px-3 py-4 rounded-lg bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700">
+                                    <p className="text-sm text-neutral-500 font-medium">No threads yet</p>
+                                    {currentUser === null && (
+                                        <div className="mt-3">
+                                            <p className="text-sm text-neutral-500">
+                                                <Link href="/login" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
+                                                    Sign in
+                                                </Link>
+                                                {" "}to start a new thread
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {chatList.length != 0 && (
+                                <div className="px-3 py-4 ">
+    <h1 className="text-sm font-medium">Threads</h1>
+                                </div>
+                            
+                            )}
                             {chatList.map((chatItem) => (
                                 <div key={chatItem.chatID} className="px-1">
                                     <button
