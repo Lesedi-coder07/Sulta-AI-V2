@@ -291,7 +291,7 @@ const fetchMessages = async (chatId: string) => {
                 <aside className="hidden md:block z-10 md:w-64 bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 flex-shrink-0">
                     <div className="flex flex-col h-full p-3">
                         <div className="flex items-center justify-between mb-6 px-2">
-                            <Image src="/logos/sulta/logoLight.png" width={150} height={150} alt="Sulta AI Logo" />
+                            <Image src={"/logos/Sulta/logoLight.png"} width={150} height={150} alt="Sulta AI Logo" priority />
                             {/* <Image src={"/logos/sulta/logoLight.png"}  width={150} height={150} alt="Sulta AI Logo"/> */}
                             <button className="p-2 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-full transition-colors">
                                 <Plus className="h-5 w-5 text-neutral-600 dark:text-neutral-300" />
