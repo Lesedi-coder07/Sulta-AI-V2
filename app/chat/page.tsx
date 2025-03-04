@@ -244,6 +244,30 @@ const fetchMessages = async (chatId: string) => {
                             {/* <Image src={"/logos/sulta/logoLight.png"}  width={150} height={150} alt="Sulta AI Logo"/> */}
                            
                         </div>
+
+                        <div className="flex flex-col gap-1 mb-4 px-2">
+                            <Link href="/ai/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
+                                    <LayoutDashboard className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                                </div>
+                                <span className="text-sm font-medium">Dashboard</span>
+                            </Link>
+
+                            <Link href="/ai/create" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
+                                    <Bot className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                                </div>
+                                <span className="text-sm font-medium">Create Agent</span>
+                            </Link>
+
+                            <Link href="ai/settings" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
+                                    <Settings className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                                </div>
+                                <span className="text-sm font-medium">Settings</span>
+                            </Link>
+                        </div>
+                        
                         <nav className="flex-1 overflow-y-auto space-y-1">
                             {chatList.length === 0 && (
                                 <div className="px-3 py-4 rounded-lg bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700">
@@ -260,6 +284,14 @@ const fetchMessages = async (chatId: string) => {
                                 )}
                                 </div>
                                
+                            )}
+
+
+{chatList.length != 0 && (
+                                <div className="px-3 py-4 ">
+    <h1 className="text-sm font-medium">Threads</h1>
+                                </div>
+                            
                             )}
                             {chatList.map((chatItem) => (
                                 <div key={chatItem.chatID} className="px-1">
@@ -318,7 +350,7 @@ const fetchMessages = async (chatId: string) => {
                                 <span className="text-sm font-medium">Create Agent</span>
                             </Link>
 
-                            <Link href="/settings" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                            <Link href="ai/settings" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
                                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
                                     <Settings className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
                                 </div>
@@ -350,7 +382,7 @@ const fetchMessages = async (chatId: string) => {
                             
                             )}
                             {chatList.map((chatItem) => (
-                                <div key={chatItem.chatID} className="px-1">
+                                <div key={chatItem.chatID} className="overflow-y-auto max-h-96 px-1">
                                     <button
                                         onClick={() => handleChatSelect(chatItem)}
                                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg w-full text-left ${
@@ -367,7 +399,7 @@ const fetchMessages = async (chatId: string) => {
                                 </div>
                             ))}
                         </nav>
-                        <div className="pt-4 px-2">
+                        <div className="fixed bottom-0  pt-4 px-2">
                             <button onClick={() => handleNewChat()} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
                                 <Plus className="h-5 w-5" />
                                 New Thread

@@ -69,7 +69,7 @@ function Login () {
           className="absolute left-4 top-4"
           onClick={(e) => {
             e.preventDefault();
-            router.back();
+            router.push('/');
           }}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
