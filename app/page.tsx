@@ -20,10 +20,10 @@ import { Metadata } from "next";
 
 export default function Home() {
   return (
-      <>
+      <div className="overflow-y-auto">
            
             <Navbar />
-            <div className="border-b border-border">
+            <div className="border-b border-border ">
                 <main className="container mx-auto">
                     <div className="relative md:mt-24 mx-auto w-full max-w-4xl pt-4 text-center">
                         <div className="justify-center hidden md:flex">
@@ -268,6 +268,6 @@ export default function Home() {
                 </div>
             </section>
             <Footer />
-        </>
+        </div>
   );
 }

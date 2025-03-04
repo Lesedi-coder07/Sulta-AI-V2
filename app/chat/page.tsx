@@ -399,7 +399,7 @@ const fetchMessages = async (chatId: string) => {
                                 </div>
                             ))}
                         </nav>
-                        <div className="fixed bottom-0  pt-4 px-2">
+                        <div className="fixed bottom-0 pb-10 pt-4 px-2">
                             <button onClick={() => handleNewChat()} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
                                 <Plus className="h-5 w-5" />
                                 New Thread
