@@ -1,7 +1,7 @@
 "use client"
 import { Message } from "@/types/chat";
 import { cn } from "@/lib/utils";
-import { Bot } from "lucide-react";
+import { Bot, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Image from 'next/image'
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
@@ -137,7 +137,7 @@ export function ChatMessages({
                   height={32}
                 />
               ) : (
-                <Bot className="h-5 w-5" />
+                <Sparkles className="h-5 w-5" />
               )}
             </div>
             <div className="w-fit max-w-[500px] sm:max-w-[80%] flex-1">
