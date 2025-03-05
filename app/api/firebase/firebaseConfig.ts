@@ -57,11 +57,11 @@ if (typeof window !== 'undefined') {
     analytics = firebaseAnalytics.getAnalytics(app);
   });
 }
-
 export const db = getFirestore(app);
 export const auth = getAuth(app)
 
 // const adminDB = admin.firestore();
 // export { admin, adminDB };
+export { analytics };
 
 

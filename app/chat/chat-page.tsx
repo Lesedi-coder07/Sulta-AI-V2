@@ -13,7 +13,7 @@ import { generateWithGemini } from "@/components/ai/chat/chat-interface";
 import { auth } from "../api/firebase/firebaseConfig";
 import { onAuthStateChanged, updateCurrentUser } from "firebase/auth";
 import { doc, setDoc, serverTimestamp, collection, onSnapshot, getDocs, getDoc,  where, query, orderBy } from 'firebase/firestore';
-import { db } from "@/app/api/firebase/firebaseConfig";
+import { db, analytics } from "@/app/api/firebase/firebaseConfig";
 import { Plus, MessageSquare, Menu, LayoutDashboard, Bot, Settings } from "lucide-react";
 import Image from "next/image";
 import { createNewChat, updateChatTitle } from "./chats";
@@ -33,7 +33,7 @@ export default function ChatPage() {
     const [chatList, setChatList] = useState<Chat[]>([])
     const [chat, setChat] = useState<Chat | null>(null)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
-    const analytics = getAnalytics();
+  
 
     useEffect(() => {
         if (!currentUser) return;
