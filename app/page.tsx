@@ -17,6 +17,29 @@ import { FeaturesSection } from "@/components/Sections/Features-Section";
 import { Metadata } from "next";
 
 
+export const metadata: Metadata = {
+  title: "Sulta AI - Your Personal AI Workforce Revolution",
+  description: "Transform Your Productivity: Build Custom AI Agents in Minutes, No Coding Required",
+  icons: {
+    icon: "/logos/Sulta/fav.png",
+  },
+  openGraph: {
+    images: [
+      {
+        url: '/ai-hero.jpg',
+        width: 1200,
+        height: 800,
+        alt: 'Sulta AI - Custom AI Agents',
+      }
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image', 
+    images: ['/ai-hero.jpg'],
+    description: "Unleash the Power of AI: Create Custom AI Agents That Work for You 24/7",
+  }
+};
+
 
 export default function Home() {
   return (

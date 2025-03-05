@@ -58,8 +58,8 @@ export function ChatMessages({
   }
 
   useEffect(() => {
-    if (messages[messages.length -1]?.role === 'user') {
-      // Find the messages container and scroll it
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.role === 'user') {
       const messagesContainer = messagesEndRef.current?.closest('.messages-container');
       if (messagesContainer) {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
