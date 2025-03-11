@@ -39,7 +39,7 @@ function KaTeX({ texExpression, className }: { texExpression: string, className?
 export default function GeminiResponse({ content }: { content: string }) {
   return (
     <ReactMarkdown
-    className={'text-sm md:text-md max-w-[64vw] mb-3  lg:max-w-[50vw] lg:p-0 md:max-w-[70vw]'}
+    className={'text-md md:text-md max-w-[64vw] mb-3  lg:max-w-[50vw] lg:p-0 md:max-w-[70vw]'}
     components={{
       // Custom paragraph rendering
       p({ children }) {

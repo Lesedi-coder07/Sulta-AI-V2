@@ -4,6 +4,7 @@ export interface Message {
     content: string;
     timestamp: string;
     image?: string | null;
+    docUrl?: string | null;
   }
 
 

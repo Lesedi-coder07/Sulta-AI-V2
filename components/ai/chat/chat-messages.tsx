@@ -57,15 +57,15 @@ export function ChatMessages({
     });
   }
 
-  // useEffect(() => {
-  //   const lastMessage = messages[messages.length - 1];
-  //   if (lastMessage?.role === 'user') {
-  //     const messagesContainer = messagesEndRef.current?.closest('.messages-container');
-  //     if (messagesContainer) {
-  //       messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  //     }
-  //   }
-  // }, [messages]);
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.role === 'user') {
+      const messagesContainer = messagesEndRef.current?.closest('.messages-container');
+      if (messagesContainer) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+    }
+  }, [messages]);
 
   return (
     <div className="flex-1 overflow-y-auto mb-7 sm:mb-[180px] md:mt-10  mt-[70px] pt-5 px-8 pb-36 h-full messages-container">
@@ -114,9 +114,9 @@ export function ChatMessages({
           <div
             key={message.id}
             className={cn(
-              "flex w-fit gap-3 rounded-lg p-6 sm:p-3 lg:p-2 shadow-sm md:w-fit",
+              "flex w-fit gap-3 rounded-lg  sm:p-3 lg:p-2 shadow-sm md:w-fit",
               message.role === "user"
-                ? "flex-row-reverse bg-blue-600 lg:max-w-[50vw] max-w-[80vw] sm:w-fit ml-auto"
+                ? "flex-row-reverse bg-blue-600 lg:max-w-[50vw] px-1 py-7 max-w-[80vw] sm:w-fit ml-auto"
                 : "bg-white dark:bg-neutral-800 text-lg"
             )}
           >

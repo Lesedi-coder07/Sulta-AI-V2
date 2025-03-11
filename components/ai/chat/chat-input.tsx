@@ -7,8 +7,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { db } from "@/app/api/firebase/firebaseConfig"; // Import your Firebase configuration
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { convertFileToBase64 } from "@/lib/utils";
+import { storage } from "@/app/api/firebase/firebaseConfig";
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 interface ChatInputProps {
-  onSendMessage: (message: string, base64String: string | null, image: string | null ) => void;
+  onSendMessage: (message: string, base64String: string | null, image: string | null, docUrl: string | null) => void;
 }
 
 
@@ -26,6 +28,38 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
   const imageInputRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const [showFileInput, setShowFileInput] = useState(false);
+  const [docUrl, setDocUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+
+  const handleDocUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setUploadFileName(file.name);
+      setIsUploading(true);
+
+      try {
+        // Create a storage reference
+        const storageRef = ref(storage, `uploads/documents/${Date.now()}-${file.name}`);
+        
+        // Upload file to Firebase Storage
+        await uploadBytes(storageRef, file);
+        
+        // Get the download URL
+        const downloadUrl = await getDownloadURL(storageRef);
+        setDocUrl(downloadUrl);
+        
+        // You might want to update the message to indicate a document was attached
+        // setMessage(prev => prev + `\n[Document attached: ${file.name}]`);
+        console.log("docUrl", downloadUrl)
+      } catch (error) {
+        console.error('Error uploading document:', error);
+        // Handle error appropriately
+      } finally {
+        setIsUploading(false);
+      }
+    }
+  };
 
 
   
@@ -52,17 +86,17 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
     }
    
   }
-const handleDocUpload = () => {
-   
-}
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
-      onSendMessage(message.trim(), fileBase64String, imageUrl);
+      onSendMessage(message.trim(), fileBase64String, imageUrl, docUrl);
       setMessage("");
       setFileBase64String(null)
       setUploadFileName(null)
       setImageUrl(null)
+      setDocUrl(null)
+      setShowFileInput(false)
       if (imageInputRef.current ) {
         imageInputRef.current.value = ""
       }
@@ -220,7 +254,7 @@ const handleDocUpload = () => {
                   accept=".doc, .docx, .pdf"
                   className="hidden"
                   id="fileInput2"
-                  onChange={handleImageUpload}
+                  onChange={handleDocUpload}
                 />
                 <label
                   htmlFor="fileInput2"
@@ -248,7 +282,7 @@ const handleDocUpload = () => {
   );
 }
 
-export const writeMessageToDb = async (chatId: string , messageContent:string , sender: string, imageUrl: string | null) => {
+export const writeMessageToDb = async (chatId: string , messageContent:string , sender: string, imageUrl: string | null, docUrl: string | null) => {
   try {
       const messagesRef = collection(db, `chats/${chatId}/messages`);
       const newMessage = {
@@ -256,7 +290,8 @@ export const writeMessageToDb = async (chatId: string , messageContent:string , 
           id: Date.now().toString(),
           role: sender,
           timestamp: serverTimestamp(),
-          image: imageUrl
+          image: imageUrl,
+          docUrl: docUrl
       };
 
       console.log(newMessage)

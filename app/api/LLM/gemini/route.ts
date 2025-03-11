@@ -11,14 +11,31 @@ export async function POST(req: Request) {
             throw new Error('GEMINI_API_KEY is not configured');
         }
 
-        const { prompt, history, systemMessage, base64String } = await req.json();
+        const { prompt, history, systemMessage, base64String, docUrl } = await req.json();
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction: systemMessage });
         
         if (!prompt) {
             throw new Error('Prompt is required');
         }
-         
+  
         let newParts = [{ text: prompt },]
+
+        console.log("docUrl", docUrl)
+        if(docUrl){
+            const pdfResponse = await fetch(docUrl);
+            const pdfBuffer = await pdfResponse.arrayBuffer();
+            console.log("WE got the pdf")
+            let docPart = {
+                inlineData: {
+                    mimeType: "application/pdf",
+                    data:  Buffer.from(pdfBuffer).toString("base64")
+                }
+            }
+
+            newParts = [ docPart, prompt]
+        }
+         
+      
 
          if( base64String ){
             

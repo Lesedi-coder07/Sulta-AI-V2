@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from 'firebase/firestore'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { getStorage } from 'firebase/storage'
 
 export const firebaseConfig: Object = {
   apiKey: "AIzaSyCSyyvK8b1pfwYC4PusmP9Qsq5R3Jjhxr4",
@@ -59,7 +60,7 @@ if (typeof window !== 'undefined') {
 }
 export const db = getFirestore(app);
 export const auth = getAuth(app)
-
+export const storage = getStorage(app)
 // const adminDB = admin.firestore();
 // export { admin, adminDB };
 export { analytics };

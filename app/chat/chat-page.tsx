@@ -47,7 +47,8 @@ export default function ChatPage() {
         
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const chats = snapshot.docs.map((doc) => doc.data() as Chat);
-            setChatList(chats);
+            const sortedChats = chats.sort((a, b) => b.lastMessageAt.localeCompare(a.lastMessageAt));
+            setChatList(sortedChats);
             if (!chat && chats.length > 0) {
                 setChat(chats[0]);
                 fetchMessages(chats[0].chatID!);
@@ -137,7 +138,7 @@ useEffect(() => {
 
 
 // This is the function that handles the sending of messages
-    const handleSendMessage = async (content: string, base64String: string | null = null, image: string | null = null) => {
+    const handleSendMessage = async (content: string, base64String: string | null = null, image: string | null = null, docUrl: string | null = null) => {
         setLoading(true);
         if (!chat?.chatID) {
             const chatID = await createNewChat(currentUser ?? '', 'bdjfweohwnon3082482764');
@@ -155,14 +156,14 @@ useEffect(() => {
             role: "user",
             content,
             timestamp: "just now",
-            image: image
+            image: image,
+            docUrl: docUrl
         };
 
         // Update messages array with user message
         setMessages(prev => [...prev, userMessage]);
         
-        // Save to database
-        await writeMessageToDb(chat?.chatID!, userMessage.content, "user", image);
+       
 
         try {
             const aiMessage = await generateWithGemini(messages, xevronSystemMessage, content, auth.currentUser?.displayName ?? '', base64String);
@@ -171,18 +172,23 @@ useEffect(() => {
                 role: "assistant",
                 content: aiMessage,
                 timestamp: "just now",
-                image: null
+                image: null,
+                docUrl: null
             };
             
             // Update messages locally
             setMessages(prev => [...prev, aiMessageObj as Message]);
             
             // Save to database
-            await writeMessageToDb(chat?.chatID!, aiMessage, "assistant", image);
+            await writeMessageToDb(chat?.chatID!, userMessage.content, "user", image, docUrl);
+            await writeMessageToDb(chat?.chatID!, aiMessage, "assistant", image, docUrl);
             setLoading(false);
         } catch (error) {
             console.error(error);
         }
+
+         // Save to database
+       
 
         setLoading(false);
         logEvent(analytics, 'message_sent', {
@@ -305,7 +311,10 @@ const fetchMessages = async (chatId: string) => {
                                 <div key={chatItem.chatID} className="px-1 ">
                                     
                                     <button
-                                        onClick={() => handleChatSelect(chatItem)}
+                                        onClick={() => {
+                                            handleChatSelect(chatItem);
+                                            setIsDrawerOpen(false);
+                                        }}
                                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg w-full text-left ${
                                             chat?.chatID === chatItem.chatID 
                                                 ? 'bg-neutral-200 dark:bg-neutral-700' 
@@ -321,13 +330,24 @@ const fetchMessages = async (chatId: string) => {
                             ))}
                         </nav>
                         <div className="pt-4 px-2">
-                            <button onClick={() => handleNewChat()} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium mb-7 py-2.5 px-4 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
+                            <button onClick={() => {
+                                handleNewChat();
+                                setIsDrawerOpen(false);
+                            }} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium mb-7 py-2.5 px-4 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
                                 <Plus className="h-5 w-5" />
                                 New Thread
                             </button>
                         </div>
                     </div>
                 </aside>
+
+                {/* Overlay to close drawer when clicking outside */}
+                {isDrawerOpen && (
+                    <div 
+                        className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
+                        onClick={() => setIsDrawerOpen(false)}
+                    />
+                )}
 
                 {/* Desktop sidebar */}
                 <aside className="hidden md:flex md:w-64 z-10 flex-col flex-shrink-0 h-screen sticky top-0 bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700">
