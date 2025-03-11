@@ -4,11 +4,11 @@ export const tiers = [
       price: "0",
       description: "Perfect for small businesses and individuals",
       features: [
-        "Create up to 5 AI assistants",
-        "Simple performance tracking",
-        "Email support",
-        "Single user access",
-        "Cheaper than a lamborghini"
+        "1,000 messages per month",
+        "100K tokens per month",
+        "Basic API access",
+        "2 concurrent requests",
+        "Email support within 48h"
       ],
       highlighted: false,
       cta: "Start For Free"
@@ -18,14 +18,12 @@ export const tiers = [
       price: "$8",
       description: "Ideal for growing agencies and businesses",
       features: [
-        "Create up to 10 AI assistants",
-        "Advanced website integration",
-        "Detailed performance insights",
-        "Priority support",
-        "Get paid for your Agents",
-        "24-hour support response",
-        "White-label options",
-        "Client management portal"
+        "10,000 messages per month",
+        "1M tokens per month", 
+        "Full API access",
+        "10 concurrent requests",
+        "Priority email support",
+        "Usage analytics",
       ],
       highlighted: true,
       cta: "Get Started"
@@ -35,18 +33,17 @@ export const tiers = [
       price: "Custom",
       description: "For agencies and large organizations",
       features: [
-        "Unlimited AI assistants",
-        "Premium website integration",
-        "Advanced business analytics",
-        "24/7 dedicated support",
-        "Unlimited users",
-        "1-hour support response",
-        "Custom branding",
-        "Service level agreement",
-        "Dedicated account manager"
+        "Unlimited messages",
+        "Custom token allocation",
+        "Dedicated API endpoints",
+        "Unlimited concurrent requests",
+        "24/7 priority support",
+        "Advanced analytics",
+        "Custom model fine-tuning",
+        "SLA guarantees",
+        "Dedicated success manager"
       ],
       highlighted: false,
       cta: "Contact Sales"
     }
   ];
-  

@@ -1,12 +1,13 @@
 import ChatPage from "./chat-page";
+import { Metadata } from "next";
 
 
-
-export const metadata = {
+export const metadata : Metadata = {
   title: "Chat - Sulta AI",
   description: "Chat with Xev 1.0 and get instant responses to your questions",
   icons: {
-    icon: "/logos/Sulta/fav.png",
+    icon: "/favicon.png",
+    shortcut: { url: "/favicon.png" }
   },
   openGraph: {
     images: [

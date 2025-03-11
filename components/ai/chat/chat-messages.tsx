@@ -57,15 +57,15 @@ export function ChatMessages({
     });
   }
 
-  useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage?.role === 'user') {
-      const messagesContainer = messagesEndRef.current?.closest('.messages-container');
-      if (messagesContainer) {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }
-    }
-  }, [messages]);
+  // useEffect(() => {
+  //   const lastMessage = messages[messages.length - 1];
+  //   if (lastMessage?.role === 'user') {
+  //     const messagesContainer = messagesEndRef.current?.closest('.messages-container');
+  //     if (messagesContainer) {
+  //       messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  //     }
+  //   }
+  // }, [messages]);
 
   return (
     <div className="flex-1 overflow-y-auto mb-7 sm:mb-[180px] md:mt-10  mt-[70px] pt-5 px-8 pb-36 h-full messages-container">

@@ -239,11 +239,8 @@ const fetchMessages = async (chatId: string) => {
 };
 
     return (
-        // <SidebarProvider>
-        //     <AppSidebar /> 
         <main className="overflow-hidden">
-            {/* <SidebarTrigger /> */}
-            <div className="flex flex-row flex-nowrap overflow-hidden bg-red w-screen">
+            <div className="flex flex-row flex-nowrap overflow-hidden w-screen">
                 {/* Mobile slide-out drawer */}
                 <aside className="fixed inset-y-0 left-0 md:hidden transform transition-transform duration-300 ease-in-out z-20 w-64 bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 flex-shrink-0"
                     style={{ transform: isDrawerOpen ? 'translateX(0)' : 'translateX(-100%)' }}>
@@ -305,7 +302,7 @@ const fetchMessages = async (chatId: string) => {
                             
                             )}
                             {chatList.map((chatItem) => (
-                                <div key={chatItem.chatID} className="px-1">
+                                <div key={chatItem.chatID} className="px-1 ">
                                     
                                     <button
                                         onClick={() => handleChatSelect(chatItem)}
@@ -333,122 +330,106 @@ const fetchMessages = async (chatId: string) => {
                 </aside>
 
                 {/* Desktop sidebar */}
-                <aside className="hidden md:block z-10 md:w-64 bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 flex-shrink-0">
-                    <div className="flex flex-col h-full p-3">
+                <aside className="hidden md:flex md:w-64 z-10 flex-col flex-shrink-0 h-screen sticky top-0 bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700">
+                    <div className="flex flex-col h-full">
+                        <div className="p-3">
+                            <div className="flex items-center justify-between mb-6 px-2">
+                                <Link href="/ai/dashboard">
+                                    <Image src={"/logos/Sulta/logoLight.png"} width={150} height={150} alt="Sulta AI Logo" priority />
+                                </Link>
+                                <button className="p-2 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-full transition-colors">
+                                    <Plus className="h-5 w-5 text-neutral-600 dark:text-neutral-300" />
+                                </button>
+                            </div>
 
-                        <div className="flex items-center justify-between mb-6 px-2">
-                            <Link href="/ai/dashboard">
-                            <Image src={"/logos/Sulta/logoLight.png"} width={150} height={150} alt="Sulta AI Logo" priority />
-                            </Link>
-                            <button className="p-2 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-full transition-colors">
-                                <Plus className="h-5 w-5 text-neutral-600 dark:text-neutral-300" />
-                            </button>
+                            <div className="flex flex-col gap-1 mb-4 px-2">
+                                <Link href="/ai/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
+                                        <LayoutDashboard className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                                    </div>
+                                    <span className="text-sm font-medium">Dashboard</span>
+                                </Link>
+
+                                <Link href="/ai/create" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
+                                        <Bot className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                                    </div>
+                                    <span className="text-sm font-medium">Create Agent</span>
+                                </Link>
+
+                                <Link href="ai/settings" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
+                                        <Settings className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                                    </div>
+                                    <span className="text-sm font-medium">Settings</span>
+                                </Link>
+                            </div>
                         </div>
 
-    
-                        <div className="flex flex-col gap-1 mb-4 px-2">
-                            <Link href="/ai/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
-                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
-                                    <LayoutDashboard className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
-                                </div>
-                                <span className="text-sm font-medium">Dashboard</span>
-                            </Link>
+                        <div className="flex-1 overflow-hidden flex flex-col">
+                            <nav className="flex-1 overflow-y-auto px-3">
+                                {chatList.length === 0 && (
+                                    <div className="px-3 py-4 rounded-lg bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700">
+                                        <p className="text-sm text-neutral-500 font-medium">No threads yet</p>
+                                        {currentUser === null && (
+                                            <div className="mt-3">
+                                                <p className="text-sm text-neutral-500">
+                                                    <Link href="/login" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
+                                                        Sign in
+                                                    </Link>
+                                                    {" "}to start a new thread
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
 
-                            <Link href="/ai/create" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
-                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
-                                    <Bot className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
-                                </div>
-                                <span className="text-sm font-medium">Create Agent</span>
-                            </Link>
-
-                            <Link href="ai/settings" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
-                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
-                                    <Settings className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
-                                </div>
-                                <span className="text-sm font-medium">Settings</span>
-                            </Link>
-                        </div>
-
-                        <nav className="flex-1 overflow-y-auto space-y-1">
-                            {chatList.length === 0 && (
-                                <div className="px-3 py-4 rounded-lg bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700">
-                                    <p className="text-sm text-neutral-500 font-medium">No threads yet</p>
-                                    {currentUser === null && (
-                                        <div className="mt-3">
-                                            <p className="text-sm text-neutral-500">
-                                                <Link href="/login" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
-                                                    Sign in
-                                                </Link>
-                                                {" "}to start a new thread
-                                            </p>
+                                {chatList.length > 0 && (
+                                    <>
+                                        <h1 className="text-sm font-medium mb-2">Threads</h1>
+                                        <div className="space-y-1">
+                                            {chatList.map((chatItem) => (
+                                                <button
+                                                    key={chatItem.chatID}
+                                                    onClick={() => handleChatSelect(chatItem)}
+                                                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg w-full text-left ${
+                                                        chat?.chatID === chatItem.chatID 
+                                                            ? 'bg-neutral-200 dark:bg-neutral-700' 
+                                                            : 'hover:bg-neutral-200 dark:hover:bg-neutral-700'
+                                                    }`}
+                                                >
+                                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                                        <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                                    </div>
+                                                    <span className="text-sm font-medium truncate">{chatItem.title}</span>
+                                                </button>
+                                            ))}
                                         </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {chatList.length != 0 && (
-                                <div className="px-3 py-4 ">
-    <h1 className="text-sm font-medium">Threads</h1>
-                                </div>
+                                    </>
+                                )}
+                            </nav>
                             
-                            )}
-                            {chatList.map((chatItem) => (
-                                <div key={chatItem.chatID} className="overflow-y-auto max-h-96 px-1">
-                                    <button
-                                        onClick={() => handleChatSelect(chatItem)}
-                                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg w-full text-left ${
-                                            chat?.chatID === chatItem.chatID 
-                                                ? 'bg-neutral-200 dark:bg-neutral-700' 
-                                                : 'hover:bg-neutral-200 dark:hover:bg-neutral-700'
-                                        }`}
-                                    >
-                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                                            <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                                        </div>
-                                        <span className="text-sm font-medium truncate">{chatItem.title}</span>
-                                    </button>
-                                </div>
-                            ))}
-                        </nav>
-                        <div className="fixed bottom-0 pb-10 pt-4 px-2">
-                            <button onClick={() => handleNewChat()} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
-                                <Plus className="h-5 w-5" />
-                                New Thread
-                            </button>
+                            <div className="p-3 border-t border-neutral-200 dark:border-neutral-700">
+                                <button 
+                                    onClick={() => handleNewChat()} 
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors"
+                                >
+                                    <Plus className="h-5 w-5" />
+                                    New Thread
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </aside>
 
-                {/* Mobile overlay */}
-                {isDrawerOpen && (
-                    <div 
-                        className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
-                        onClick={() => setIsDrawerOpen(false)}
-                    />
-                )}
-
                 {/* Main chat area */}
-                <div className="shadow-sm flex rounded-md h-screen max-w-full w-full flex-col bg-peach-500 dark:bg-neutral-900">
-                    {/* Add mobile menu button */}
-                    <div className="md:hidden absolute top-4 left-4 z-10">
-                        {/* <button 
-                            onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-                            className="p-2 rounded-lg bg-neutral-200 dark:bg-neutral-800"
-                        >
-                            <Menu className="h-6 w-6" />
-                        </button> */}
-                    </div>
+                <div className="flex-1 flex flex-col h-screen bg-peach-500 dark:bg-neutral-900">
                     <ChatHeader showImage={false} handleSidebarToggle={handleSidebarToggle} showButton={false} agent={{ name: 'Xev 1.0' }} />
                     <ChatMessages updateMessageArray={handleSendMessage} messages={messages} profileImage={profileImage} loadingState={loading} />
                     <ChatInput onSendMessage={handleSendMessage} />
                 </div>
             </div>
         </main>
-
-        // </SidebarProvider>
-
-
-
     );
 }
 
