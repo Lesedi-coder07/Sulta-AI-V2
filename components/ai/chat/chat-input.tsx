@@ -32,7 +32,7 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
   const [isUploading, setIsUploading] = useState(false);
 
 
-  const handleDocUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDocUpload: React.ChangeEventHandler<HTMLInputElement> = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setUploadFileName(file.name);
@@ -255,7 +255,7 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
                   className="hidden"
                   id="fileInput2"
                   onChange={handleDocUpload}
-                />
+                />  
                 <label
                   htmlFor="fileInput2"
                   className="mt-2 block w-full hover:bg-slate-200 px-4 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
