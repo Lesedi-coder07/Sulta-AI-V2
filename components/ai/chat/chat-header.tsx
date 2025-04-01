@@ -32,7 +32,7 @@ export function ChatHeader({ agent, showButton, showImage, handleSidebarToggle }
             <div>
 
      {
-      showButton ?  (<Link href='/ai/dashboard'>
+      showButton ?  (<Link href='/ai/dashboard' className="hidden md:fixed md:top-4 md:left-4 ">
         <Button>
           <ArrowLeft className="h-4 w-4" />
           Back

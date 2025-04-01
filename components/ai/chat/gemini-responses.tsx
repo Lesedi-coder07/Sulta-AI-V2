@@ -7,9 +7,9 @@ import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Or 
 import 'katex/dist/katex.min.css'; // Import KaTeX stylesheet
 import { InlineMath, BlockMath } from 'react-katex';
 import katex from "katex";
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useEffect } from 'react';
-
+import { useTheme } from 'next-themes';
 // KaTeX component for rendering math expressions
 function KaTeX({ texExpression, className }: { texExpression: string, className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -37,6 +37,14 @@ function KaTeX({ texExpression, className }: { texExpression: string, className?
 }
 
 export default function GeminiResponse({ content }: { content: string }) {
+  const [codeBlockTheme, setCodeBlockTheme] = useState<'light' | 'dark'>('light');
+  const { theme } = useTheme();
+
+  useEffect(()=> {
+    
+    setCodeBlockTheme(theme === 'dark' ? 'dark' : 'light');
+  }, [theme])
+
   return (
     <ReactMarkdown
     className={'text-md md:text-md max-w-[64vw] mb-3  lg:max-w-[50vw] lg:p-0 md:max-w-[70vw]'}
@@ -72,7 +80,7 @@ export default function GeminiResponse({ content }: { content: string }) {
         }
 
         return match ? (
-          <SyntaxHighlighter className='rounded-sm text-sm max-w-full mt-5' style={prism} language={match[1]} PreTag="div">
+          <SyntaxHighlighter className='rounded-sm text-sm max-w-full mt-5' style={codeBlockTheme === 'dark' ? oneDark : prism} language={match[1]} PreTag="div">
             {content.replace(/\n$/, '')}
           </SyntaxHighlighter>
         ) : (

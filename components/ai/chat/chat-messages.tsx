@@ -68,7 +68,7 @@ export function ChatMessages({
   }, [messages]);
 
   return (
-    <div className="flex-1 overflow-y-auto mb-7 sm:mb-[180px] md:mt-10 mt-[70px] pt-5 px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
+    <div className="flex-1 overflow-y-auto mb-7 mt-40 sm:mb-[180px] md:mt-10  pt-5 px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
 
       
       <div className="space-y-4">
@@ -116,7 +116,7 @@ export function ChatMessages({
             className={cn(
               "flex gap-3 rounded-lg sm:p-3 lg:p-2",
               message.role === "user"
-                ? "flex-row-reverse bg-blue-600 dark:bg-blue-700 lg:max-w-[50vw] px-1 py-7 max-w-[80vw] sm:w-fit ml-auto w-fit shadow-sm"
+                ? "flex-row-reverse bg-blue-600 mt-10 dark:bg-blue-700 lg:max-w-[50vw] px-1 py-7 max-w-[80vw] sm:w-fit ml-auto w-fit shadow-sm"
                 : "bg-neutral-100 dark:bg-neutral-800 mt-10 text-lg w-full md:w-[80%] lg:w-[70%] mx-auto"
             )}
           >
@@ -146,7 +146,7 @@ export function ChatMessages({
           </div> </>
         ))}
 
-        {loadingState && <div className="flex w-full gap-3 ml-4 rounded-lg p-4 ">
+        {loadingState && <div className="flex justify-center w-full gap-3 ml-4 rounded-lg p-4 ">
           <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full text-primary dark:text-blue-400">
             {/* <span className="flex space-x-1">
               <span className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:-0.3s]"></span>
