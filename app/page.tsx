@@ -5,15 +5,15 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { features } from "@/data/features";
-import { pricing } from "@/data/pricing";
+
 import Navbar from "@/components/layout/Navbar";
-import { CircleCheck } from "lucide-react";
+
 import Footer from "@/components/layout/Footer";
 import { GradientText } from "@/components/ui/gradient-text";
 // import { tiers } from "./pricing/pricing";
-import { Check } from "lucide-react";
+
 import PricingSection from "@/components/Sections/Pricing-Section";
-import { FeaturesSection } from "@/components/Sections/Features-Section";
+
 import { Metadata } from "next";
 
 
@@ -43,6 +43,8 @@ export const metadata: Metadata = {
 
 
 export default function Home() {
+
+   
   return (
       <div className="overflow-y-auto">
            

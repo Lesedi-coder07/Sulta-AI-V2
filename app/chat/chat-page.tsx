@@ -21,7 +21,7 @@ import { xevronSystemMessage } from "./xev";
 import { toast } from 'sonner'
 import Link from "next/link";
 import { logEvent, getAnalytics } from "firebase/analytics";
- 
+import { useTheme } from "next-themes";
 
 
 
@@ -33,6 +33,7 @@ export default function ChatPage() {
     const [chatList, setChatList] = useState<Chat[]>([])
     const [chat, setChat] = useState<Chat | null>(null)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
+    const {theme, systemTheme} = useTheme()
   
 
     useEffect(() => {
@@ -82,6 +83,15 @@ useEffect(() => {
     return () => unsubscribe()
 }, []);
     
+
+useEffect(()=> {
+    if (theme) {
+        console.log(theme)
+    }
+    if (systemTheme) {
+        console.log(systemTheme)
+    }
+}, [theme, systemTheme])
 
 
     const defaultChatConfig = {
@@ -253,7 +263,7 @@ const fetchMessages = async (chatId: string) => {
                     <div className="flex flex-col h-full p-3">
                         <div className="flex items-center justify-between mb-6 px-2">
                         <Link href="/ai/dashboard">
-                            <Image src="/logos/Sulta/logoLight.png" width={150} height={150} alt="Sulta AI Logo" />
+                            <Image src={systemTheme === 'dark' ? "/logos/Sulta/White.png" : "/logos/Sulta/LogoDark.png"} width={150} height={150} alt="Sulta AI Logo" />
                             </Link>
                             {/* <Image src={"/logos/sulta/logoLight.png"}  width={150} height={150} alt="Sulta AI Logo"/> */}
                            
@@ -355,7 +365,7 @@ const fetchMessages = async (chatId: string) => {
                         <div className="p-3">
                             <div className="flex items-center justify-between mb-6 px-2">
                                 <Link href="/ai/dashboard">
-                                    <Image src={"/logos/Sulta/logoLight.png"} width={150} height={150} alt="Sulta AI Logo" priority />
+                                    <Image src={systemTheme === 'dark' ? "/logos/Sulta/White.png" : "/logos/Sulta/logoLight.png"} width={150} height={150} alt="Sulta AI Logo" priority />
                                 </Link>
                                 <button className="p-2 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-full transition-colors">
                                     <Plus className="h-5 w-5 text-neutral-600 dark:text-neutral-300" />

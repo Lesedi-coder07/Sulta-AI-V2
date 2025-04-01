@@ -13,7 +13,7 @@ import { onAuthStateChanged } from "firebase/auth";
 const Navbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
-    const { resolvedTheme } = useTheme();
+    const { resolvedTheme, theme, systemTheme, setTheme } = useTheme();
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -26,6 +26,12 @@ const Navbar = () => {
     }, []);
 
 
+    useEffect(()=> {
+        if (systemTheme) {
+           setTheme(systemTheme)
+        }
+        
+    }, [ systemTheme])
 
 
     return (
@@ -34,7 +40,7 @@ const Navbar = () => {
                 <Link href="/">
                     <h1 className="text-2xl">
                         <Image
-                            src={'/logos/Sulta/logoLight.png'}
+                            src={systemTheme === 'dark' ? '/logos/Sulta/White.png' : '/logos/Sulta/logoLight.png'}
                             alt="Sulta AI Logo"
                             width={120}
                             height={40}
