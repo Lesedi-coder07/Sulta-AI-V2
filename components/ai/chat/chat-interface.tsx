@@ -15,7 +15,8 @@ export interface Agent {
     systemMessage: string;
     totalQueries: number;
     tokensUsed: number;
-    totalChats: number
+    totalChats: number;
+    name: string;
 }
 
 
@@ -35,6 +36,7 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
             if(snapshot.exists()) {
                 setExists(true)
                 setAgent(snapshot.data() as Agent)
+                console.log(agent)
                 if (agent?.isPublic == false) {
                     if (agent.ownerID != currentUser) {
                        setExists(false)
@@ -80,7 +82,7 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
 
 
     const handleSendMessage = async (content: string) => {
-
+      console.log(agent?.systemMessage)
 
         setLoading(true)
         const userMessage: Message = {
@@ -155,7 +157,7 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
 
         exists ?   (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
             <ChatHeader handleSidebarToggle={handleSidebarToggle} showImage={false} agent={agent} showButton={true} />
-            <ChatMessages updateMessageArray={handleSendMessage} messages={messages} profileImage={profileImage} loadingState={loading} />
+            <ChatMessages updateMessageArray={handleSendMessage} messages={messages} profileImage={profileImage} loadingState={loading} agentName={agent?.name ?? 'Xev 1.0'} />
             <ChatInput onSendMessage={handleSendMessage} />
         </div> ) : <h1 className="text-center text-2xl">Agent not found</h1>
     );

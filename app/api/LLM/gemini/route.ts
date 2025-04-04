@@ -2,7 +2,16 @@ import { GoogleGenerativeAI } from "@google/generative-ai"
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-
+export async function OPTIONS(req: Request) {
+    return new Response(JSON.stringify({ message: 'OK' }), {
+        status: 200,
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+        },
+    });
+}
 
 
 export async function POST(req: Request) {
@@ -78,6 +87,7 @@ export async function POST(req: Request) {
         return new Response(JSON.stringify({ response: responseText }), {
             status: 200,
             headers: {
+                "Access-Control-Allow-Origin": "*",
                 "Content-Type": "application/json",
             },
         });

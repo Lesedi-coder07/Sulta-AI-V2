@@ -32,12 +32,14 @@ export function ChatMessages({
   messages,
   loadingState,
   profileImage,
-  updateMessageArray
+  updateMessageArray,
+  agentName
 }: {
   messages: Message[];
   loadingState: boolean;
   profileImage: string | null;
-  updateMessageArray: any
+  updateMessageArray: any;
+  agentName: string;
 }) {
 
 
@@ -78,7 +80,7 @@ export function ChatMessages({
         {messages.length === 0 ? (
           <>
             <h1 className="text-xl text-center text-neutral-900 dark:text-neutral-100">
-              Welcome to Xev 1.0
+              Welcome to {agentName}
             </h1>
             <div className="text-center">
               <GradientText> How can I help you today? </GradientText>
