@@ -14,9 +14,9 @@ import { auth } from "../api/firebase/firebaseConfig";
 import { onAuthStateChanged, updateCurrentUser } from "firebase/auth";
 import { doc, setDoc, serverTimestamp, collection, onSnapshot, getDocs, getDoc,  where, query, orderBy } from 'firebase/firestore';
 import { db, analytics } from "@/app/api/firebase/firebaseConfig";
-import { Plus, MessageSquare, Menu, LayoutDashboard, Bot, Settings } from "lucide-react";
+import { Plus, MessageSquare, Menu, LayoutDashboard,Pencil, Bot, Settings, Trash } from "lucide-react";
 import Image from "next/image";
-import { createNewChat, updateChatTitle } from "./chats";
+import { createNewChat, updateChatTitle, deleteChat } from "./chats";
 import { xevronSystemMessage } from "./xev";
 import { toast } from 'sonner'
 import Link from "next/link";
@@ -34,8 +34,10 @@ export default function ChatPage() {
     const [chat, setChat] = useState<Chat | null>(null)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
     const {theme, systemTheme} = useTheme()
-  
-
+    const [hoveringId, setHoveringId] = useState<string | null>(null);
+useEffect(() => {
+    console.log(hoveringId)
+}, [hoveringId])
     useEffect(() => {
         if (!currentUser) return;
         
@@ -83,15 +85,6 @@ useEffect(() => {
     return () => unsubscribe()
 }, []);
     
-
-useEffect(()=> {
-    if (theme) {
-        console.log(theme)
-    }
-    if (systemTheme) {
-        console.log(systemTheme)
-    }
-}, [theme, systemTheme])
 
 
     const defaultChatConfig = {
@@ -220,6 +213,7 @@ const handleNewChat = async () => {
     }
     
     const chatID = await createNewChat(currentUser, 'bdjfweohwnon3082482764')
+
     setChatList([...chatList, {
         chatID: chatID,
         title: 'New Thread',
@@ -235,7 +229,13 @@ const handleNewChat = async () => {
         agentID: 'bdjfweohwnon3082482764',
         
     }])
-    setChat(chatList[chatList.length - 1])
+    setChat(chatList[0])
+    handleChatSelect(chatList[0])
+    console.log(chatList[0])
+}
+
+const handleDeleteChat = async (chatID: string) => {
+    await deleteChat(chatID)
 }
 
 // Function to fetch messages for a chat
@@ -314,6 +314,17 @@ const fetchMessages = async (chatId: string) => {
 {chatList.length != 0 && (
                                 <div className="px-3 py-4 ">
     <h1 className="text-sm font-medium">Threads</h1>
+
+                                    {/* <div className="flex justify-between items-center mt-5 mb-4">
+                                    
+                                        <button
+                                            onClick={() => setHoveringId(hoveringId ? null : 'all')}
+                                            className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
+                                        >
+                                            <Pencil className="h-4 w-4" />
+                                            Edit Thread List
+                                        </button>
+                                    </div> */}
                                 </div>
                             
                             )}
@@ -331,8 +342,27 @@ const fetchMessages = async (chatId: string) => {
                                                 : 'hover:bg-neutral-200 dark:hover:bg-neutral-700'
                                         }`}
                                     >
-                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                                            <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                        <div 
+                                            onMouseEnter={() => setHoveringId(chatItem.chatID!)} 
+                                            onMouseLeave={() => setHoveringId(null)} 
+                                            className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center"
+                                        >
+                                            <MessageSquare className={`h-4 w-4 ${hoveringId === chatItem.chatID ? 'hidden' : 'text-blue-600 dark:text-blue-400'}`} />
+                                            {/* {hoveringId === chatItem.chatID && (
+                                                <button 
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDeleteChat(chatItem.chatID!);
+                                                    }}
+                                                >
+                                                    <Trash className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                                </button>
+                                               
+                                            )} */}
+
+
+                                            {/* Add this feature back in on mobile soon. */}
+                                             {/* <Trash className="h-4 w-4 text-blue-600 dark:text-blue-400" /> */}
                                         </div>
                                         <span className="text-sm font-medium truncate">{chatItem.title}</span>
                                     </button>
@@ -429,7 +459,26 @@ const fetchMessages = async (chatId: string) => {
                                                     }`}
                                                 >
                                                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                                                        <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                                       
+                                                    <div 
+                                            onMouseEnter={() => setHoveringId(chatItem.chatID!)} 
+                                            onMouseLeave={() => setHoveringId(null)} 
+                                            className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center"
+                                        >
+                                            <MessageSquare className={`h-4 w-4 ${hoveringId === chatItem.chatID ? 'hidden' : 'text-blue-600 dark:text-blue-400'}`} />
+                                            {hoveringId === chatItem.chatID && (
+                                                <button 
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDeleteChat(chatItem.chatID!);
+                                                    }}
+                                                >
+                                                    <Trash className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                                </button>
+                                               
+                                            )}
+                                           
+                                        </div>
                                                     </div>
                                                     <span className="text-sm font-medium truncate">{chatItem.title}</span>
                                                 </button>

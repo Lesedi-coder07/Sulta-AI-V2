@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "count-lines": "npx cloc . --exclude-dir=node_modules,.next --exclude-ext=json"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
@@ -42,6 +43,7 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
+    "cloc": "^2.4.0-cloc",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",

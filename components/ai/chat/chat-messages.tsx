@@ -17,13 +17,13 @@ interface ChatMessagesProps {
 
 const promptSuggestions = [
   {
-    suggestion: 'How can I increase sales this month?'
+    suggestion: 'What are some effective ways to reduce stress and anxiety?'
   },
   {
-    suggestion: 'Explain trigonometry for beginners'
+    suggestion: 'Help me plan a balanced weekly meal schedule'
   },
   {
-    suggestion: 'Write a simple python script calculator '
+    suggestion: 'Give me tips for improving my public speaking skills'
   },
  
 ]
@@ -70,7 +70,7 @@ export function ChatMessages({
   }, [messages]);
 
   return (
-    <div className="flex-1 overflow-y-auto mb-7 mt-40 sm:mb-[180px] md:mt-10  pt-5 px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
+    <div className="flex-1 overflow-y-auto mb-7 mt-35 sm:mb-[180px] md:mt-10  pt-5 px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
 
       
       <div className="space-y-4">
@@ -118,8 +118,8 @@ export function ChatMessages({
             className={cn(
               "flex gap-3 rounded-lg sm:p-3 lg:p-2",
               message.role === "user"
-                ? "flex-row-reverse bg-blue-600 mt-10 dark:bg-blue-700 lg:max-w-[50vw] px-1 py-7 max-w-[80vw] sm:w-fit ml-auto w-fit shadow-sm"
-                : "bg-neutral-100 dark:bg-neutral-800 mt-10 text-lg w-full md:w-[80%] lg:w-[70%] mx-auto"
+                ? "flex-row-reverse bg-blue-600 mt-10 dark:bg-blue-700 lg:max-w-[50vw] px-4 py-7 max-w-[80vw] sm:w-fit ml-auto w-fit shadow-sm"
+                : "bg-neutral-100 dark:bg-neutral-800 pt-10 mt-10 text-lg w-full md:w-[80%] lg:w-[70%] mx-auto px-4"
             )}
           >
             <div
@@ -142,8 +142,11 @@ export function ChatMessages({
                 <Sparkles className="h-5 w-5" />
               )}
             </div>
-            <div className="w-fit max-w-[500px] sm:max-w-[80%] flex-1">
-              {message.role != "user" ? <GeminiResponse content={message.content} /> : <p className="text-white mb-2">{message.content}</p>}
+            <div className="w-full sm:w-fit max-w-[500px] sm:max-w-[80%] flex-1">
+              {message.role != "user" ? 
+                <GeminiResponse content={message.content} /> : 
+                <p className="text-white mb-2 px-2">{message.content}</p>
+              }
             </div>
           </div> </>
         ))}

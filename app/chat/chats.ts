@@ -1,4 +1,4 @@
-import { collection, setDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, setDoc, updateDoc } from "firebase/firestore";
 
 import { doc } from "firebase/firestore";
 import { db } from "../api/firebase/firebaseConfig";
@@ -37,5 +37,15 @@ export async function updateChatTitle(chatId: string, title: string) {
         await updateDoc(chatRef, { title: title });
     } catch (error) {
         console.error('Error updating chat title: ', error);
+    }
+}
+
+export async function deleteChat(chatId: string) {
+    try {
+        const chatRef = doc(db, 'chats', chatId);
+        await deleteDoc(chatRef);
+        console.log('Chat deleted successfully');
+    } catch (error) {
+        console.error('Error deleting chat: ', error);
     }
 }
