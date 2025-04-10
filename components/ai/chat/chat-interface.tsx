@@ -81,7 +81,7 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
 
 
 
-    const handleSendMessage = async (content: string) => {
+    const handleSendMessage = async (content: string, base64String: string | null, image: string | null, docUrl: string | null, powerUpSelected: string | null) => {
       console.log(agent?.systemMessage)
 
         setLoading(true)
@@ -95,49 +95,19 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
         setMessages((prev) => [...prev, userMessage]);
 
         
-       
-            // Simulate API delay
-            // await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // const dummyResponse = {
-            //     content: `I am a simulated AI response. You said: "${content}"\n\nThis is a placeholder response for testing purposes. In production, this would be replaced with the actual API call.`
-            // };
-
-            // setLoading(false);
-            // setMessages((prev) => [...prev, {
-            //     id: (Date.now() + 1).toString(),
-            //     role: "assistant", 
-            //     content: dummyResponse.content,
-            //     timestamp: "just now",
-            // }]);
-
 
         try {
-            // const response = await fetch('/api/LLM/openai', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({
-            //         previousMessages: messages,
-            //         currentUser: auth.currentUser?.displayName,
-            //         prompt: content,
-            //         systemMessage: agent?.systemMessage
-            //     })
-            // });
-    
-            // if (!response.ok) {
-            //     throw new Error('Failed to get AI response');
-            // }
+          
     
             const aiMessage = await generateWithGemini(messages, agent?.systemMessage ?? 'You are a helpful AI agent.', content, auth.currentUser?.displayName ?? '');
             setLoading(false)
             setMessages((prev) => [...prev, {
                 id: (Date.now() + 1).toString(),
                 role: "assistant",
-                content: aiMessage,
+                content: aiMessage.response,
                 timestamp: "just now",
-                image: null
+                image: aiMessage.imageUrl?.imageUrl ?? null,
+                docUrl: null
             }]);
     
         } catch (error) {
@@ -158,13 +128,13 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
         exists ?   (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
             <ChatHeader handleSidebarToggle={handleSidebarToggle} showImage={false} agent={agent} showButton={true} />
             <ChatMessages updateMessageArray={handleSendMessage} messages={messages} profileImage={profileImage} loadingState={loading} agentName={agent?.name ?? 'Xev 1.0'} />
-            <ChatInput onSendMessage={handleSendMessage} />
+            <ChatInput handleSendMessage={handleSendMessage} />
         </div> ) : <h1 className="text-center text-2xl">Agent not found</h1>
     );
       
 }
 
-export const generateWithGemini = async (messages: Array<Message>, systemMessage: string, prompt: string, userName: string, base64String: string | null = null, docUrl: string | null = null): Promise<string> => {
+export const generateWithGemini = async (messages: Array<Message>, systemMessage: string, prompt: string, userName: string, base64String: string | null = null, docUrl: string | null = null, powerUpSelected: string | null = null): Promise<{response: string, imageUrl: {imageUrl: string} | null}> => {
     try {
         const ai = await fetch('/api/LLM/gemini', {
             method: "POST",
@@ -180,11 +150,12 @@ export const generateWithGemini = async (messages: Array<Message>, systemMessage
                 prompt: prompt,
                 systemMessage: systemMessage,
                 base64String: base64String,
-                docUrl: docUrl
+                docUrl: docUrl,
+                powerUpSelected: powerUpSelected
             })
         });
         const data = await ai.json();
-        return data.response;
+        return data;
     } catch (error) {
         throw error;
     }

@@ -23,7 +23,7 @@ const Footer = () => {
                     </div>
                 </div>
                 <div className="mt-10 py-10 border-t items-center justify-between sm:flex">
-                    <p>© 2024 Sulta Tech. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} Sulta Tech. All rights reserved.</p>
                     <ul className="flex flex-wrap items-center gap-4 mt-6 sm:text-sm sm:mt-0">
                         {footerLinks.map((item) => (
                             <li key={item.label}>

@@ -59,15 +59,7 @@ export function ChatMessages({
     });
   }
 
-  useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage?.role === 'user') {
-      const messagesContainer = messagesEndRef.current?.closest('.messages-container');
-      if (messagesContainer) {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }
-    }
-  }, [messages]);
+ 
 
   return (
     <div className="flex-1 overflow-y-auto mb-7 mt-35 sm:mb-[180px] md:mt-10  pt-5 px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
@@ -111,8 +103,7 @@ export function ChatMessages({
 
         {orderedMessages.map((message) => (
           <> 
-          {message.image ? ( <div key={message.image} className="flex flex-row-reverse"> <img className="w-[120px] h-[120px] rounded-sm right-0 cover" src={message.image} alt="AI Photo" /> </div> ) : <> </>}
-        
+          {message.image ? ( <div key={message.image} className={`flex flex-row ${message.role === "user" ? "justify-end" : "justify-center mr-12"}`}> <img className={`w-[300px] h-[300px] rounded-sm ${message.role === "user" ? "right-0" : "left-0"} cover`} src={message.image} alt="AI Photo" /> </div> ) : <> </>}
           <div
             key={message.id}
             className={cn(
@@ -143,8 +134,10 @@ export function ChatMessages({
               )}
             </div>
             <div className="w-full sm:w-fit max-w-[500px] sm:max-w-[80%] flex-1">
-              {message.role != "user" ? 
-                <GeminiResponse content={message.content} /> : 
+              {message.role != "user" ? <>
+                <GeminiResponse content={message.content} /> 
+                {/* {message.image.imageUrl  ? <img className="w-[120px] h-[120px] rounded-sm right-0 cover" src={message.image} alt="AI Photo" /> : <> </>} */}
+                </> : 
                 <p className="text-white mb-2 px-2">{message.content}</p>
               }
             </div>

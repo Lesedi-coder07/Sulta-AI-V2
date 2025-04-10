@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ArrowUp, SendHorizonal, Plus, File, Image} from "lucide-react";
+import { ArrowUp, Plus, File, Globe, Image, Brain} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { db } from "@/app/api/firebase/firebaseConfig"; // Import your Firebase configuration
@@ -10,14 +10,14 @@ import { convertFileToBase64 } from "@/lib/utils";
 import { storage } from "@/app/api/firebase/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 interface ChatInputProps {
-  onSendMessage: (message: string, base64String: string | null, image: string | null, docUrl: string | null) => void;
+  handleSendMessage: (message: string, base64String: string | null, image: string | null, docUrl: string | null, powerUpSelected: string | null) => void;
 }
 
 
 
 
 
-export function ChatInput({ onSendMessage }: ChatInputProps) {
+export function ChatInput({ handleSendMessage }: ChatInputProps) {
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLDivElement>(null);
@@ -30,6 +30,10 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
   const [showFileInput, setShowFileInput] = useState(false);
   const [docUrl, setDocUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [searchEnabled, setSearchEnabled] = useState<boolean>(false)
+  const [thinkEnabled, setThinkEnabled] = useState<boolean>(false)
+  const [imageGenEnabled , setImageGenEnabled] = useState<boolean>(false);
+  const [powerUpSelected, setPowerUpSelected] = useState<string | null>(null);
 
 
   const handleDocUpload: React.ChangeEventHandler<HTMLInputElement> = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,9 +92,10 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
   }
 
   const handleSubmit = (e: React.FormEvent) => {
+
     e.preventDefault();
     if (message.trim()) {
-      onSendMessage(message.trim(), fileBase64String, imageUrl, docUrl);
+      handleSendMessage(message.trim(), fileBase64String, imageUrl, docUrl, powerUpSelected);
       setMessage("");
       setFileBase64String(null)
       setUploadFileName(null)
@@ -120,7 +125,24 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
     }
   };
 
-
+  const handlePowerUp = (powerUpSelected: string): void => {
+     if (powerUpSelected === 'think') {
+       setSearchEnabled(false)
+       setImageGenEnabled(false)
+       setThinkEnabled(!thinkEnabled)
+       setPowerUpSelected(powerUpSelected)
+     } else if (powerUpSelected === 'search') {
+        setImageGenEnabled(false)
+        setThinkEnabled(false)
+        setSearchEnabled(!searchEnabled)
+        setPowerUpSelected(powerUpSelected)
+     } else {
+        setThinkEnabled(false)
+        setSearchEnabled(false)
+        setImageGenEnabled(!imageGenEnabled)
+        setPowerUpSelected(powerUpSelected)
+     }
+  }
 
  
 
@@ -274,9 +296,24 @@ export function ChatInput({ onSendMessage }: ChatInputProps) {
             <Plus />
           </Button>
         </div>
-        <p className="mt-2 text-xs text-neutral-500">
-          Press Enter to send, Shift + Enter for new line
-        </p>
+        <div className="flex flex-wrap gap-2 pt-3">
+          <button onClick={() => handlePowerUp('search')} className={`flex flex-row items-center bg-neutral-100 dark:bg-neutral-800 p-2 md:p-3 rounded-sm cursor-pointer hover:bg-neutral-200 dark:hover:bg-neutral-700 ${searchEnabled ? 'bg-neutral-200 dark:bg-neutral-700 border border-blue-500' : ''}`}>
+            <Globe className="h-4 w-4 md:h-5 md:w-5" />
+            <p className="text-xs ml-2 md:ml-3 dark:text-neutral-200">Search</p>
+          </button>
+
+          <button onClick={() => handlePowerUp('imageGen')} className={`flex flex-row items-center bg-neutral-100 dark:bg-neutral-800 p-2 md:p-3 rounded-sm cursor-pointer hover:bg-neutral-200 dark:hover:bg-neutral-700 ${imageGenEnabled ? 'bg-neutral-200 dark:bg-neutral-700 border border-blue-500' : ''}`}>
+            <Image className="h-4 w-4 md:h-5 md:w-5" />
+            <p className="text-xs ml-2 md:ml-3 dark:text-neutral-200">Generate Image</p>
+          </button>
+
+          <button onClick={() => handlePowerUp('think')} className={`flex flex-row items-center bg-neutral-100 dark:bg-neutral-800 p-2 md:p-3 rounded-sm cursor-pointer hover:bg-neutral-200 dark:hover:bg-neutral-700 ${thinkEnabled ? 'bg-neutral-200 dark:bg-neutral-700 border border-blue-500' : ''}`}>
+            <Brain className="h-4 w-4 md:h-5 md:w-5" />
+            <p className="text-xs ml-2 md:ml-3 dark:text-neutral-200">Deep Think</p>
+          </button>
+        </div>
+
+        
       </form>
     </div>
   );

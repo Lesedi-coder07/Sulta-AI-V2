@@ -34,12 +34,12 @@ function LearnMorePage() {
                         width={350} height={350} />
                         <ul className='list-disc list-inside text-md sm:mt-2 sm:mx-auto'>
                             <h1 className='text-lg font-bold'>With Sulta AI you can:</h1>
-                            <li className='mt-2'>Create marketing content automatically</li>
-                            <li className='mt-2'>Handle customer conversations</li>
-                            <li className='mt-2'>Screen job applications efficiently</li>
-                            <li className='mt-2'>Solve complex academic problems</li>
-                            <li className='mt-2'>Generate personalized plans and recommendations</li>
-                            <li className='mt-2'>Automate customer support tasks</li>
+                            <li className='mt-2'>Create custom AI agents for any task</li>
+                            <li className='mt-2'>Build personal AI assistants that learn from you</li>
+                            <li className='mt-2'>Design AI agents that work 24/7 on your behalf</li>
+                            <li className='mt-2'>Train AI to handle specific workflows</li>
+                            <li className='mt-2'>Deploy AI agents that adapt to your needs</li>
+                            <li className='mt-2'>Share and discover AI agents built by others</li>
 
                         </ul>
 

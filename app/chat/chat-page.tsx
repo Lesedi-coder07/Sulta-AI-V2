@@ -141,7 +141,7 @@ useEffect(() => {
 
 
 // This is the function that handles the sending of messages
-    const handleSendMessage = async (content: string, base64String: string | null = null, image: string | null = null, docUrl: string | null = null) => {
+    const handleSendMessage = async (content: string, base64String: string | null = null, image: string | null = null, docUrl: string | null = null, powerUpSelected: string | null = null) => {
         setLoading(true);
         if (!chat?.chatID) {
             const chatID = await createNewChat(currentUser ?? '', 'bdjfweohwnon3082482764');
@@ -160,7 +160,8 @@ useEffect(() => {
             content,
             timestamp: "just now",
             image: image,
-            docUrl: docUrl
+            docUrl: docUrl,
+         
         };
 
         // Update messages array with user message
@@ -169,22 +170,23 @@ useEffect(() => {
        
 
         try {
-            const aiMessage = await generateWithGemini(messages, xevronSystemMessage, content, auth.currentUser?.displayName ?? '', base64String);
+            const aiMessage  = await generateWithGemini(messages, xevronSystemMessage, content, auth.currentUser?.displayName ?? '', base64String, null,powerUpSelected);
             const aiMessageObj = {
                 id: (Date.now() + 1).toString(),
                 role: "assistant",
-                content: aiMessage,
+                content: aiMessage.response ?? 'Sorry, I couldn\'t generate a response.',
                 timestamp: "just now",
-                image: null,
-                docUrl: null
+                image: aiMessage.imageUrl?.imageUrl ?? null,
+                docUrl: null,
             };
+            console.log('AI Image URL --> ', aiMessage.imageUrl)
             
             // Update messages locally
             setMessages(prev => [...prev, aiMessageObj as Message]);
             
             // Save to database
             await writeMessageToDb(chat?.chatID!, userMessage.content, "user", image, docUrl);
-            await writeMessageToDb(chat?.chatID!, aiMessage, "assistant", image, docUrl);
+            await writeMessageToDb(chat?.chatID!, aiMessage.response, "assistant", aiMessage.imageUrl?.imageUrl ?? null, docUrl);
             setLoading(false);
         } catch (error) {
             console.error(error);
@@ -505,7 +507,7 @@ const fetchMessages = async (chatId: string) => {
                 <div className="flex-1 flex flex-col h-screen bg-peach-500 dark:bg-neutral-900">
                     <ChatHeader showImage={false} handleSidebarToggle={handleSidebarToggle} showButton={false} agent={{ name: 'Xev 1.0' }} />
                     <ChatMessages agentName={'Xev 1.0'} updateMessageArray={handleSendMessage} messages={messages} profileImage={profileImage} loadingState={loading} />
-                    <ChatInput onSendMessage={handleSendMessage} />
+                    <ChatInput handleSendMessage={handleSendMessage} />
                 </div>
             </div>
         </main>

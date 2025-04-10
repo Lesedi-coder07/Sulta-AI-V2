@@ -1,4 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai"
+import { generateImage } from "./image"
+import { search } from "./search";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -20,11 +22,48 @@ export async function POST(req: Request) {
             throw new Error('GEMINI_API_KEY is not configured');
         }
 
-        const { prompt, history, systemMessage, base64String, docUrl } = await req.json();
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction: systemMessage });
-        
+        const { prompt, history, systemMessage, base64String, docUrl, powerUpSelected } = await req.json();
+        let model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction: systemMessage });
+
+
+        let imageUrl = null
+        let searchResponse = null
+        let contextedPrompt = null
         if (!prompt) {
             throw new Error('Prompt is required');
+        }  
+
+        console.log("powerUpSelected --> ", powerUpSelected)
+
+        if(powerUpSelected) {
+            if(powerUpSelected === "think") {
+                // TODO: Implement think power up
+                model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-thinking-exp-01-21", systemInstruction: systemMessage });
+
+
+            } else if(powerUpSelected === "imageGen") {
+                // TODO: Implement imageGen power up
+                try {
+                    imageUrl = await generateImage (prompt, base64String)
+                } catch (error) {
+                    console.error('Error generating image:', error);
+                    throw new Error('Failed to generate image');
+                }
+
+
+
+            } else if(powerUpSelected === "search") {
+                // TODO: Implement search power up
+                try {
+                    searchResponse = await search(prompt)
+                    if(searchResponse != undefined && searchResponse != null) {
+                        contextedPrompt = `Here is the search response: ${searchResponse}. Use this to help you answer the following question: ${prompt}`
+                    }
+                } catch (error) {
+                    console.error('Error searching:', error);
+                 
+                }
+            }
         }
   
         let newParts = [{ text: prompt },]
@@ -78,13 +117,15 @@ export async function POST(req: Request) {
                 
             },
             
+              
+            
             // systemInstruction: systemMessage
         });
 
         const response = await chat.sendMessage(newParts);
         const responseText = await response.response.text();
 
-        return new Response(JSON.stringify({ response: responseText }), {
+        return new Response(JSON.stringify({ response: responseText, imageUrl: imageUrl }), {
             status: 200,
             headers: {
                 "Access-Control-Allow-Origin": "*",
