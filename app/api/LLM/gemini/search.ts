@@ -2,14 +2,14 @@ import { GoogleGenerativeAI } from "@google/generative-ai"
 import {GoogleGenAI, DynamicRetrievalConfigMode} from '@google/genai';
 
 
-const ai = new GoogleGenAI({ apiKey: "GEMINI_API_KEY" });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 export async function search(query: string) { 
     try {
 
     let response = await ai.models.generateContent({
         model: "gemini-1.5-flash",
         contents: [
-           `Search for and answer the following question/query: ${query}. You must return relevant results that will be fed to another LLM for it to generate the final response.`,
+           `Search for and answer the following question/query: ${query}. You must return relevant results that will be fed to another LLM for it to generate the final response. Today's date is ${new Date().toISOString().split('T')[0]}`,
         ],
         config: {
           tools: [{
@@ -21,8 +21,9 @@ export async function search(query: string) {
           }],
         },
       })
-    
-      console.log(response.text)
+
+      console.log("Search response --> ", response.text )
+      return response.text
     } catch (error) {
         console.error(error)
     }

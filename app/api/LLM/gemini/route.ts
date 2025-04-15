@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
         let imageUrl = null
         let searchResponse = null
-        let contextedPrompt = null
+        let contextedPrompt = prompt
         if (!prompt) {
             throw new Error('Prompt is required');
         }  
@@ -52,7 +52,11 @@ export async function POST(req: Request) {
 
 
 
-            } else if(powerUpSelected === "search") {
+            } else if(powerUpSelected === "search") 
+                
+                {
+
+                    console.log("Searching for --> ", prompt)
                 // TODO: Implement search power up
                 try {
                     searchResponse = await search(prompt)
@@ -66,7 +70,7 @@ export async function POST(req: Request) {
             }
         }
   
-        let newParts = [{ text: prompt },]
+        let newParts = [{ text: contextedPrompt },]
 
         console.log("docUrl", docUrl)
         if(docUrl){
