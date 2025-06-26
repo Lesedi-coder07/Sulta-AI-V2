@@ -6,7 +6,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getStorage } from 'firebase/storage'
 
 export const firebaseConfig: Object = {
-  apiKey: "AIzaSyCSyyvK8b1pfwYC4PusmP9Qsq5R3Jjhxr4",
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "sulta-ai.firebaseapp.com",
   projectId: "sulta-ai",
   storageBucket: "sulta-ai.firebasestorage.app",
