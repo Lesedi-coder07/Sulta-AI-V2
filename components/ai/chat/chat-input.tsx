@@ -296,7 +296,8 @@ export function ChatInput({ handleSendMessage }: ChatInputProps) {
             <Plus />
           </Button>
         </div>
-        <div className="flex flex-wrap gap-2 pt-3">
+
+        <div className="flex-wrap gap-2 pt-3 hidden">
           <button onClick={() => handlePowerUp('search')} className={`flex flex-row items-center bg-neutral-100 dark:bg-neutral-800 p-2 md:p-3 rounded-sm cursor-pointer hover:bg-neutral-200 dark:hover:bg-neutral-700 ${searchEnabled ? 'bg-neutral-200 dark:bg-neutral-700 border border-blue-500' : ''}`}>
             <Globe className="h-4 w-4 md:h-5 md:w-5" />
             <p className="text-xs ml-2 md:ml-3 dark:text-neutral-200">Search</p>

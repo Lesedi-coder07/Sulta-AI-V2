@@ -260,7 +260,7 @@ const fetchMessages = async (chatId: string) => {
         <main className="overflow-hidden">
             <div className="flex flex-row flex-nowrap overflow-hidden w-screen">
                 {/* Mobile slide-out drawer */}
-                <aside className="fixed inset-y-0 left-0 md:hidden transform transition-transform duration-300 ease-in-out z-20 w-64 bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 flex-shrink-0"
+                <aside className="fixed inset-y-0 left-0 md:hidden transform transition-transform duration-300 ease-in-out z-50 w-64 bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 flex-shrink-0"
                     style={{ transform: isDrawerOpen ? 'translateX(0)' : 'translateX(-100%)' }}>
                     <div className="flex flex-col h-full p-3">
                         <div className="flex items-center justify-between mb-6 px-2">
@@ -392,7 +392,7 @@ const fetchMessages = async (chatId: string) => {
                 )}
 
                 {/* Desktop sidebar */}
-                <aside className="hidden md:flex md:w-64 z-10 flex-col flex-shrink-0 h-screen sticky top-0 bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700">
+                <aside className="hidden md:flex md:w-64 z-10 flex-col z-50 flex-shrink-0 h-screen sticky top-0 bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700">
                     <div className="flex flex-col h-full">
                         <div className="p-3">
                             <div className="flex items-center justify-between mb-6 px-2">

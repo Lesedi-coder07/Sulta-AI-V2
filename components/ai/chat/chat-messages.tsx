@@ -1,7 +1,7 @@
 "use client"
 import { Message } from "@/types/chat";
 import { cn } from "@/lib/utils";
-import { Bot, Sparkles } from "lucide-react";
+import { Bot, Sparkles, Copy } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Image from 'next/image'
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
@@ -12,7 +12,6 @@ import { TextShimmer } from '@/components/ui/text-shimmer';
 
 interface ChatMessagesProps {
   messages: Message[];
-
 }
 
 const promptSuggestions = [
@@ -25,8 +24,37 @@ const promptSuggestions = [
   {
     suggestion: 'Give me tips for improving my public speaking skills'
   },
- 
 ]
+
+function CopyButton({ textToCopy }: { textToCopy: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1200);
+    } catch (err) {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      title={copied ? "Copied!" : "Copy"}
+      className={`ml-2 p-1 rounded transition-colors duration-150 ${
+        copied
+          ? "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200"
+          : "hover:bg-neutral-200 dark:hover:bg-neutral-700"
+      }`}
+      style={{ lineHeight: 0, verticalAlign: "middle" }}
+      aria-label="Copy message"
+    >
+      <Copy className={`w-4 h-4 ${copied ? "text-green-600" : ""}`} />
+    </button>
+  );
+}
 
 export function ChatMessages({
   messages,
@@ -42,13 +70,11 @@ export function ChatMessages({
   agentName: string;
 }) {
 
-
   const messageReversed = messages.reverse();
 
   const orderedMessages = [...messages].sort((a, b) => {
     return Number(a.id) - Number(b.id);
   });
-
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -59,16 +85,9 @@ export function ChatMessages({
     });
   }
 
- 
-
   return (
     <div className="flex-1 overflow-y-auto mb-7 mt-35 sm:mb-[180px] md:mt-10  pt-5 px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
-
-      
       <div className="space-y-4">
-
-
-
         {messages.length === 0 ? (
           <>
             <h1 className="text-xl text-center text-neutral-900 dark:text-neutral-100">
@@ -93,17 +112,13 @@ export function ChatMessages({
           </>
         ) : null}
 
-
-
-
-
-
-
-
-
         {orderedMessages.map((message) => (
           <> 
-          {message.image ? ( <div key={message.image} className={`flex flex-row ${message.role === "user" ? "justify-end" : "justify-center mr-12"}`}> <img className={`w-[300px] h-[300px] rounded-sm ${message.role === "user" ? "right-0" : "left-0"} cover`} src={message.image} alt="AI Photo" /> </div> ) : <> </>}
+          {message.image ? (
+            <div key={message.image} className={`flex flex-row ${message.role === "user" ? "justify-end" : "justify-center mr-12"}`}>
+              <img className={`w-[300px] h-[300px] rounded-sm ${message.role === "user" ? "right-0" : "left-0"} cover`} src={message.image} alt="AI Photo" />
+            </div>
+          ) : <></>}
           <div
             key={message.id}
             className={cn(
@@ -130,18 +145,28 @@ export function ChatMessages({
                   height={32}
                 />
               ) : (
-                <Sparkles className="h-5 w-5" />
+                <Sparkles className="mt-[-5px] h-5 w-5" />
               )}
             </div>
-            <div className="w-full sm:w-fit max-w-[500px] sm:max-w-[80%] flex-1">
-              {message.role != "user" ? <>
-                <GeminiResponse content={message.content} /> 
-                {/* {message.image.imageUrl  ? <img className="w-[120px] h-[120px] rounded-sm right-0 cover" src={message.image} alt="AI Photo" /> : <> </>} */}
-                </> : 
-                <p className="text-white mb-2 px-2">{message.content}</p>
+            <div className="w-full sm:w-fit max-w-[500px] sm:max-w-[80%] flex-1 relative">
+              {message.role != "user" ? (
+                <div className="group">
+                  <div className="flex items-start">
+                    <div className="flex-1">
+                      <GeminiResponse content={message.content} />
+                    </div>
+                    <div className="ml-1 mt-1 opacity-70 group-hover:opacity-100 transition-opacity duration-150">
+                      <CopyButton textToCopy={message.content} />
+                    </div>
+                  </div>
+                  {/* {message.image.imageUrl  ? <img className="w-[120px] h-[120px] rounded-sm right-0 cover" src={message.image} alt="AI Photo" /> : <> </>} */}
+                </div>
+              ) : 
+                <p className="text-white mb-2 px-2 my-auto">{message.content}</p>
               }
             </div>
-          </div> </>
+          </div>
+          </>
         ))}
 
         {loadingState && <div className="flex justify-center w-full gap-3 ml-4 rounded-lg p-4 ">
@@ -156,14 +181,10 @@ export function ChatMessages({
             <div ref={messagesEndRef} />
           </div>
         </div>}
-
-        
       </div>
     </div>
   );
 }
-
-
 
 function TextShimmerColor({text}: {text: string}) {
   return (
@@ -177,5 +198,5 @@ function TextShimmerColor({text}: {text: string}) {
 }
 
 export default {
-TextShimmerColor
+  TextShimmerColor
 }

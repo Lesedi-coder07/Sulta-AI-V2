@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         }
 
         const { prompt, history, systemMessage, base64String, docUrl, powerUpSelected } = await req.json();
-        let model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction: systemMessage });
+        let model = genAI.getGenerativeModel({ model: "gemini-2.5-flash", systemInstruction: systemMessage });
 
 
         let imageUrl = null
@@ -112,7 +112,8 @@ export async function POST(req: Request) {
             parts: [{ text: msg.content }]
         })) : [];
 
-        
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
         const chat = model.startChat({
             history: formattedHistory,
             generationConfig: {
@@ -120,13 +121,30 @@ export async function POST(req: Request) {
                 temperature: 0.6
                 
             },
-            
+           
               
             
             // systemInstruction: systemMessage
         });
-
-        const response = await chat.sendMessage(newParts);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
+const response = await model.generateContent({
+    contents: [
+      ...formattedHistory,
+      {
+        role: 'user',
+        parts: [{ text: contextedPrompt }],
+      },
+    ],
+    generationConfig: {
+      maxOutputTokens: 4000,
+      temperature: 0.9,
+    },
+    // thinkingConfig: {
+    //   thinkingBudget: 0,
+    // },
+  }as any);
+        const responseOld = await chat.sendMessage(newParts);
         const responseText = await response.response.text();
 
         return new Response(JSON.stringify({ response: responseText, imageUrl: imageUrl }), {
