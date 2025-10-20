@@ -62,7 +62,26 @@ const config = {
     				border: 'hsl(var(--sidebar-border))',
     				ring: 'hsl(var(--sidebar-ring))'
     			},
+    			// Financial Dashboard Accent Colors
+    			success: {
+    				DEFAULT: 'hsl(var(--success))',
+    				foreground: 'hsl(var(--success-foreground))'
+    			},
+    			warning: {
+    				DEFAULT: 'hsl(var(--warning))',
+    				foreground: 'hsl(var(--warning-foreground))'
+    			},
+    			info: {
+    				DEFAULT: 'hsl(var(--info))',
+    				foreground: 'hsl(var(--info-foreground))'
+    			},
+    			teal: {
+    				DEFAULT: 'hsl(var(--teal))',
+    				foreground: 'hsl(var(--teal-foreground))'
+    			},
     			purple: {
+    				DEFAULT: 'hsl(var(--purple))',
+    				foreground: 'hsl(var(--purple-foreground))',
     				400: '#9F7AEA',
     			},
     			pink: {

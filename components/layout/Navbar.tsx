@@ -35,7 +35,7 @@ const Navbar = () => {
 
 
     return (
-        <nav className="py-4 bg-background/30 backdrop-blur-sm">
+        <nav className="py-4 bg-background/95 backdrop-blur-sm border-b border-border">
             <div className="container flex flex-row justify-between items-center">
                 <Link href="/">
                     <h1 className="text-2xl">
@@ -49,14 +49,14 @@ const Navbar = () => {
                     </h1>
                 </Link>
                 <div className="md:hidden">
-                    <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                    <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-foreground hover:text-primary transition-colors">
                         {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                     </button>
                 </div>
                 <ul className="md:flex flex-row justify-between gap-8 hidden">
                     {navLinks.map((link) => (
                         <li key={link.title} className="mr-4">
-                            <Link href={link.href} className="text-lg font-medium text-neutral-800 dark:text-neutral-200 hover:text-blue-600">
+                            <Link href={link.href} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
                                 {link.title}
                             </Link>
                         </li>
@@ -67,16 +67,16 @@ const Navbar = () => {
                     <div className="flex flex-row space-x-2">
                        
                     {loggedIn  ? (<Link href={'/ai/dashboard'}>
-                                <Button>
+                                <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                                     Go to App
                                 </Button>
                             </Link>) : (<><Link href={'/login'}>
-                                <Button>
+                                <Button variant="outline" className="border-border hover:bg-accent">
                                     Login
                                 </Button>
                             </Link>
                                 <Link href={'/signup'}>
-                                    <Button variant="default" className="border-black border-solid border border-1 shadow-md bg-blue-700 text-white rounded-sm">
+                                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                                         Sign Up
                                     </Button>
                                 </Link></>)}
@@ -85,11 +85,11 @@ const Navbar = () => {
                 </div>
             </div>
             {mobileMenuOpen && (
-                <div className="md:hidden bg-background/30 backdrop-blur-sm p-4">
+                <div className="md:hidden bg-background/95 backdrop-blur-sm p-4 border-t border-border">
                     <ul className="flex flex-col items-center">
                         {navLinks.map((link) => (
                             <li key={link.title} className="mb-4">
-                                <Link href={link.href} className="text-lg font-medium text-neutral-800 dark:text-neutral-200 hover:text-blue-600">
+                                <Link href={link.href} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
                                     {link.title}
                                 </Link>
                             </li>
@@ -97,16 +97,16 @@ const Navbar = () => {
                         <div className="flex flex-row space-x-2">
 
                             {loggedIn === false ? (<Link href={'/ai/dashboard'}>
-                                <Button>
+                                <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                                     Go to App
                                 </Button>
                             </Link>) : (<><Link href={'/login'}>
-                                <Button>
+                                <Button variant="outline" className="border-border hover:bg-accent">
                                     Login
                                 </Button>
                             </Link>
                                 <Link href={'/signup'}>
-                                    <Button variant="default" className="border-black border-solid border border-1 shadow-md bg-blue-700 text-white rounded-sm">
+                                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                                         Sign Up
                                     </Button>
                                 </Link></>)}

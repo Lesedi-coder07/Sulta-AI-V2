@@ -35,58 +35,85 @@
     --radius: 2rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Financial Dashboard Accent Colors */
+    --success: 120 100% 50%; /* Vibrant green #00FF00 */
+    --success-foreground: 0 0% 0%;
+    --warning: 60 100% 50%; /* Bright yellow #FFFF00 */
+    --warning-foreground: 0 0% 0%;
+    --info: 180 100% 50%; /* Cyan #00FFFF */
+    --info-foreground: 0 0% 0%;
+    --teal: 180 100% 40%; /* Teal #00CC99 */
+    --teal-foreground: 0 0% 100%;
+    --purple: 270 50% 70%; /* Lavender #B19CD9 */
+    --purple-foreground: 0 0% 0%;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    /* Main dark backgrounds - rich dark grays */
+    --background: 0 0% 10%; /* #1A1A1A - main app background */
+    --foreground: 0 0% 98%; /* White text */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    /* Card backgrounds - slightly lighter dark gray */
+    --card: 0 0% 13%; /* #222222 - content panels/cards */
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 13%; /* #222222 */
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Primary colors - bright accent green */
+    --primary: 120 100% 50%; /* Vibrant green #00FF00 */
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary - charcoal gray */
+    --secondary: 0 0% 20%; /* #333333 */
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Muted - dark gray for less important elements */
+    --muted: 0 0% 20%; /* #333333 */
+    --muted-foreground: 0 0% 65%; /* Light gray #AAAAAA */
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Accent - teal for highlights */
+    --accent: 180 100% 40%; /* Teal #00CC99 */
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive - red for negative indicators */
+    --destructive: 0 100% 50%; /* Red #FF0000 */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Borders and inputs - dark gray */
+    --border: 0 0% 20%; /* #333333 */
+    --input: 0 0% 20%; /* #333333 */
+    --ring: 120 100% 50%; /* Green ring for focus */
+
+    /* Sidebar - dark theme */
+    --sidebar-background: 0 0% 13%; /* #222222 */
+    --sidebar-foreground: 0 0% 95%; /* Light gray */
+    --sidebar-primary: 120 100% 50%; /* Vibrant green */
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 20%; /* #333333 */
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 20%; /* #333333 */
+    --sidebar-ring: 120 100% 50%; /* Green ring */
+
+    /* Financial Dashboard Accent Colors */
+    --success: 120 100% 50%; /* Vibrant green #00FF00 */
+    --success-foreground: 0 0% 0%;
+    --warning: 60 100% 50%; /* Bright yellow #FFFF00 */
+    --warning-foreground: 0 0% 0%;
+    --info: 180 100% 50%; /* Cyan #00FFFF */
+    --info-foreground: 0 0% 0%;
+    --teal: 180 100% 40%; /* Teal #00CC99 */
+    --teal-foreground: 0 0% 100%;
+    --purple: 270 50% 70%; /* Lavender #B19CD9 */
+    --purple-foreground: 0 0% 0%;
   }
 }
 
@@ -99,35 +126,73 @@
   }
 }
 
-/* Sidebar */
-
-@layer base {
-  :root {
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+/* Financial Dashboard Utility Classes */
+@layer utilities {
+  .text-success {
+    color: hsl(var(--success));
   }
-
-  .dark {
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+  
+  .text-warning {
+    color: hsl(var(--warning));
+  }
+  
+  .text-info {
+    color: hsl(var(--info));
+  }
+  
+  .text-teal {
+    color: hsl(var(--teal));
+  }
+  
+  .text-purple {
+    color: hsl(var(--purple));
+  }
+  
+  .bg-success {
+    background-color: hsl(var(--success));
+  }
+  
+  .bg-warning {
+    background-color: hsl(var(--warning));
+  }
+  
+  .bg-info {
+    background-color: hsl(var(--info));
+  }
+  
+  .bg-teal {
+    background-color: hsl(var(--teal));
+  }
+  
+  .bg-purple {
+    background-color: hsl(var(--purple));
+  }
+  
+  .border-success {
+    border-color: hsl(var(--success));
+  }
+  
+  .border-warning {
+    border-color: hsl(var(--warning));
+  }
+  
+  .border-info {
+    border-color: hsl(var(--info));
+  }
+  
+  .border-teal {
+    border-color: hsl(var(--teal));
+  }
+  
+  .border-purple {
+    border-color: hsl(var(--purple));
   }
 }
 
 
 .code-block {
-  background-color: #1E1E1E;
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 0.375rem;
   padding: 1rem;
   margin: 1rem 0;
@@ -135,25 +200,38 @@
 }
 
 .inline-code {
-  background-color: rgba(110, 118, 129, 0.4);
+  background-color: hsl(var(--muted));
   border-radius: 0.25rem;
   padding: 0.2rem 0.4rem;
   font-family: monospace;
+  color: hsl(var(--muted-foreground));
 }
 
-/* Optional: Add syntax highlighting colors */
+/* Syntax highlighting colors - updated for dark theme */
 .hljs {
-  color: #D4D4D4;
+  color: hsl(var(--foreground));
 }
 
 .hljs-keyword {
-  color: #569CD6;
+  color: hsl(var(--info));
 }
 
 .hljs-string {
-  color: #CE9178;
+  color: hsl(var(--warning));
 }
 
 .hljs-comment {
-  color: #6A9955;
+  color: hsl(var(--muted-foreground));
+}
+
+.hljs-function {
+  color: hsl(var(--success));
+}
+
+.hljs-number {
+  color: hsl(var(--teal));
+}
+
+.hljs-variable {
+  color: hsl(var(--purple));
 }
