@@ -223,8 +223,9 @@ export function ChatInput({ handleSendMessage }: ChatInputProps) {
     //     </p>
     //   </form>
     // </div>
-    <div className="fixed bottom-0 left-0 right-0 md:pl-64 bg-white border-neutral-200 w-full p-4 dark:border-neutral-800 dark:bg-neutral-900">
-      <form ref={formRef} onSubmit={handleSubmit} className="mx-auto max-w-4xl w-full">
+    <div className="fixed bottom-0    border-neutral-200 w-full py-4 dark:border-neutral-800 dark:bg-neutral ">
+      <div className="flex justify-center items-center w-full"> 
+      <form ref={formRef} onSubmit={handleSubmit} className=" max-w-4xl w-full">
         <div className="flex items-center gap-2 pb-[env(safe-area-inset-bottom)] relative">
           {/* Textarea with integrated send button styling */}
           <div className="flex-grow relative">
@@ -315,7 +316,7 @@ export function ChatInput({ handleSendMessage }: ChatInputProps) {
         </div>
 
         
-      </form>
+      </form></div>
     </div>
   );
 }

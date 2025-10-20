@@ -115,7 +115,7 @@ export function ChatMessages({
         {orderedMessages.map((message) => (
           <> 
           {message.image ? (
-            <div key={message.image} className={`flex flex-row ${message.role === "user" ? "justify-end" : "justify-center mr-12"}`}>
+            <div key={message.image} className={`flex flex-row ${message.role === "user" ? "justify-end pr-6 md:pr-16 lg:pr-24 xl:pr-40" : "justify-center mr-12"}`}>
               <img className={`w-[300px] h-[300px] rounded-sm ${message.role === "user" ? "right-0" : "left-0"} cover`} src={message.image} alt="AI Photo" />
             </div>
           ) : <></>}
@@ -124,16 +124,16 @@ export function ChatMessages({
             className={cn(
               "flex gap-3 rounded-lg sm:p-3 lg:p-2",
               message.role === "user"
-                ? "flex-row-reverse bg-blue-600 mt-10 dark:bg-blue-700 lg:max-w-[50vw] px-4 py-7 max-w-[80vw] sm:w-fit ml-auto w-fit shadow-sm"
-                : "bg-neutral-100 dark:bg-neutral-800 pt-10 mt-10 text-lg w-full md:w-[80%] lg:w-[70%] mx-auto px-4"
+                ? "flex-row-reverse bg-blue-600 mt-10 dark:bg-blue-700 lg:max-w-[50vw] px-4 py-7 max-w-[80vw] sm:w-fit ml-auto mr-6 md:mr-16 lg:mr-24 xl:mr-40 w-fit shadow-sm"
+                : "bg-none  dark:bg-none  pt-10 mt-10 text-lg w-full md:w-[80%] lg:w-[70%] mx-auto px-4"
             )}
           >
             <div
               className={cn(
                 "flex h-8 w-8 max-w-10 shrink-0 select-none items-center justify-center rounded-full",
                 message.role === "user"
-                  ? "bg-white text-white"
-                  : "bg-blue-600 dark:bg-blue-500 text-white"
+                  ? "bg-none text-white"
+                  : "bg-none hidden -600 dark:bg-none text-white"
               )}
             >
               {message.role === "user" ? (
@@ -145,7 +145,7 @@ export function ChatMessages({
                   height={32}
                 />
               ) : (
-                <Sparkles className="mt-[-5px] h-5 w-5" />
+                <> </>
               )}
             </div>
             <div className="w-full sm:w-fit max-w-[500px] sm:max-w-[80%] flex-1 relative">
@@ -154,7 +154,7 @@ export function ChatMessages({
                   <div className="flex items-start">
                     <div className="flex-1">
                       <GeminiResponse content={message.content} />
-                    </div>
+                    </div> <br />
                     <div className="ml-1 mt-1 opacity-70 group-hover:opacity-100 transition-opacity duration-150">
                       <CopyButton textToCopy={message.content} />
                     </div>

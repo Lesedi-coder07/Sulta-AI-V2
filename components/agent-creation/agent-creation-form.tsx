@@ -259,7 +259,7 @@ export function AgentCreationForm() {
         className="w-full"
         onValueChange={(value) => setAgentType(value as "text" | "customer-support" | "school-assistant" | "employee-onboarding")}
       >
-        <TabsList className="grid w-full grid-cols-4 bg-card border border-border">
+        <TabsList className="grid w-full  grid-cols-4 items-center justify-center bg-card border border-border">
           <TabsTrigger value="text" className="space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <Bot className="h-4 w-4" />
             <span>General AI</span>

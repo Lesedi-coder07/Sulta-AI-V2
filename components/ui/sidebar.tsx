@@ -361,9 +361,9 @@ const SidebarHeader = React.forwardRef<
       className={cn("flex flex-col gap-2 p-2", className)}
       {...props}
     >
-      <GradientText>
-        <h1 className='text-[38px] mt-2 font-bold'>Sulta AI</h1>
-      </GradientText>
+      <>
+        <h1 className='text-[38px] mt-2 text-white font-italic font-bold'>Sulta AI</h1>
+      </>
 
     </div>
   )

@@ -92,9 +92,9 @@ const config = {
     			},
     		},
     		borderRadius: {
-    			lg: 'calc(var(--radius) - 10px)',
-    			md: 'calc(var(--radius) - 14px)',
-    			sm: 'calc(var(--radius) - 16px)'
+    			lg: 'calc(var(--radius) - 8px)',
+    			md: 'calc(var(--radius) - 10px)',
+    			sm: 'calc(var(--radius) - 12px)'
     		},
     		keyframes: {
     			'accordion-down': {

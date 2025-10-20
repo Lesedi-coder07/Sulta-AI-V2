@@ -257,7 +257,8 @@ const fetchMessages = async (chatId: string) => {
 };
 
     return (
-        <main className="overflow-hidden">
+        <> 
+        <main className="overflow-hidden hidden">
             <div className="flex flex-row flex-nowrap overflow-hidden w-screen">
                 {/* Mobile slide-out drawer */}
                 <aside className="fixed inset-y-0 left-0 md:hidden transform transition-transform duration-300 ease-in-out z-50 w-64 bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 flex-shrink-0"
@@ -511,6 +512,10 @@ const fetchMessages = async (chatId: string) => {
                 </div>
             </div>
         </main>
+        
+        <h1 className="text-center mt-36 text-4xl font-bold">This Feature Has Been <br /> Deprecated.</h1>
+        <p className="text-center mt-4 text-lg">Create your own AI agent now with <Link href="/ai/create" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">Sulta AI</Link></p>
+         </>
     );
 }
 
