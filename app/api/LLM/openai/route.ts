@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       const currentUserInstruction = currentUser ? `You are currently talking to ${currentUser}.` : '';
   
       const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini", // "gpt-4o-mini" appears to be a typo
+        model: "gpt-4o-mini", 
         messages: [
           ...previousMessages.map((message: any) => ({
             role: message.role, 

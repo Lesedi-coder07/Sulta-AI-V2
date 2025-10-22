@@ -9,15 +9,16 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { convertFileToBase64 } from "@/lib/utils";
 import { storage } from "@/app/api/firebase/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { UIMessage } from "ai";
 interface ChatInputProps {
-  handleSendMessage: (message: string, base64String: string | null, image: string | null, docUrl: string | null, powerUpSelected: string | null) => void;
+  sendMessage: (message: string) => void;
 }
 
 
 
 
 
-export function ChatInput({ handleSendMessage }: ChatInputProps) {
+export function ChatInput({ sendMessage }: { sendMessage: (message: string) => void }) {
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLDivElement>(null);
@@ -95,7 +96,7 @@ export function ChatInput({ handleSendMessage }: ChatInputProps) {
 
     e.preventDefault();
     if (message.trim()) {
-      handleSendMessage(message.trim(), fileBase64String, imageUrl, docUrl, powerUpSelected);
+      sendMessage(message.trim());
       setMessage("");
       setFileBase64String(null)
       setUploadFileName(null)

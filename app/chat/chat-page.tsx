@@ -506,9 +506,8 @@ const fetchMessages = async (chatId: string) => {
 
                 {/* Main chat area */}
                 <div className="flex-1 flex flex-col h-screen bg-peach-500 dark:bg-neutral-900">
-                    <ChatHeader showImage={false} handleSidebarToggle={handleSidebarToggle} showButton={false} agent={{ name: 'Xev 1.0' }} />
-                    <ChatMessages agentName={'Xev 1.0'} updateMessageArray={handleSendMessage} messages={messages} profileImage={profileImage} loadingState={loading} />
-                    <ChatInput handleSendMessage={handleSendMessage} />
+      
+      
                 </div>
             </div>
         </main>

@@ -139,11 +139,32 @@ const handlePublicAgentClick = (url : string) => {
 
           <div className={`flex flex-row flex-wrap gap-4 w-full ${!isLoading ? 'overflow-y-auto' : ''}`}>
             {isLoading ? (
-              <div className="flex justify-center items-center w-full">
-                <svg className="animate-spin h-8 w-8 text-neutral-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                </svg>
+              <div className="flex flex-col mx-auto justify-center items-center w-full py-12">
+                <div className="relative">
+                  {/* Outer pulsing ring */}
+                  <div className="absolute inset-0 rounded-full border-4 border-neutral-200 dark:border-neutral-700 animate-pulse"></div>
+                  
+                  {/* Main spinning ring */}
+                  <div className="w-12 h-12 rounded-full border-4 border-transparent border-t-blue-500 border-r-blue-400 animate-spin"></div>
+                  
+                  {/* Inner gradient ring */}
+                  <div className="absolute inset-2 rounded-full border-2 border-transparent border-b-purple-400 border-l-purple-300 animate-spin" style={{animationDirection: 'reverse', animationDuration: '0.8s'}}></div>
+                  
+                  {/* Center dot */}
+                  <div className="absolute inset-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 animate-pulse"></div>
+                </div>
+                
+                {/* Loading text with animation */}
+                <div className="mt-6 text-center">
+                  <p className="text-sm font-medium text-neutral-600 dark:text-neutral-300 animate-pulse">
+                    Loading your AI agents...
+                  </p>
+                  <div className="flex justify-center mt-2 space-x-1">
+                    <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
+                    <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
+                    <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+                  </div>
+                </div>
               </div>
             ) : agents.length === 0 ? (
               <p className="text-sm text-neutral-500 dark:text-neutral-400">You don't have any agents yet</p>
@@ -162,28 +183,7 @@ const handlePublicAgentClick = (url : string) => {
           </div>
         </div>
 
-        <div className="space-y-4 mt-7 w-full flex flex-col">
-        <div>
-            <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-              Public Agents
-            </h2>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
-              The most popular agents
-            </p>
-          </div>
-
-          <div className="flex flex-row flex-wrap gap-4 w-full">
-          <AgentCard
-                  key={'Xev'}
-                  name={'Xev 1.0'}
-                  type={'text'}
-                  status={"online"}
-                  selected={false}
-                  onClick={() => handlePublicAgentClick('/chat')}
-                />
-
-          </div>
-        </div>
+        
       </div>
     )
   );

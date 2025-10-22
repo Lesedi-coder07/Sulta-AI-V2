@@ -5,65 +5,64 @@ import { ChatHeader } from "./chat-header";
 import { ChatMessages } from "./chat-messages";
 import { ChatInput } from "./chat-input";
 import { Message } from "@/types/chat";
-import { auth, db } from '@/app/api/firebase/firebaseConfig';
+import { auth } from '@/app/api/firebase/firebaseConfig';
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
+import { Agent } from "@/types/agent";
+import { generateSystemMessage } from "@/app/ai/create/generateSystemMessage";
 
-export interface Agent {
+export interface ChatAgent extends Agent {
     isPublic: boolean;
-    ownerID: string;
-    systemMessage: string;
-    totalQueries: number;
-    tokensUsed: number;
-    totalChats: number;
+    ownerID?: string;
+    systemMessage?: string;
+    totalQueries?: number;
+    tokensUsed?: number;
+    totalChats?: number;
     name: string;
 }
 
+interface ChatInterfaceProps {
+    agent_id: string;
+    agentData: ChatAgent;
+}
 
-export function ChatInterface({ agent_id }: { agent_id: string }) {
+export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
+   
     const [currentUser, setCurrentUser] = useState<string | null>(null);
     const [exists, setExists] = useState<false | true>(true);
-    const [agent, setAgent] = useState<Agent >();
     const [loading, setLoading] = useState<boolean>(false);
     const [profileImage, setProfileImage ] = useState<string | null>(null)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
 
+    // Use the agentData passed from server-side
+    const agent = agentData;
 
-    useEffect( ()  => {
-        async function checkAgent() {
-            const agentRef = doc(db, 'agents', agent_id)
-            let snapshot = await getDoc(agentRef)
-            if(snapshot.exists()) {
-                setExists(true)
-                setAgent(snapshot.data() as Agent)
-                console.log(agent)
-                if (agent?.isPublic == false) {
-                    if (agent.ownerID != currentUser) {
-                       setExists(false)
-                    }
-                }
-            } else {
-                setExists(false)
-            }
+    useEffect(() => {
+        // Check if user has access to the agent
+        if (agent && !agent.isPublic && agent.ownerID !== currentUser) {
+            setExists(false);
+        } else {
+            setExists(true);
         }
+    }, [agent, currentUser])
 
 
-        checkAgent()
-    
+    const systemMessage = generateSystemMessage(agentData.name, agentData?.description ?? '', agentData.type, agentData.personality, agentData.tone, agentData.expertise);
+
+    const { messages, sendMessage } = useChat({
+        transport: new DefaultChatTransport({
+
+        prepareSendMessagesRequest({ messages: uiMessages, id }) {
+        return {
+          body: {
+            system: systemMessage,
+            messages: uiMessages,
+            chatId: id,
+          },
+        };}
+        }),
     })
-
-    
-    
-
-
-    const [messages, setMessages] = useState<Message[]>([
-        // {
-        //     id: "1",
-        //     role: "assistant",
-        //     content: "Hello! How can I assist you today?",
-        //     timestamp: "just now",
-        // },
-    ]);
 
 
     useEffect(() => {
@@ -81,55 +80,56 @@ export function ChatInterface({ agent_id }: { agent_id: string }) {
 
 
 
-    const handleSendMessage = async (content: string, base64String: string | null, image: string | null, docUrl: string | null, powerUpSelected: string | null) => {
-      console.log(agent?.systemMessage)
+    // const handleSendMessage = async (content: string, base64String: string | null, image: string | null, docUrl: string | null, powerUpSelected: string | null) => {
+    //   console.log(agent?.systemMessage)
 
-        setLoading(true)
-        const userMessage: Message = {
-            id: Date.now().toString(),
-            role: "user",
-            content,
-            timestamp: "just now",
-            image: null
-        };
-        setMessages((prev) => [...prev, userMessage]);
+    //     setLoading(true)
+    //     const userMessage: Message = {
+    //         id: Date.now().toString(),
+    //         role: "user",
+    //         content,
+    //         timestamp: "just now",
+    //         image: null
+    //     };
+    //     setMessages((prev) => [...prev, userMessage]);
 
         
 
-        try {
+    //     try {
           
     
-            const aiMessage = await generateWithGemini(messages, agent?.systemMessage ?? 'You are a helpful AI agent.', content, auth.currentUser?.displayName ?? '');
-            setLoading(false)
-            setMessages((prev) => [...prev, {
-                id: (Date.now() + 1).toString(),
-                role: "assistant",
-                content: aiMessage.response,
-                timestamp: "just now",
-                image: aiMessage.imageUrl?.imageUrl ?? null,
-                docUrl: null
-            }]);
+    //         const aiMessage = await generateWithGemini(messages, agent?.systemMessage ?? 'You are a helpful AI agent.', content, auth.currentUser?.displayName ?? '');
+    //         setLoading(false)
+    //         setMessages((prev) => [...prev, {
+    //             id: (Date.now() + 1).toString(),
+    //             role: "assistant",
+    //             content: aiMessage.response,
+    //             timestamp: "just now",
+    //             image: aiMessage.imageUrl?.imageUrl ?? null,
+    //             docUrl: null
+    //         }]);
     
-        } catch (error) {
-            console.error(error);
-            // You might want to show an error message to the user here
-        }
-        setLoading(false)
+    //     } catch (error) {
+    //         console.error(error);
+    //         // You might want to show an error message to the user here
+    //     }
+    //     setLoading(false)
        
-    };
+    // };
 
     const handleSidebarToggle = () => {
         setIsDrawerOpen(!isDrawerOpen);
     }
 
+    console.log(agentData)
 
     return (
 
         exists ?   (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
             <ChatHeader handleSidebarToggle={handleSidebarToggle} showImage={false} agent={agent} showButton={true} />
-            <ChatMessages updateMessageArray={handleSendMessage} messages={messages} profileImage={profileImage} loadingState={loading} agentName={agent?.name ?? 'Xev 1.0'} />
-            <ChatInput handleSendMessage={handleSendMessage} />
-        </div> ) : <h1 className="text-center text-2xl">Agent not found</h1>
+            <ChatMessages messages={messages} />
+            <ChatInput sendMessage={(message: string) => sendMessage({text : message})} />
+        </div> ) : <h1 className="text-center mt-36 text-4xl font-bold">Agent not found <br /></h1>
     );
       
 }

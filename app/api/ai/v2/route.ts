@@ -1,7 +1,17 @@
-import { NextRequest , NextResponse} from "next/server";
+import { openai } from '@ai-sdk/openai';
+import { streamText, UIMessage, convertToModelMessages } from 'ai';
+import { google } from '@ai-sdk/google';
 
-export async function POST(req: NextRequest) {
-    const body = await req.json();
-    const { prompt } = body;
-    return NextResponse.json({ message: "Hello, world!" });
+// Allow streaming responses up to 30 seconds
+export const maxDuration = 50;
+
+export async function POST(req: Request) {
+  const { messages }: { messages: UIMessage[] } = await req.json();
+
+  const result = streamText({
+    model: google('gemini-2.5-flash'),
+    messages: convertToModelMessages(messages),
+  });
+
+  return result.toUIMessageStreamResponse();
 }

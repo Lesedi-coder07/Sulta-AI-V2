@@ -9,6 +9,7 @@ import GeminiResponse from "./gemini-responses";
 import { Card, CardContent } from "@/components/ui/card";
 import { GradientText } from "@/components/ui/gradient-text";
 import { TextShimmer } from '@/components/ui/text-shimmer';
+import { UIMessage } from "ai";
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -58,23 +59,10 @@ function CopyButton({ textToCopy }: { textToCopy: string }) {
 
 export function ChatMessages({
   messages,
-  loadingState,
-  profileImage,
-  updateMessageArray,
-  agentName
 }: {
-  messages: Message[];
-  loadingState: boolean;
-  profileImage: string | null;
-  updateMessageArray: any;
-  agentName: string;
+  messages: UIMessage[];
 }) {
 
-  const messageReversed = messages.reverse();
-
-  const orderedMessages = [...messages].sort((a, b) => {
-    return Number(a.id) - Number(b.id);
-  });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -87,11 +75,25 @@ export function ChatMessages({
 
   return (
     <div className="flex-1 overflow-y-auto mb-7 mt-35 sm:mb-[180px] md:mt-10  pt-5 px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
-      <div className="space-y-4">
+  
+
+  {messages.map(message => (
+        <div key={message.id} className="whitespace-pre-wrap">
+          {message.role === 'user' ? 'User: ' : 'AI: '}
+          {message.parts.map((part, i) => {
+            switch (part.type) {
+              case 'text':
+                return <div key={`${message.id}-${i}`}>{part.text}</div>;
+            }
+          })}
+        </div>
+      ))}
+
+      {/* <div className="space-y-4">
         {messages.length === 0 ? (
           <>
             <h1 className="text-xl text-center text-neutral-900 dark:text-neutral-100">
-              Welcome to {agentName}
+              Welcome to Sulta AI
             </h1>
             <div className="text-center">
               <GradientText> How can I help you today? </GradientText>
@@ -159,7 +161,7 @@ export function ChatMessages({
                       <CopyButton textToCopy={message.content} />
                     </div>
                   </div>
-                  {/* {message.image.imageUrl  ? <img className="w-[120px] h-[120px] rounded-sm right-0 cover" src={message.image} alt="AI Photo" /> : <> </>} */}
+                  {/* {message.image.imageUrl  ? <img className="w-[120px] h-[120px] rounded-sm right-0 cover" src={message.image} alt="AI Photo" /> : <> </>} 
                 </div>
               ) : 
                 <p className="text-white mb-2 px-2 my-auto">{message.content}</p>
@@ -171,17 +173,18 @@ export function ChatMessages({
 
         {loadingState && <div className="flex justify-center w-full gap-3 ml-4 rounded-lg p-4 ">
           <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full text-primary dark:text-blue-400">
-            {/* <span className="flex space-x-1">
+             <span className="flex space-x-1">
               <span className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:-0.3s]"></span>
               <span className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:-0.15s]"></span>
               <span className="h-2 w-2 rounded-full bg-primary animate-bounce"></span>
-            </span> */}
+            </span> 
 
             <TextShimmerColor text="Thinking..." />
             <div ref={messagesEndRef} />
           </div>
         </div>}
-      </div>
+      </div> 
+      */}
     </div>
   );
 }

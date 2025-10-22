@@ -170,7 +170,7 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
                   </div>
           <div>
                     <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">{agent.name}</h2>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2"><br /><br />
                       <Badge variant="secondary" className="capitalize">{agent.type}</Badge>
                       <Badge variant={agent.isPublic ? "default" : "outline"}>
                         {agent.isPublic ? <><Globe className="h-3 w-3 mr-1" />Public</> : <><EyeOff className="h-3 w-3 mr-1" />Private</>}

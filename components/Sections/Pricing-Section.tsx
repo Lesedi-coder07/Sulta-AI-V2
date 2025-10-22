@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 function PricingSection() {
   return (
     <div>
-          <div className="mt-20 grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="mt-20 grid grid-cols-1 gap-8 lg:grid-cols-2">
           {tiers.map((tier) => (
             <Card 
               key={tier.name}
