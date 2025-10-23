@@ -1,9 +1,20 @@
 import { openai } from '@ai-sdk/openai';
-import { streamText, UIMessage, convertToModelMessages } from 'ai';
+import { streamText, convertToModelMessages } from 'ai';
 import { google } from '@ai-sdk/google';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 100;
+
+function  messagesToModelMessages(messages: any[]) {
+  //Step 1: Convert the UI messages to model messages
+  const messages_step_1 = convertToModelMessages(messages);
+  return messages_step_1.map((message: any, index: number) => {
+    return {
+      role: message.role as any,
+      content: message.content.text,
+    };
+  });
+}
 
 export async function POST(req: Request) {
   try {
@@ -18,23 +29,31 @@ export async function POST(req: Request) {
       });
     }
 
+    console.log("Original messages:", messages);
+    const modelMessages = convertToModelMessages(messages);
+    console.log("Converted model messages:", modelMessages[0]);
+    const cleanedModelMessages = messagesToModelMessages(modelMessages);
+    console.log("Cleaned model messages:", cleanedModelMessages[0]);
+
+
     const allMessages = [
       {
-        role: 'system',
+        role: 'system' as const,
         content: system || 'You are a helpful AI assistant.',
       },
-      ...messages,
+      ...modelMessages,
     ];
 
-    console.log("allMessages", allMessages);
 
     const result = streamText({
       model: google('gemini-2.5-flash'),
-      messages: convertToModelMessages(allMessages),
+      messages: modelMessages,
       temperature: 0.7,
     });
 
-    return result.toUIMessageStreamResponse();
+
+    console.log("result", result);
+    return result.toTextStreamResponse();
   } catch (error) {
     console.error('Error in chat API:', error);
     return new Response(JSON.stringify({ error: 'Internal server error' }), {

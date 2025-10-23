@@ -72,6 +72,11 @@ export function ChatMessages({
       block: 'end',
     });
   }
+  messages.map(message => {
+    if(message.role !== "user") {
+      console.log("message", message);
+    }
+  })
 
   return (
     <div className="flex-1 overflow-y-auto mb-7 mt-35 sm:mb-[180px] md:mt-10  pt-5 px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
@@ -80,6 +85,7 @@ export function ChatMessages({
   {messages.map(message => (
         <div key={message.id} className="whitespace-pre-wrap">
           {message.role === 'user' ? 'User: ' : 'AI: '}
+
           {message.parts.map((part, i) => {
             switch (part.type) {
               case 'text':
