@@ -7,7 +7,6 @@ import { AppSidebar } from "@/components/Sidebar/app-sidebar";
 import { ChatHeader } from "@/components/ai/chat/chat-header";
 import { ChatInput, writeMessageToDb } from "@/components/ai/chat/chat-input";
 import { ChatMessages } from "@/components/ai/chat/chat-messages";
-import { Agent } from "@/components/ai/chat/chat-interface";
 import { Chat, Message } from "@/types/chat";
 import { generateWithGemini } from "@/components/ai/chat/chat-interface";
 import { auth } from "../api/firebase/firebaseConfig";
