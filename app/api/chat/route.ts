@@ -2,7 +2,7 @@ import { openai } from '@ai-sdk/openai';
 import { streamText, convertToModelMessages } from 'ai';
 import { google } from '@ai-sdk/google';
 
-export const maxDuration = 60;
+export const maxDuration = 55;
 
 function  messagesToModelMessages(messages: any[]) {
   //Step 1: Convert the UI messages to model messages
