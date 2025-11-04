@@ -1,7 +1,7 @@
 "use client"
 import { Message } from "@/types/chat";
 import { cn } from "@/lib/utils";
-import { Bot, Sparkles, Copy } from "lucide-react";
+import { Bot, Sparkles, Copy, Check } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Image from 'next/image'
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
@@ -34,7 +34,7 @@ function CopyButton({ textToCopy }: { textToCopy: string }) {
     try {
       await navigator.clipboard.writeText(textToCopy);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1200);
+      setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       setCopied(false);
     }
@@ -43,16 +43,20 @@ function CopyButton({ textToCopy }: { textToCopy: string }) {
   return (
     <button
       onClick={handleCopy}
-      title={copied ? "Copied!" : "Copy"}
-      className={`ml-2 p-1 rounded transition-colors duration-150 ${
+      title={copied ? "Copied!" : "Copy to clipboard"}
+      className={cn(
+        "p-1.5 rounded-md transition-all duration-200 opacity-0 group-hover:opacity-100",
         copied
-          ? "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200"
-          : "hover:bg-neutral-200 dark:hover:bg-neutral-700"
-      }`}
-      style={{ lineHeight: 0, verticalAlign: "middle" }}
+          ? "bg-green-500/10 text-green-600 dark:text-green-400"
+          : "hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 dark:text-neutral-400"
+      )}
       aria-label="Copy message"
     >
-      <Copy className={`w-4 h-4 ${copied ? "text-green-600" : ""}`} />
+      {copied ? (
+        <Check className="w-3.5 h-3.5" />
+      ) : (
+        <Copy className="w-3.5 h-3.5" />
+      )}
     </button>
   );
 }
@@ -62,8 +66,6 @@ export function ChatMessages({
 }: {
   messages: UIMessage[];
 }) {
-
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -72,125 +74,135 @@ export function ChatMessages({
       block: 'end',
     });
   }
-  messages.map(message => {
-    if(message.role !== "user") {
-      console.log("message", message);
-    }
-  })
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // Extract text content from message parts
+  const getMessageText = (message: UIMessage): string => {
+    return message.parts
+      .filter(part => part.type === 'text')
+      .map(part => ('text' in part ? part.text : ''))
+      .join('');
+  };
 
   return (
-    <div className="flex-1 overflow-y-auto mb-7 mt-35 sm:mb-[180px] md:mt-10  pt-5 px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
-  
-
-  {messages.map(message => (
-        <div key={message.id} className="whitespace-pre-wrap">
-          {message.role === 'user' ? 'User: ' : 'AI: '}
-
-          {message.parts.map((part, i) => {
-            switch (part.type) {
-              case 'text':
-                return <div key={`${message.id}-${i}`}>{part.text}</div>;
-            }
-          })}
+    <div className="flex-1 overflow-y-auto mb-7 sm:mb-[180px] pt-5 px-4 sm:px-6 md:px-8 pb-36 h-full messages-container bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-950 dark:to-neutral-900">
+      {/* Welcome Screen */}
+      {messages.length === 0 && (
+        <div className="flex flex-col items-center justify-center h-full max-w-3xl mx-auto px-4">
+          <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 mb-6 shadow-lg">
+            <Sparkles className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-center mb-3 bg-gradient-to-r from-neutral-900 to-neutral-700 dark:from-neutral-100 dark:to-neutral-300 bg-clip-text text-transparent">
+            Welcome to Sulta AI
+          </h1>
+          <p className="text-lg text-center text-neutral-600 dark:text-neutral-400 mb-10">
+            How can I help you today?
+          </p>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full max-w-4xl">
+            {promptSuggestions.map((prompt) => (
+              <Card 
+                key={prompt.suggestion}
+                className="group cursor-pointer border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-200" 
+              >
+                <CardContent className="p-4">
+                  <p className="text-sm text-neutral-700 dark:text-neutral-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {prompt.suggestion}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
-      ))}
+      )}
 
-      {/* <div className="space-y-4">
-        {messages.length === 0 ? (
-          <>
-            <h1 className="text-xl text-center text-neutral-900 dark:text-neutral-100">
-              Welcome to Sulta AI
-            </h1>
-            <div className="text-center">
-              <GradientText> How can I help you today? </GradientText>
-            </div>
-            <div className="flex flex-row flex-wrap gap-2 justify-center mx-auto">
-              {promptSuggestions.map((prompt) => (
-                <Card 
-                  key={prompt.suggestion}
-                  className="w-[10rem] hover:shadow-blue-600 cursor-pointer dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700" 
-                  onClick={() => updateMessageArray(prompt.suggestion)}
-                >
-                  <CardContent className="mt-8">
-                    <p className="text-sm">{prompt.suggestion}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </>
-        ) : null}
-
-        {orderedMessages.map((message) => (
-          <> 
-          {message.image ? (
-            <div key={message.image} className={`flex flex-row ${message.role === "user" ? "justify-end pr-6 md:pr-16 lg:pr-24 xl:pr-40" : "justify-center mr-12"}`}>
-              <img className={`w-[300px] h-[300px] rounded-sm ${message.role === "user" ? "right-0" : "left-0"} cover`} src={message.image} alt="AI Photo" />
-            </div>
-          ) : <></>}
-          <div
-            key={message.id}
-            className={cn(
-              "flex gap-3 rounded-lg sm:p-3 lg:p-2",
-              message.role === "user"
-                ? "flex-row-reverse bg-blue-600 mt-10 dark:bg-blue-700 lg:max-w-[50vw] px-4 py-7 max-w-[80vw] sm:w-fit ml-auto mr-6 md:mr-16 lg:mr-24 xl:mr-40 w-fit shadow-sm"
-                : "bg-none  dark:bg-none  pt-10 mt-10 text-lg w-full md:w-[80%] lg:w-[70%] mx-auto px-4"
-            )}
-          >
+      {/* Messages */}
+      <div className="max-w-4xl mx-auto space-y-6">
+        {messages.map((message) => {
+          const messageText = getMessageText(message);
+          
+          return (
             <div
+              key={message.id}
               className={cn(
-                "flex h-8 w-8 max-w-10 shrink-0 select-none items-center justify-center rounded-full",
-                message.role === "user"
-                  ? "bg-none text-white"
-                  : "bg-none hidden -600 dark:bg-none text-white"
+                "flex gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-4 duration-300",
+                message.role === "user" ? "flex-row-reverse" : "flex-row"
               )}
             >
-              {message.role === "user" ? (
-                <Image
-                  src={profileImage ? profileImage : `/icons/user-profile-icon.jpg`}
-                  alt={profileImage ? 'User Profile Picture' : 'generic'}
-                  className="h-[80%] w-[80%] rounded-full object-cover"
-                  width={32}
-                  height={32}
-                />
-              ) : (
-                <> </>
-              )}
-            </div>
-            <div className="w-full sm:w-fit max-w-[500px] sm:max-w-[80%] flex-1 relative">
-              {message.role != "user" ? (
-                <div className="group">
-                  <div className="flex items-start">
-                    <div className="flex-1">
-                      <GeminiResponse content={message.content} />
-                    </div> <br />
-                    <div className="ml-1 mt-1 opacity-70 group-hover:opacity-100 transition-opacity duration-150">
-                      <CopyButton textToCopy={message.content} />
-                    </div>
-                  </div>
-                  {/* {message.image.imageUrl  ? <img className="w-[120px] h-[120px] rounded-sm right-0 cover" src={message.image} alt="AI Photo" /> : <> </>} 
+              {/* Avatar */}
+              <div className="flex-shrink-0">
+                <div
+                  className={cn(
+                    "flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full",
+                    message.role === "user"
+                      ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-md"
+                      : "bg-gradient-to-br from-purple-500 to-pink-600 shadow-md"
+                  )}
+                >
+                  {message.role === "user" ? (
+                    <div className="text-white font-semibold text-sm">U</div>
+                  ) : (
+                    <Bot className="w-5 h-5 text-white" />
+                  )}
                 </div>
-              ) : 
-                <p className="text-white mb-2 px-2 my-auto">{message.content}</p>
-              }
+              </div>
+
+              {/* Message Content */}
+              <div className={cn(
+                "flex-1 max-w-[85%] sm:max-w-[75%]",
+                message.role === "user" ? "flex justify-end" : ""
+              )}>
+                <div className="group relative">
+                  <div
+                    className={cn(
+                      "rounded-2xl px-4 py-3 shadow-sm",
+                      message.role === "user"
+                        ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-tr-sm"
+                        : "bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-tl-sm"
+                    )}
+                  >
+                    {message.role === "user" ? (
+                      <div className="text-[15px] leading-relaxed whitespace-pre-wrap break-words">
+                        {message.parts.map((part, i) => {
+                          if (part.type === 'text') {
+                            return <span key={`${message.id}-${i}`}>{part.text}</span>;
+                          }
+                          return null;
+                        })}
+                      </div>
+                    ) : (
+                      <div className="prose prose-sm dark:prose-invert max-w-none">
+                        <GeminiResponse content={messageText} />
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Copy Button - Only for AI messages */}
+                  {message.role === "assistant" && (
+                    <div className="absolute -top-2 -right-2">
+                      <CopyButton textToCopy={messageText} />
+                    </div>
+                  )}
+
+                  {/* Timestamp */}
+                  <div className={cn(
+                    "text-xs text-neutral-500 dark:text-neutral-500 mt-1 px-1",
+                    message.role === "user" ? "text-right" : "text-left"
+                  )}>
+                    {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          </>
-        ))}
+          );
+        })}
+      </div>
 
-        {loadingState && <div className="flex justify-center w-full gap-3 ml-4 rounded-lg p-4 ">
-          <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full text-primary dark:text-blue-400">
-             <span className="flex space-x-1">
-              <span className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:-0.3s]"></span>
-              <span className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:-0.15s]"></span>
-              <span className="h-2 w-2 rounded-full bg-primary animate-bounce"></span>
-            </span> 
-
-            <TextShimmerColor text="Thinking..." />
-            <div ref={messagesEndRef} />
-          </div>
-        </div>}
-      </div> 
-      */}
+      {/* Scroll anchor */}
+      <div ref={messagesEndRef} className="h-4" />
     </div>
   );
 }
