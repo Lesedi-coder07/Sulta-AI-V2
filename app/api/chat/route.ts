@@ -10,7 +10,7 @@ function  messagesToModelMessages(messages: any[]) {
   return messages_step_1.map((message: any, index: number) => {
     return {
       role: message.role as any,
-      content: message.content.text,
+      content: message.content[0].text,
     };
   });
 }
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     console.log("Original messages:", messages);
     const modelMessages = convertToModelMessages(messages);
     console.log("Converted model messages:", modelMessages[0]);
-    const cleanedModelMessages = messagesToModelMessages(modelMessages);
+    const cleanedModelMessages = messagesToModelMessages(messages);
     console.log("Cleaned model messages:", cleanedModelMessages[0]);
 
 
@@ -40,19 +40,21 @@ export async function POST(req: Request) {
         role: 'system' as const,
         content: system || 'You are a helpful AI assistant.',
       },
-      ...modelMessages,
+      ...cleanedModelMessages,
     ];
 
 
     const result = streamText({
       model: google('gemini-2.5-flash'),
-      messages: modelMessages,
+      messages: allMessages,
       temperature: 0.7,
     });
 
 
-    console.log("result", result);
-    return result.toTextStreamResponse();
+    
+    return result.toUIMessageStreamResponse();
+
+    
   } catch (error) {
     console.error('Error in chat API:', error);
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
