@@ -34,6 +34,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const [profileImage, setProfileImage ] = useState<string | null>(null)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
+    const [manualLoading, setManualLoading] = useState<boolean>(false);
 
     // Use the agentData passed from server-side
     const agent = agentData;
@@ -50,7 +51,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
 
     const systemMessage = generateSystemMessage(agentData.name, agentData?.description ?? '', agentData.type, agentData.personality, agentData.tone, agentData.expertise);
 
-    const { messages, sendMessage } = useChat({
+    const chatHook = useChat({
         transport: new DefaultChatTransport({
 
         prepareSendMessagesRequest({ messages: uiMessages, id }) {
@@ -62,8 +63,52 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
           },
         };}
         }),
-    })
+    });
 
+    const { messages, sendMessage, isLoading, status } = chatHook;
+
+    // Track loading manually - set to true when user sends message
+    const [prevMessagesLength, setPrevMessagesLength] = useState(0);
+    
+    useEffect(() => {
+        // When messages increase and last message is from user, set loading
+        if (messages.length > prevMessagesLength) {
+            const lastMessage = messages[messages.length - 1];
+            if (lastMessage?.role === 'user') {
+                console.log('User message detected, setting manualLoading to true');
+                setManualLoading(true);
+            }
+        }
+        
+        // When last message is assistant with content, clear loading
+        if (messages.length > 0) {
+            const lastMessage = messages[messages.length - 1];
+            if (lastMessage?.role === 'assistant') {
+                const content = lastMessage.parts
+                    ?.filter(part => part.type === 'text')
+                    ?.map(part => part.text)
+                    ?.join('') || '';
+                
+                if (content && content.length > 10) {
+                    console.log('Assistant response received, setting manualLoading to false');
+                    setManualLoading(false);
+                }
+            }
+        }
+        
+        setPrevMessagesLength(messages.length);
+    }, [messages, prevMessagesLength]);
+
+    // Debug: log all available properties
+    useEffect(() => {
+        console.log('ChatInterface - useChat hook properties:', {
+            isLoading,
+            status,
+            manualLoading,
+            messagesLength: messages.length,
+            allKeys: Object.keys(chatHook)
+        });
+    }, [isLoading, status, manualLoading, messages.length, chatHook]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -127,7 +172,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
 
         exists ?   (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
             <ChatHeader handleSidebarToggle={handleSidebarToggle} showImage={false} agent={agent} showButton={true} />
-            <ChatMessages messages={messages} />
+            <ChatMessages messages={messages} isLoading={isLoading || status === 'in_progress' || manualLoading} />
             <ChatInput sendMessage={(message: string) => sendMessage({text : message})} />
         </div> ) : <h1 className="text-center mt-36 text-4xl font-bold">Agent not found <br /></h1>
     );

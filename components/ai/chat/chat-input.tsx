@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ArrowUp, Plus, File, Globe, Image, Brain} from "lucide-react";
+import { ArrowUp, Paperclip, File, Globe, Image, Brain} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { db } from "@/app/api/firebase/firebaseConfig"; // Import your Firebase configuration
@@ -224,100 +224,104 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string) => v
     //     </p>
     //   </form>
     // </div>
-    <div className="fixed bottom-0    border-neutral-200 w-full py-4 dark:border-neutral-800 dark:bg-neutral ">
-      <div className="flex justify-center items-center w-full"> 
-      <form ref={formRef} onSubmit={handleSubmit} className=" max-w-4xl w-full">
-        <div className="flex items-center gap-2 pb-[env(safe-area-inset-bottom)] relative">
-          {/* Textarea with integrated send button styling */}
-          <div className="flex-grow relative">
+    <div className="fixed bottom-0 left-0 right-0 w-full py-6 px-4 bg-white dark:bg-neutral-900  ">
+      <div className="max-w-3xl mx-auto">
+        <form ref={formRef} onSubmit={handleSubmit} className="w-full">
+          {/* Main Input Container */}
+          <div className="relative flex items-center gap-3 bg-neutral-100 dark:bg-neutral-800 rounded-3xl px-4 py-3 shadow-sm border border-neutral-200 dark:border-neutral-700">
+            
+            {/* Textarea */}
             <Textarea
               ref={textareaRef}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
-              className="min-h-[40px] max-h-[300px] h-[100px] py-10 rounded-md resize-none bg-neutral-100 dark:bg-neutral-800 w-full shadow-md pr-12 pl-3"
+              placeholder="Ask me anything..."
+              className="flex-1 min-h-[24px] max-h-[200px] resize-none bg-transparent border-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-base placeholder:text-neutral-500 dark:placeholder:text-neutral-400 px-2"
               rows={1}
             />
-            {/* Send Button (positioned inside textarea) */}
-            <Button
-              type="submit"
-              size="icon"
-              className="absolute top-1/2 right-2 -translate-y-1/2 h-10 w-10 shrink-0 bg-blue-600 hover:bg-primary/90 rounded-md"
-              disabled={!message.trim()}
-            >
-              <ArrowUp />
-            </Button>
-          </div>
 
-          {/* Plus Button (file upload toggle) */}
-          <div ref={fileInputRef} className={`absolute bottom-full right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2 z-10 ${showFileInput ? '' : 'hidden'}`}>
-            {uploadedFileName ? (
-              <div className="flex flex-row gap-2 px-4 py-2">
-                <File />
-                <p className="text-xs">{uploadedFileName}</p>
+            {/* Right Side Buttons */}
+            <div className="flex items-center gap-2">
+              {/* Attach Button */}
+              <div className="relative">
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  className="h-10 w-10 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-700"
+                  onClick={handleToggleFileInput}
+                >
+                  <Paperclip className="h-5 w-5 text-neutral-600 dark:text-neutral-400" />
+                </Button>
+
+                {/* File Upload Dropdown */}
+                <div 
+                  ref={fileInputRef} 
+                  className={`absolute bottom-full right-0 mb-2 w-56 bg-white dark:bg-neutral-800 shadow-lg rounded-lg py-2 z-50 border border-neutral-200 dark:border-neutral-700 ${showFileInput ? '' : 'hidden'}`}
+                >
+                  {uploadedFileName ? (
+                    <div className="flex items-center gap-2 px-4 py-2">
+                      <File className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                      <p className="text-sm text-neutral-700 dark:text-neutral-300 truncate">{uploadedFileName}</p>
+                    </div>
+                  ) : (
+                    <>
+                      <input
+                        type="file"
+                        accept=".jpg, .jpeg, .png, .heic"
+                        className="hidden"
+                        id="fileInput1"
+                        onChange={handleImageUpload}
+                        ref={imageInputRef}
+                      />
+                      <label
+                        htmlFor="fileInput1"
+                        className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 cursor-pointer transition-colors"
+                      >
+                        <Image className="h-4 w-4" />
+                        <span>Upload Image</span>
+                      </label>
+                      <input
+                        type="file"
+                        accept=".doc, .docx, .pdf"
+                        className="hidden"
+                        id="fileInput2"
+                        onChange={handleDocUpload}
+                      />
+                      <label
+                        htmlFor="fileInput2"
+                        className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 cursor-pointer transition-colors"
+                      >
+                        <File className="h-4 w-4" />
+                        <span>Upload Document</span>
+                      </label>
+                    </>
+                  )}
+                </div>
               </div>
-            ) : (
-              <>
-                <input
-                  type="file"
-                  accept=".jpg, .jpeg, .png, .heic"
-                  className="hidden"
-                  id="fileInput1"
-                  onChange={handleImageUpload}
-                  ref={imageInputRef}
-                />
-                <label
-                  htmlFor="fileInput1"
-                  className="flex flex-row gap-2 w-full px-4 hover:bg-slate-200 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
-                >
-                  Upload Image
-                </label>
-                <input
-                  type="file"
-                  accept=".doc, .docx, .pdf"
-                  className="hidden"
-                  id="fileInput2"
-                  onChange={handleDocUpload}
-                />  
-                <label
-                  htmlFor="fileInput2"
-                  className="mt-2 block w-full hover:bg-slate-200 px-4 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
-                >
-                  Upload Document
-                </label>
-              </>
-            )}
+
+              {/* Send Button */}
+              <Button
+                type="submit"
+                size="icon"
+                className="h-10 w-10 rounded-full bg-black dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
+                disabled={!message.trim() || isUploading}
+              >
+                <ArrowUp className="h-5 w-5 text-white dark:text-black" />
+              </Button>
+            </div>
           </div>
-          <Button
-            type="button"
-            size="icon"
-            className="h-8 w-8 bg-neutral-200 hover:bg-neutral-300"
-            onClick={handleToggleFileInput}
-          >
-            <Plus />
-          </Button>
-        </div>
 
-        <div className="flex-wrap gap-2 pt-3 hidden">
-          <button onClick={() => handlePowerUp('search')} className={`flex flex-row items-center bg-neutral-100 dark:bg-neutral-800 p-2 md:p-3 rounded-sm cursor-pointer hover:bg-neutral-200 dark:hover:bg-neutral-700 ${searchEnabled ? 'bg-neutral-200 dark:bg-neutral-700 border border-blue-500' : ''}`}>
-            <Globe className="h-4 w-4 md:h-5 md:w-5" />
-            <p className="text-xs ml-2 md:ml-3 dark:text-neutral-200">Search</p>
-          </button>
-
-          <button onClick={() => handlePowerUp('imageGen')} className={`flex flex-row items-center bg-neutral-100 dark:bg-neutral-800 p-2 md:p-3 rounded-sm cursor-pointer hover:bg-neutral-200 dark:hover:bg-neutral-700 ${imageGenEnabled ? 'bg-neutral-200 dark:bg-neutral-700 border border-blue-500' : ''}`}>
-            <Image className="h-4 w-4 md:h-5 md:w-5" />
-            <p className="text-xs ml-2 md:ml-3 dark:text-neutral-200">Generate Image</p>
-          </button>
-
-          <button onClick={() => handlePowerUp('think')} className={`flex flex-row items-center bg-neutral-100 dark:bg-neutral-800 p-2 md:p-3 rounded-sm cursor-pointer hover:bg-neutral-200 dark:hover:bg-neutral-700 ${thinkEnabled ? 'bg-neutral-200 dark:bg-neutral-700 border border-blue-500' : ''}`}>
-            <Brain className="h-4 w-4 md:h-5 md:w-5" />
-            <p className="text-xs ml-2 md:ml-3 dark:text-neutral-200">Deep Think</p>
-          </button>
-        </div>
-
-        
-      </form></div>
+          {/* Disclaimer Text */}
+          <p className="mt-3 text-center text-xs text-neutral-500 dark:text-neutral-400">
+            Sulta AI may display inaccurate info, so please double check the response. {" "}
+            <a href="/learn-more" className="underline hover:text-neutral-700 dark:hover:text-neutral-300">
+              Your Privacy
+            </a>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }

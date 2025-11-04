@@ -1,19 +1,12 @@
 "use client"
-import { Message } from "@/types/chat";
 import { cn } from "@/lib/utils";
-import { Bot, Sparkles, Copy } from "lucide-react";
+import { Bot, Sparkles, Copy, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import Image from 'next/image'
-import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
 import GeminiResponse from "./gemini-responses";
 import { Card, CardContent } from "@/components/ui/card";
 import { GradientText } from "@/components/ui/gradient-text";
 import { TextShimmer } from '@/components/ui/text-shimmer';
 import { UIMessage } from "ai";
-
-interface ChatMessagesProps {
-  messages: Message[];
-}
 
 const promptSuggestions = [
   {
@@ -44,26 +37,26 @@ function CopyButton({ textToCopy }: { textToCopy: string }) {
     <button
       onClick={handleCopy}
       title={copied ? "Copied!" : "Copy"}
-      className={`ml-2 p-1 rounded transition-colors duration-150 ${
+      className={cn(
+        "p-1.5 rounded-md transition-all duration-150",
         copied
-          ? "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200"
-          : "hover:bg-neutral-200 dark:hover:bg-neutral-700"
-      }`}
-      style={{ lineHeight: 0, verticalAlign: "middle" }}
+          ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200"
+          : "hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-500 dark:text-neutral-400"
+      )}
       aria-label="Copy message"
     >
-      <Copy className={`w-4 h-4 ${copied ? "text-green-600" : ""}`} />
+      <Copy className={cn("w-3.5 h-3.5", copied && "text-green-600 dark:text-green-400")} />
     </button>
   );
 }
 
 export function ChatMessages({
   messages,
+  isLoading = false,
 }: {
   messages: UIMessage[];
+  isLoading?: boolean;
 }) {
-
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -71,126 +64,172 @@ export function ChatMessages({
       behavior: 'smooth',
       block: 'end',
     });
-  }
-  messages.map(message => {
-    if(message.role !== "user") {
-      console.log("message", message);
-    }
-  })
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // Debug: log loading state and messages
+  useEffect(() => {
+    console.log('ChatMessages - isLoading:', isLoading);
+    console.log('ChatMessages - messages count:', messages.length);
+    console.log('ChatMessages - last message role:', messages[messages.length - 1]?.role);
+  }, [isLoading, messages]);
+
+  // Extract text content from message parts
+  const getMessageContent = (message: UIMessage): string => {
+    return message.parts
+      .filter(part => part.type === 'text')
+      .map(part => part.text)
+      .join('');
+  };
+
+  // Check if we should show shimmer for the last message
+  const shouldShowShimmer = (message: UIMessage, index: number): boolean => {
+    const isLastMessage = index === messages.length - 1;
+    const isAssistant = message.role === 'assistant';
+    const content = getMessageContent(message);
+    const isEmpty = !content || content.trim().length === 0;
+    
+    // Show shimmer only if it's the last assistant message and it's empty (before content arrives)
+    return isLastMessage && isAssistant && isEmpty && isLoading;
+  };
 
   return (
-    <div className="flex-1 overflow-y-auto mb-7 mt-35 sm:mb-[180px] md:mt-10  pt-5 px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
-  
-
-  {messages.map(message => (
-        <div key={message.id} className="whitespace-pre-wrap">
-          {message.role === 'user' ? 'User: ' : 'AI: '}
-
-          {message.parts.map((part, i) => {
-            switch (part.type) {
-              case 'text':
-                return <div key={`${message.id}-${i}`}>{part.text}</div>;
-            }
-          })}
-        </div>
-      ))}
-
-      {/* <div className="space-y-4">
+    <div className="flex-1  overflow-y-auto mb-7 mt-35 sm:mb-[180px] md:mt-10 pt-5 px-4 md:px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
+      <div className="max-w-4xl mx-auto space-y-4">
         {messages.length === 0 ? (
-          <>
-            <h1 className="text-xl text-center text-neutral-900 dark:text-neutral-100">
-              Welcome to Sulta AI
-            </h1>
-            <div className="text-center">
-              <GradientText> How can I help you today? </GradientText>
+          <div className="flex flex-col items-center justify-center py-12 px-4">
+            
+            
+            <div className="text-center mb-8">
+              <GradientText className="text-lg">How can I help you today?</GradientText>
             </div>
-            <div className="flex flex-row flex-wrap gap-2 justify-center mx-auto">
+            <div className="flex flex-row flex-wrap gap-3 justify-center max-w-2xl">
               {promptSuggestions.map((prompt) => (
                 <Card 
                   key={prompt.suggestion}
-                  className="w-[10rem] hover:shadow-blue-600 cursor-pointer dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700" 
-                  onClick={() => updateMessageArray(prompt.suggestion)}
+                  className="flex-1 min-w-[200px] max-w-[280px] hover:shadow-lg hover:shadow-blue-500/20 cursor-pointer transition-all duration-200 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 border-neutral-200 hover:border-blue-400 dark:hover:border-blue-500" 
                 >
-                  <CardContent className="mt-8">
-                    <p className="text-sm">{prompt.suggestion}</p>
+                  <CardContent className="p-4">
+                    <p className="text-sm leading-relaxed">{prompt.suggestion}</p>
                   </CardContent>
                 </Card>
               ))}
             </div>
-          </>
-        ) : null}
+          </div>
+        ) : (
+          <>
+            {messages.map((message, index) => {
+              const content = getMessageContent(message);
+              const isUser = message.role === 'user';
+              const showShimmer = shouldShowShimmer(message, index);
 
-        {orderedMessages.map((message) => (
-          <> 
-          {message.image ? (
-            <div key={message.image} className={`flex flex-row ${message.role === "user" ? "justify-end pr-6 md:pr-16 lg:pr-24 xl:pr-40" : "justify-center mr-12"}`}>
-              <img className={`w-[300px] h-[300px] rounded-sm ${message.role === "user" ? "right-0" : "left-0"} cover`} src={message.image} alt="AI Photo" />
-            </div>
-          ) : <></>}
-          <div
-            key={message.id}
-            className={cn(
-              "flex gap-3 rounded-lg sm:p-3 lg:p-2",
-              message.role === "user"
-                ? "flex-row-reverse bg-blue-600 mt-10 dark:bg-blue-700 lg:max-w-[50vw] px-4 py-7 max-w-[80vw] sm:w-fit ml-auto mr-6 md:mr-16 lg:mr-24 xl:mr-40 w-fit shadow-sm"
-                : "bg-none  dark:bg-none  pt-10 mt-10 text-lg w-full md:w-[80%] lg:w-[70%] mx-auto px-4"
-            )}
-          >
-            <div
-              className={cn(
-                "flex h-8 w-8 max-w-10 shrink-0 select-none items-center justify-center rounded-full",
-                message.role === "user"
-                  ? "bg-none text-white"
-                  : "bg-none hidden -600 dark:bg-none text-white"
-              )}
-            >
-              {message.role === "user" ? (
-                <Image
-                  src={profileImage ? profileImage : `/icons/user-profile-icon.jpg`}
-                  alt={profileImage ? 'User Profile Picture' : 'generic'}
-                  className="h-[80%] w-[80%] rounded-full object-cover"
-                  width={32}
-                  height={32}
-                />
-              ) : (
-                <> </>
-              )}
-            </div>
-            <div className="w-full sm:w-fit max-w-[500px] sm:max-w-[80%] flex-1 relative">
-              {message.role != "user" ? (
-                <div className="group">
-                  <div className="flex items-start">
-                    <div className="flex-1">
-                      <GeminiResponse content={message.content} />
-                    </div> <br />
-                    <div className="ml-1 mt-1 opacity-70 group-hover:opacity-100 transition-opacity duration-150">
-                      <CopyButton textToCopy={message.content} />
+              return (
+                <div
+                  key={message.id}
+                  className={cn(
+                    "flex gap-3 group",
+                    isUser ? "flex-row-reverse" : "flex-row"
+                  )}
+                >
+                  {/* Avatar */}
+                  <div className={cn(
+                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-full mt-1",
+                    isUser 
+                      ? "bg-blue-600 dark:bg-blue-700" 
+                      : "bg-neutral-200 dark:bg-neutral-700"
+                  )}>
+                    {isUser ? (
+                      <User className="w-4 h-4 text-white" />
+                    ) : (
+                      <Bot className="w-4 h-4 text-neutral-600 dark:text-neutral-300" />
+                    )}
+                  </div>
+
+                  {/* Message Bubble */}
+                  <div className={cn(
+                    "flex flex-col max-w-[85%] md:max-w-[75%] lg:max-w-[65%]",
+                    isUser && "items-end"
+                  )}>
+                    <div
+                      className={cn(
+                        "rounded-2xl px-4 py-3 shadow-sm transition-all duration-200",
+                        isUser
+                          ? "bg-blue-600 dark:bg-blue-700 text-white rounded-br-sm"
+                          : "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 rounded-bl-sm"
+                      )}
+                    >
+                      {isUser ? (
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
+                          {content}
+                        </p>
+                      ) : (
+                        <div className="relative w-full">
+                          {showShimmer ? (
+                            <div className="pr-8 text-sm leading-relaxed">
+                              <TextShimmerColor text="Thinking..." />
+                            </div>
+                          ) : (
+                            <>
+                              {content && (
+                                <>
+                                  <div className="pr-8 text-sm leading-relaxed">
+                                    <GeminiResponse content={content} />
+                                  </div>
+                                  <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
+                                    <CopyButton textToCopy={content} />
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {/* Timestamp - optional, can be added if message has timestamp */}
+                  </div>
+                </div>
+              );
+            })}
+            
+            {/* Show shimmer when loading and last assistant message has no content yet */}
+            {(() => {
+              const lastMessage = messages[messages.length - 1];
+              const lastMessageContent = lastMessage ? getMessageContent(lastMessage) : '';
+              const isLastMessageEmptyAssistant = lastMessage?.role === 'assistant' && (!lastMessageContent || lastMessageContent.trim().length === 0);
+              const shouldShowLoader = isLoading && (messages.length === 0 || lastMessage?.role === 'user' || isLastMessageEmptyAssistant);
+              
+              console.log('Shimmer condition check:', {
+                isLoading,
+                messagesLength: messages.length,
+                lastMessageRole: lastMessage?.role,
+                lastMessageContent: lastMessageContent?.substring(0, 20),
+                isLastMessageEmptyAssistant,
+                shouldShowLoader
+              });
+              return shouldShowLoader;
+            })() && (
+              <div className="flex gap-3 group">
+                {/* Avatar */}
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full mt-1 bg-neutral-200 dark:bg-neutral-700">
+                  <Bot className="w-4 h-4 text-neutral-600 dark:text-neutral-300" />
+                </div>
+                {/* Message Bubble */}
+                <div className="flex flex-col max-w-[85%] md:max-w-[75%] lg:max-w-[65%]">
+                  <div className="rounded-2xl px-4 py-3 shadow-sm transition-all duration-200 bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 rounded-bl-sm">
+                    <div className="text-sm leading-relaxed">
+                      <TextShimmerColor text="Thinking..." />
                     </div>
                   </div>
-                  {/* {message.image.imageUrl  ? <img className="w-[120px] h-[120px] rounded-sm right-0 cover" src={message.image} alt="AI Photo" /> : <> </>} 
                 </div>
-              ) : 
-                <p className="text-white mb-2 px-2 my-auto">{message.content}</p>
-              }
-            </div>
-          </div>
-          </>
-        ))}
-
-        {loadingState && <div className="flex justify-center w-full gap-3 ml-4 rounded-lg p-4 ">
-          <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full text-primary dark:text-blue-400">
-             <span className="flex space-x-1">
-              <span className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:-0.3s]"></span>
-              <span className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:-0.15s]"></span>
-              <span className="h-2 w-2 rounded-full bg-primary animate-bounce"></span>
-            </span> 
-
-            <TextShimmerColor text="Thinking..." />
+              </div>
+            )}
             <div ref={messagesEndRef} />
-          </div>
-        </div>}
-      </div> 
-      */}
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -199,7 +238,7 @@ function TextShimmerColor({text}: {text: string}) {
   return (
     <TextShimmer
       duration={1.2}
-      className='text-xl font-medium [--base-color:theme(colors.blue.600)] [--base-gradient-color:theme(colors.blue.200)] dark:[--base-color:theme(colors.blue.500)] dark:[--base-gradient-color:theme(colors.blue.300)]'
+      className='text-sm font-medium [--base-color:theme(colors.blue.600)] [--base-gradient-color:theme(colors.blue.200)] dark:[--base-color:theme(colors.blue.500)] dark:[--base-gradient-color:theme(colors.blue.300)]'
     >
       {text}
     </TextShimmer>
