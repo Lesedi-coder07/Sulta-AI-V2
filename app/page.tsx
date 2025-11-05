@@ -1,16 +1,15 @@
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { ArrowRight, Sparkles, Zap, Shield, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { features } from "@/data/features";
 
 import Navbar from "@/components/layout/Navbar";
 
 import Footer from "@/components/layout/Footer";
 import { GradientText } from "@/components/ui/gradient-text";
-// import { tiers } from "./pricing/pricing";
 
 import PricingSection from "@/components/Sections/Pricing-Section";
 
@@ -47,92 +46,159 @@ export default function Home() {
    
   return (
       <div className="overflow-y-auto">
-           
-            <Navbar />
-            <div className="border-b border-border ">
-                <main className="container mx-auto">
-                    <div className="relative md:mt-24 mx-auto w-full max-w-4xl pt-4 text-center">
-                        <div className="justify-center hidden md:flex">
-                            <div
-                                className="flex flex-row items-center justify-center gap-5 p-1 text-xs bg-card/60 backdrop-blur-lg rounded-md border border-border">
-                                <Badge className="font-semibold">New</Badge>
-                                <h5>Create Custom AI Agents in Minutes</h5>
-                                <Link href="/chat" className="flex flex-row items-center">
-                                    Explore Agents
-                                    <ArrowRightIcon className="w-6 h-6 ml-2" />
-                                </Link>
-                            </div>
+            {/* Hero Section - Completely Redesigned */}
+            <section className="relative min-h-screen flex flex-col overflow-hidden bg-gradient-to-b from-blue-50/50 via-white to-white dark:from-neutral-950 dark:via-neutral-900 dark:to-background">
+                {/* Subtle background pattern */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#e5e7eb_1px,transparent_1px),linear-gradient(to_bottom,#e5e7eb_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] opacity-20" />
+                
+                {/* Floating gradient orbs - more subtle */}
+                <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl animate-pulse" />
+                <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+                
+                {/* Navbar inside hero */}
+                <div className="relative z-50">
+                    <Navbar />
+                </div>
+                
+                <div className="container relative z-10 mx-auto px-4 pt-20 pb-16 flex-1 flex items-center justify-center">
+                    <div className="max-w-5xl w-full text-center">
+                        {/* Badge */}
+                        <div className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full border border-blue-200 bg-blue-50/50 dark:bg-blue-950/30 dark:border-blue-900 backdrop-blur-sm transition-all hover:scale-105 hover:shadow-lg hover:shadow-blue-500/20">
+                            <Badge className="bg-blue-600 hover:bg-blue-700 text-white border-0">
+                                <Sparkles className="w-3 h-3 mr-1" />
+                                New
+                            </Badge>
+                            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                                Create Custom AI Agents in Minutes
+                            </span>
+                            <ArrowRight className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                         </div>
-                        <h1 className="md:text-7xl my-4 font-extrabold text-4xl md:leading-tight">Create<GradientText > AI </GradientText> Agents in minutes</h1>
-                        <p className="mx-auto my-4 text-sm w-full max-w-xl text-center font-medium leading-relaxed tracking-wide">
-                            From students to CEOs, create custom AI agents for any task. Access pre-made agents, build your own, and share with others - all without writing a single line of code.
+
+                        {/* Main Headline */}
+                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
+                            <span className="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 dark:from-white dark:via-neutral-100 dark:to-white bg-clip-text text-transparent">
+                                Build Your AI
+                            </span>
+                            <br />
+                            <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 bg-clip-text text-transparent">
+                                Workforce Today
+                            </span>
+                        </h1>
+
+                        {/* Subheadline */}
+                        <p className="text-lg md:text-xl text-neutral-600 dark:text-neutral-400 mb-10 max-w-3xl mx-auto leading-relaxed font-medium">
+                            From students to CEOs, create custom AI agents for any task. Access pre-made agents, build your own, and share with others — all without writing a single line of code.
                         </p>
-                        <div className="flex flex-row justify-center items-center space-x-4 my-8">
-                            <Link href={"/login"}>
-                                <Button>
-                                    Get Started
-                                </Button>
 
+                        {/* CTA Buttons */}
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                            <Link href="/login">
+                                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg rounded-full shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all hover:scale-105">
+                                    Get Started Free
+                                    <ArrowRight className="ml-2 h-5 w-5" />
+                                </Button>
                             </Link>
-                            <Link href={"/learn-more"}>
-                                <Button variant="secondary">
-                                    What is Sulta AI?
+                            <Link href="/learn-more">
+                                <Button size="lg" variant="outline" className="px-8 py-6 text-lg rounded-full border-2 border-neutral-300 dark:border-neutral-700 hover:border-blue-600 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all hover:scale-105">
+                                    Learn More
                                 </Button>
                             </Link>
                         </div>
 
-                        <div
-                            className="absolute top-0 -z-10 max-h-full max-w-screen-lg w-full h-full blur-2xl">
-                            <div
-                                className="absolute top-24 left-24 w-56 h-56 bg-violet-600 rounded-full mix-blend-multiply opacity-70 animate-blob filter blur-3xl">
+                        {/* Dashboard Image - Modern floating card style */}
+                        <div className="relative max-w-6xl mx-auto">
+                            <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-500 rounded-3xl blur-2xl opacity-20 animate-pulse" />
+                            {/* <div className="relative rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-2xl shadow-blue-500/10">
+                                <Image 
+                                    className="w-full h-auto" 
+                                    src="/hero/dashboard.jpg" 
+                                    alt="Sulta AI Dashboard" 
+                                    priority
+                                    width={1200}
+                                    height={800}
+                                />
+                            </div> */}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Trust Indicators */}
+            <section className="py-12 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50">
+                <div className="container mx-auto px-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
+                        <div className="flex flex-col items-center text-center">
+                            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-950 mb-3">
+                                <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                             </div>
-                            <div
-                                className="absolute hidden md:block bottom-2 right-1/4 w-56 h-56 bg-sky-600 rounded-full mix-blend-multiply opacity-70 animate-blob delay-1000 filter blur-3xl"></div>
-                            <div
-                                className="absolute hidden md:block bottom-1/4 left-1/3 w-56 h-56 bg-pink-600 rounded-full mix-blend-multiply opacity-70 animate-blob delay-500 filter blur-3xl"></div>
+                            <div className="text-2xl font-bold text-neutral-900 dark:text-white">10K+</div>
+                            <div className="text-sm text-neutral-600 dark:text-neutral-400">Active Users</div>
+                        </div>
+                        <div className="flex flex-col items-center text-center">
+                            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-950 mb-3">
+                                <Zap className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                            </div>
+                            <div className="text-2xl font-bold text-neutral-900 dark:text-white">50K+</div>
+                            <div className="text-sm text-neutral-600 dark:text-neutral-400">AI Agents Created</div>
+                        </div>
+                        <div className="flex flex-col items-center text-center">
+                            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-950 mb-3">
+                                <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                            </div>
+                            <div className="text-2xl font-bold text-neutral-900 dark:text-white">99.9%</div>
+                            <div className="text-sm text-neutral-600 dark:text-neutral-400">Uptime</div>
+                        </div>
+                        <div className="flex flex-col items-center text-center">
+                            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-950 mb-3">
+                                <Sparkles className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                            </div>
+                            <div className="text-2xl font-bold text-neutral-900 dark:text-white">24/7</div>
+                            <div className="text-sm text-neutral-600 dark:text-neutral-400">AI Support</div>
                         </div>
                     </div>
+                </div>
+            </section>
 
-                    <div className="max-w-full mx-auto mb-8">
-                        <Image className="w-3/4 mx-auto rounded-md"  src="/hero/dashboard.jpg" alt="Dashboard ui design" priority
-                            width={700}
-                            height={494} />
-                    </div>
-                </main>
-            </div>
-
-            {/* features */}
-
-            <section className="relative py-24 overflow-hidden border-b border-border">
+            {/* Features Section - Redesigned */}
+            <section className="relative py-24 overflow-hidden">
                 <div className="container px-4 mx-auto">
-                    <div className="max-w-3xl mx-auto text-center mb-16">
-                        <span className="inline-block py-1 px-3 mb-4 text-xs font-semibold tracking-wider text-primary uppercase rounded-full bg-primary/10">
-                            THE POWER OF AI AGENTS
+                    <div className="max-w-3xl mx-auto text-center mb-20">
+                        <span className="inline-block py-2 px-4 mb-4 text-xs font-bold tracking-wider text-blue-600 dark:text-blue-400 uppercase rounded-full bg-blue-100 dark:bg-blue-950 border border-blue-200 dark:border-blue-900">
+                            Powerful Features
                         </span>
-                        <h2 className="text-4xl md:text-5xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">
-                            Transform How You Work
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                            <span className="bg-gradient-to-r from-neutral-900 to-neutral-700 dark:from-white dark:to-neutral-300 bg-clip-text text-transparent">
+                                Everything You Need to
+                            </span>
+                            <br />
+                            <span className="bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
+                                Build Smarter
+                            </span>
                         </h2>
-                        <p className="text-lg text-muted-foreground leading-relaxed">
+                        <p className="text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
                             Discover how AI agents can revolutionize your workflow, whether you're a student, professional, or business leader.
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-8">
+                    <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
                         {features.map((feature) => (
-                            <Card key={feature.title} className="relative group hover:shadow-lg transition-all duration-300 border border-border/50 backdrop-blur-sm bg-background/50">
-                                <CardHeader>
-                                    <div className="w-16 h-16 mx-auto mb-6 relative">
-                                        <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                                        <div className="relative w-full h-full flex items-center justify-center text-primary-foreground bg-primary rounded-full">
+                            <Card key={feature.title} className="group relative overflow-hidden hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:-translate-y-1">
+                                {/* Card gradient overlay on hover */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                
+                                <CardHeader className="relative">
+                                    <div className="w-14 h-14 mx-auto mb-6 relative">
+                                        <div className="absolute inset-0 bg-blue-500/20 rounded-2xl blur-xl group-hover:bg-blue-500/30 transition-all duration-300" />
+                                        <div className="relative w-full h-full flex items-center justify-center text-white bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl shadow-lg shadow-blue-500/30 group-hover:shadow-blue-500/50 group-hover:scale-110 transition-all duration-300">
                                             {feature.icon}
                                         </div>
                                     </div>
-                                    <CardTitle className="text-xl font-bold mb-4 group-hover:text-primary transition-colors duration-300">
+                                    <CardTitle className="text-xl font-bold mb-3 text-center group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                                         {feature.title}
                                     </CardTitle>
                                 </CardHeader>
-                                <CardContent>
-                                    <CardDescription className="text-muted-foreground leading-relaxed">
+                                <CardContent className="relative">
+                                    <CardDescription className="text-neutral-600 dark:text-neutral-400 leading-relaxed text-center">
                                         {feature.description}
                                     </CardDescription>
                                 </CardContent>
@@ -140,71 +206,59 @@ export default function Home() {
                         ))}
                     </div>
                 </div>
+            </section>
 
-                <div className="absolute inset-0 -z-10">
-                    <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-violet-600/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-                    <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-sky-600/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-                    <div className="absolute bottom-1/2 left-1/2 w-96 h-96 bg-pink-600/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+            {/* Pricing Section - Redesigned */}
+            <section className="relative py-24 bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-900 dark:to-background border-t border-b border-neutral-200 dark:border-neutral-800">
+                <div className="container mx-auto px-4">
+                    <div className="max-w-3xl mx-auto text-center mb-16">
+                        <span className="inline-block py-2 px-4 mb-4 text-xs font-bold tracking-wider text-blue-600 dark:text-blue-400 uppercase rounded-full bg-blue-100 dark:bg-blue-950 border border-blue-200 dark:border-blue-900">
+                            Pricing Plans
+                        </span>
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                            <span className="bg-gradient-to-r from-neutral-900 to-neutral-700 dark:from-white dark:to-neutral-300 bg-clip-text text-transparent">
+                                Choose Your Plan
+                            </span>
+                        </h2>
+                        <p className="text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                            Start with our free tier and scale up as your AI agent needs grow. Perfect for individuals and teams of any size.
+                        </p>
+                    </div>
+
+                    <PricingSection />
                 </div>
             </section>
 
-           
-
-            {/* Pricing */}
-
-            {/* <FeaturesSection /> */}
-
-            <section
-                className="border-b dark border-border bg-background">
-                <div className="container mx-auto text-center">
-                    <div className="py-14">
-                        <h2 className="text-4xl font-extrabold my-4 text-foreground">
-                            Choose Your Plan
+            {/* CTA Section */}
+            <section className="relative py-24 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff15_1px,transparent_1px),linear-gradient(to_bottom,#ffffff15_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+                
+                <div className="container relative z-10 mx-auto px-4">
+                    <div className="max-w-4xl mx-auto text-center">
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+                            Ready to Transform Your Workflow?
                         </h2>
-
-                        <p className="mx-auto my-4 text-sm w-full max-w-md bg-transparent text-center font-medium leading-relaxed tracking-wide text-muted-foreground">
-                            Start with our free tier and scale up as your AI agent needs grow. Perfect for individuals and teams of any size.
+                        <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+                            Join thousands of users who are already building their AI workforce with Sulta AI.
                         </p>
-
-                        <PricingSection />  
-                        {/* <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-                            {pricing.map((plan) => (
-                                <Card key={plan.title} className="w-full mx-auto max-w-xl text-left relative">
-                                    {plan.fancy && (
-                                        <Badge className="absolute top-4 right-4">
-                                            Popular
-                                        </Badge>
-                                    )}
-                                    <CardHeader>
-                                        <CardTitle className="text-2xl">
-                                            {plan.title}
-                                        </CardTitle>
-                                        <CardDescription className="mt-4">
-                                            {plan.description}
-                                        </CardDescription>
-                                        <h5 className="text-2xl font-bold">{plan.price}</h5>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <Button className="w-full" variant={plan.fancy ? "default" : "secondary"}>
-                                            Get Started
-                                        </Button>
-                                    </CardContent>
-                                    <CardFooter>
-                                        <ul className="mt-4">
-                                            {plan.features.map((feature) => (
-                                                <li key={feature} className="flex items-center gap-2">
-                                                    <CircleCheck className="w-4 h-4 text-green-500" />
-                                                    {feature}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </CardFooter>
-                                </Card>
-                            ))}
-                        </div> */}
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <Link href="/login">
+                                <Button size="lg" className="bg-white hover:bg-neutral-100 text-blue-600 px-8 py-6 text-lg rounded-full shadow-xl hover:shadow-2xl transition-all hover:scale-105">
+                                    Start Building Free
+                                    <ArrowRight className="ml-2 h-5 w-5" />
+                                </Button>
+                            </Link>
+                            <Link href="/pricing">
+                                <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 px-8 py-6 text-lg rounded-full transition-all hover:scale-105">
+                                    View Pricing
+                                </Button>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>
+
             <Footer />
         </div>
   );
