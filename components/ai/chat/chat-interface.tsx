@@ -65,7 +65,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         }),
     });
 
-    const { messages, sendMessage, isLoading, status } = chatHook;
+    const { messages, sendMessage, status } = chatHook;
 
     // Track loading manually - set to true when user sends message
     const [prevMessagesLength, setPrevMessagesLength] = useState(0);
@@ -99,16 +99,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         setPrevMessagesLength(messages.length);
     }, [messages, prevMessagesLength]);
 
-    // Debug: log all available properties
-    useEffect(() => {
-        console.log('ChatInterface - useChat hook properties:', {
-            isLoading,
-            status,
-            manualLoading,
-            messagesLength: messages.length,
-            allKeys: Object.keys(chatHook)
-        });
-    }, [isLoading, status, manualLoading, messages.length, chatHook]);
+  
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -172,7 +163,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
 
         exists ?   (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
             <ChatHeader handleSidebarToggle={handleSidebarToggle} showImage={false} agent={agent} showButton={true} />
-            <ChatMessages messages={messages} isLoading={isLoading || status === 'in_progress' || manualLoading} />
+            <ChatMessages messages={messages} isLoading={loading || manualLoading} />
             <ChatInput sendMessage={(message: string) => sendMessage({text : message})} />
         </div> ) : <h1 className="text-center mt-36 text-4xl font-bold">Agent not found <br /></h1>
     );
