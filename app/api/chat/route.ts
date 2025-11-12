@@ -3,6 +3,8 @@ import { streamText, convertToModelMessages } from 'ai';
 import { google } from '@ai-sdk/google';
 
 export const maxDuration = 55;
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 function  messagesToModelMessages(messages: any[]) {
   //Step 1: Convert the UI messages to model messages
@@ -50,7 +52,7 @@ export async function POST(req: Request) {
       temperature: 0.7,
     });
 
-
+    console.log('Stream created, returning response');
     
     return result.toUIMessageStreamResponse();
 
