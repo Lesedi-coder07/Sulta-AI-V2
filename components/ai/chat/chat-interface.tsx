@@ -8,7 +8,6 @@ import { Message } from "@/types/chat";
 import { auth } from '@/app/api/firebase/firebaseConfig';
 import { onAuthStateChanged } from "firebase/auth";
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
 import { Agent } from "@/types/agent";
 import { generateSystemMessage } from "@/app/ai/create/generateSystemMessage";
 
@@ -50,20 +49,23 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     const systemMessage = generateSystemMessage(agentData.name, agentData?.description ?? '', agentData.type, agentData.personality, agentData.tone, agentData.expertise);
 
     const chatHook = useChat({
-        transport: new DefaultChatTransport({
-
-        prepareSendMessagesRequest({ messages: uiMessages, id }) {
-        return {
-          body: {
+        body: {
             system: systemMessage,
-            messages: uiMessages,
-            chatId: id,
-          },
-        };}
-        }),
-    });
+        },
+        onError: (error: Error) => {
+            console.error('=== Chat Hook Error ===');
+            console.error('Chat error:', error);
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack,
+            });
+        },
+        onFinish: (message: any) => {
+            console.log('Message finished streaming:', message);
+        },
+    } as any);
 
-    const { messages, sendMessage, status } = chatHook;
+    const { messages, sendMessage, status, error } = chatHook;
 
     // Use the built-in status from useChat instead of manual tracking
     // status can be: 'submitted', 'streaming', 'ready', or 'error'
@@ -73,7 +75,17 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         console.log('Chat status:', status);
         console.log('Messages count:', messages.length);
         console.log('Is streaming:', isStreaming);
-    }, [status, messages.length, isStreaming]);
+        if (error) {
+            console.error('Chat hook error:', error);
+        }
+    }, [status, messages.length, isStreaming, error]);
+
+    // Simple wrapper to log message sending
+    const handleSendMessage = (message: string) => {
+        console.log('Sending message:', message);
+        console.log('System message:', systemMessage.substring(0, 100));
+        sendMessage(message as any);
+    };
 
   
 
@@ -140,7 +152,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         exists ?   (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
             <ChatHeader handleSidebarToggle={handleSidebarToggle} showImage={false} agent={agent} showButton={true} />
             <ChatMessages messages={messages} isLoading={isStreaming} />
-            <ChatInput sendMessage={(message: string) => sendMessage({text : message})} />
+            <ChatInput sendMessage={handleSendMessage} />
         </div> ) : <h1 className="text-center mt-36 text-4xl font-bold">Agent not found <br /></h1>
     );
       
