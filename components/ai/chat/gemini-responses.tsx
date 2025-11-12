@@ -7,9 +7,84 @@ import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Or 
 import 'katex/dist/katex.min.css'; // Import KaTeX stylesheet
 import { InlineMath, BlockMath } from 'react-katex';
 import katex from "katex";
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { useEffect } from 'react';
 import { useTheme } from 'next-themes';
+import { Copy, Check } from 'lucide-react';
+
+// Copy button component for code blocks
+function CodeCopyButton({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-neutral-300 hover:text-white hover:bg-neutral-700/50 rounded-md transition-all duration-150"
+      aria-label="Copy code"
+    >
+      {copied ? (
+        <>
+          <Check className="w-4 h-4" />
+          <span>Copied</span>
+        </>
+      ) : (
+        <>
+          <Copy className="w-4 h-4" />
+          <span>Copy</span>
+        </>
+      )}
+    </button>
+  );
+}
+
+// Enhanced code block component
+function CodeBlock({ language, code, theme }: { language: string; code: string; theme: 'light' | 'dark' }) {
+  return (
+    <div className="relative my-4 rounded-lg overflow-hidden border border-neutral-700 bg-[#0d1117] shadow-lg">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-2 bg-[#161b22] border-b border-neutral-700">
+        <span className="text-xs font-semibold text-neutral-300 uppercase tracking-wider">
+          {language}
+        </span>
+        <CodeCopyButton code={code} />
+      </div>
+      
+      {/* Code content */}
+      <div className="overflow-x-auto">
+        <SyntaxHighlighter
+          style={oneDark}
+          language={language}
+          PreTag="div"
+          customStyle={{
+            margin: 0,
+            padding: '1rem',
+            background: '#0d1117',
+            fontSize: '0.875rem',
+            lineHeight: '1.5',
+          }}
+          codeTagProps={{
+            style: {
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+            }
+          }}
+        >
+          {code}
+        </SyntaxHighlighter>
+      </div>
+    </div>
+  );
+}
+
 // KaTeX component for rendering math expressions
 function KaTeX({ texExpression, className }: { texExpression: string, className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -36,9 +111,70 @@ function KaTeX({ texExpression, className }: { texExpression: string, className?
   return <div ref={containerRef} className={className} />;
 }
 
+// Hook to create smooth streaming effect
+function useSmoothStream(fullContent: string, streamSpeed = 20) {
+  const [displayedContent, setDisplayedContent] = useState('');
+  const [isComplete, setIsComplete] = useState(false);
+  const rafRef = useRef<number>();
+  const lastUpdateRef = useRef(0);
+  const indexRef = useRef(0);
+
+  useEffect(() => {
+    // Reset when content changes significantly (new message)
+    if (fullContent.length < displayedContent.length) {
+      setDisplayedContent('');
+      indexRef.current = 0;
+      setIsComplete(false);
+    }
+
+    // If content is already complete, just display it
+    if (fullContent === displayedContent) {
+      setIsComplete(true);
+      return;
+    }
+
+    const animate = (timestamp: number) => {
+      // Calculate how many characters to add based on time elapsed
+      if (timestamp - lastUpdateRef.current >= streamSpeed) {
+        const remaining = fullContent.length - indexRef.current;
+        
+        if (remaining > 0) {
+          // Add 1-3 characters at a time for smooth flow
+          const charsToAdd = Math.min(Math.ceil(Math.random() * 3) + 1, remaining);
+          indexRef.current += charsToAdd;
+          setDisplayedContent(fullContent.slice(0, indexRef.current));
+          lastUpdateRef.current = timestamp;
+        } else {
+          setIsComplete(true);
+          return;
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
+    // Only animate if there's new content to show
+    if (indexRef.current < fullContent.length) {
+      setIsComplete(false);
+      rafRef.current = requestAnimationFrame(animate);
+    } else if (indexRef.current === fullContent.length && fullContent.length > 0) {
+      setIsComplete(true);
+    }
+
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, [fullContent, streamSpeed]);
+
+  return { displayedContent, isComplete };
+}
+
 export default function GeminiResponse({ content }: { content: string }) {
   const [codeBlockTheme, setCodeBlockTheme] = useState<'light' | 'dark'>('light');
   const { theme } = useTheme();
+  const { displayedContent, isComplete } = useSmoothStream(content, 15);
 
   useEffect(()=> {
     
@@ -47,44 +183,58 @@ export default function GeminiResponse({ content }: { content: string }) {
 
   return (
     <ReactMarkdown
-    className={'text-md z-0 mt-[-10px] md:mt-[5px] md:text-md max-w-[64vw] mb-3  lg:max-w-[50vw] lg:p-0 md:max-w-[70vw]'}
+    className={'prose prose-neutral dark:prose-invert max-w-none'}
     components={{
       // Custom paragraph rendering
       p({ children }) {
         return (
           <>
-            <p style={{ marginBottom: '1em' }}>{/* Adjust margin as needed */}{children}</p>
+            <p className="mb-4 leading-[1.75]">{children}</p>
           </>
         );
+      },
+
+      // Headings with better spacing
+      h1({ children }) {
+        return <h1 className="text-2xl font-bold mt-6 mb-4">{children}</h1>;
+      },
+      h2({ children }) {
+        return <h2 className="text-xl font-bold mt-5 mb-3">{children}</h2>;
+      },
+      h3({ children }) {
+        return <h3 className="text-lg font-semibold mt-4 mb-2">{children}</h3>;
+      },
+
+      // Lists with better spacing
+      ul({ children }) {
+        return <ul className="mb-4 ml-6 space-y-2 list-disc">{children}</ul>;
+      },
+      ol({ children }) {
+        return <ol className="mb-4 ml-6 space-y-2 list-decimal">{children}</ol>;
+      },
+      li({ children }) {
+        return <li className="leading-[1.75]">{children}</li>;
       },
 
       code({ className, children, ...props }) {
         const content = String(children);
         
-        // Check if content looks like LaTeX or mathematical expressions
-        const hasLatexCommands = /\\[a-zA-Z]/.test(content);
-        const hasMathSymbols = /[\^_=]{1}|[a-zA-Z]{1,3}_[a-zA-Z0-9]/.test(content);
-        
-        // if (hasLatexCommands || hasMathSymbols) {
-        //   // Strip outer parentheses if they exist
-        //   const mathContent = content.replace(/^\((.*)\)$/, '$1');
-        //   return <KaTeX texExpression={mathContent} />;
-        // }
-
         // Regular code handling
         const isInline = !className;
         const match = /language-(\w+)/.exec(className || '');
 
         if (isInline) {
-          return <code {...props}>{children}</code>;
+          return <code className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-sm font-mono text-neutral-800 dark:text-neutral-200" {...props}>{children}</code>;
         }
 
         return match ? (
-          <SyntaxHighlighter className='rounded-sm text-sm max-w-full mt-5' style={codeBlockTheme === 'dark' ? oneDark : prism} language={match[1]} PreTag="div">
-            {content.replace(/\n$/, '')}
-          </SyntaxHighlighter>
+          <CodeBlock 
+            language={match[1]} 
+            code={content.replace(/\n$/, '')} 
+            theme={codeBlockTheme} 
+          />
         ) : (
-          <code {...props}>{children}</code>
+          <code className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-sm font-mono text-neutral-800 dark:text-neutral-200" {...props}>{children}</code>
         );
       },
 
@@ -116,7 +266,7 @@ export default function GeminiResponse({ content }: { content: string }) {
       },
     }}
   >
-    {content}
+    {displayedContent}
   </ReactMarkdown>
   );
 }

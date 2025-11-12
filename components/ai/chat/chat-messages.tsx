@@ -98,7 +98,7 @@ export function ChatMessages({
 
   return (
     <div className="flex-1  overflow-y-auto mb-7 mt-35 sm:mb-[180px] md:mt-10 pt-5 px-4 md:px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
-      <div className="max-w-4xl mx-auto space-y-4">
+      <div className="max-w-4xl mx-auto space-y-8">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 px-4">
             
@@ -142,23 +142,23 @@ export function ChatMessages({
                       : "bg-neutral-200 dark:bg-neutral-700"
                   )}>
                     {isUser ? (
-                      <User className="w-4 h-4 text-white" />
+                      <User className="w-4 h-4 text-white " />
                     ) : (
                       <Bot className="w-4 h-4 text-neutral-600 dark:text-neutral-300" />
                     )}
                   </div>
 
-                  {/* Message Bubble */}
+                  {/* Message Content */}
                   <div className={cn(
-                    "flex flex-col max-w-[85%] md:max-w-[75%] lg:max-w-[65%]",
-                    isUser && "items-end"
+                    "flex flex-col",
+                    isUser ? "max-w-[85%] md:max-w-[75%] lg:max-w-[65%] items-end" : "flex-1"
                   )}>
                     <div
                       className={cn(
-                        "rounded-2xl px-4 py-3 shadow-sm transition-all duration-200",
+                        "transition-all duration-200",
                         isUser
-                          ? "bg-blue-600 dark:bg-blue-700 text-white rounded-br-sm"
-                          : "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 rounded-bl-sm"
+                          ? "rounded-2xl px-4 py-3 shadow-sm bg-blue-600 dark:bg-blue-700 text-white rounded-br-sm"
+                          : "w-full"
                       )}
                     >
                       {isUser ? (
@@ -168,14 +168,14 @@ export function ChatMessages({
                       ) : (
                         <div className="relative w-full">
                           {showShimmer ? (
-                            <div className="pr-8 text-sm leading-relaxed">
+                            <div className="text-base leading-[1.75] text-neutral-700 dark:text-neutral-300">
                               <TextShimmerColor text="Thinking..." />
                             </div>
                           ) : (
                             <>
                               {content && (
                                 <>
-                                  <div className="pr-8 text-sm leading-relaxed">
+                                  <div className="pr-8 text-base leading-[1.75] text-neutral-700 dark:text-neutral-300">
                                     <GeminiResponse content={content} />
                                   </div>
                                   <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
@@ -216,10 +216,10 @@ export function ChatMessages({
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full mt-1 bg-neutral-200 dark:bg-neutral-700">
                   <Bot className="w-4 h-4 text-neutral-600 dark:text-neutral-300" />
                 </div>
-                {/* Message Bubble */}
-                <div className="flex flex-col max-w-[85%] md:max-w-[75%] lg:max-w-[65%]">
-                  <div className="rounded-2xl px-4 py-3 shadow-sm transition-all duration-200 bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 rounded-bl-sm">
-                    <div className="text-sm leading-relaxed">
+                {/* Message Content */}
+                <div className="flex flex-col flex-1">
+                  <div className="w-full">
+                    <div className="text-base leading-[1.75] text-neutral-700 dark:text-neutral-300">
                       <TextShimmerColor text="Thinking..." />
                     </div>
                   </div>
