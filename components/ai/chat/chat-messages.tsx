@@ -85,17 +85,6 @@ export function ChatMessages({
       .join('');
   };
 
-  // Check if we should show shimmer for the last message
-  const shouldShowShimmer = (message: UIMessage, index: number): boolean => {
-    const isLastMessage = index === messages.length - 1;
-    const isAssistant = message.role === 'assistant';
-    const content = getMessageContent(message);
-    const isEmpty = !content || content.trim().length === 0;
-    
-    // Show shimmer only if it's the last assistant message and it's empty (before content arrives)
-    return isLastMessage && isAssistant && isEmpty && isLoading;
-  };
-
   return (
     <div className="flex-1  overflow-y-auto mb-7 mt-35 sm:mb-[180px] md:mt-10 pt-5 px-4 md:px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
       <div className="max-w-4xl mx-auto space-y-8">
@@ -124,7 +113,6 @@ export function ChatMessages({
             {messages.map((message, index) => {
               const content = getMessageContent(message);
               const isUser = message.role === 'user';
-              const showShimmer = shouldShowShimmer(message, index);
 
               return (
                 <div
@@ -134,19 +122,12 @@ export function ChatMessages({
                     isUser ? "flex-row-reverse" : "flex-row"
                   )}
                 >
-                  {/* Avatar */}
-                  <div className={cn(
-                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-full mt-1",
-                    isUser 
-                      ? "bg-blue-600 dark:bg-blue-700" 
-                      : "bg-neutral-200 dark:bg-neutral-700"
-                  )}>
-                    {isUser ? (
-                      <User className="w-4 h-4 text-white " />
-                    ) : (
-                      <Bot className="w-4 h-4 text-neutral-600 dark:text-neutral-300" />
-                    )}
-                  </div>
+                  {/* Avatar - only show for user */}
+                  {isUser && (
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full mt-1 bg-blue-600 dark:bg-blue-700">
+                      <User className="w-4 h-4 text-white" />
+                    </div>
+                  )}
 
                   {/* Message Content */}
                   <div className={cn(
@@ -167,24 +148,16 @@ export function ChatMessages({
                         </p>
                       ) : (
                         <div className="relative w-full">
-                          {showShimmer ? (
-                            <div className="text-base leading-[1.75] text-neutral-700 dark:text-neutral-300">
-                              <TextShimmerColor text="Thinking..." />
-                            </div>
-                          ) : (
+                          {content && content.trim().length > 0 ? (
                             <>
-                              {content && (
-                                <>
-                                  <div className="pr-8 text-base leading-[1.75] text-neutral-700 dark:text-neutral-300">
-                                    <GeminiResponse content={content} />
-                                  </div>
-                                  <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
-                                    <CopyButton textToCopy={content} />
-                                  </div>
-                                </>
-                              )}
+                              <div className="pr-8 text-base leading-[1.75] text-neutral-700 dark:text-neutral-300">
+                                <GeminiResponse content={content} />
+                              </div>
+                              <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
+                                <CopyButton textToCopy={content} />
+                              </div>
                             </>
-                          )}
+                          ) : null}
                         </div>
                       )}
                     </div>
@@ -194,23 +167,8 @@ export function ChatMessages({
               );
             })}
             
-            {/* Show shimmer when loading and last assistant message has no content yet */}
-            {(() => {
-              const lastMessage = messages[messages.length - 1];
-              const lastMessageContent = lastMessage ? getMessageContent(lastMessage) : '';
-              const isLastMessageEmptyAssistant = lastMessage?.role === 'assistant' && (!lastMessageContent || lastMessageContent.trim().length === 0);
-              const shouldShowLoader = isLoading && (messages.length === 0 || lastMessage?.role === 'user' || isLastMessageEmptyAssistant);
-              
-              console.log('Shimmer condition check:', {
-                isLoading,
-                messagesLength: messages.length,
-                lastMessageRole: lastMessage?.role,
-                lastMessageContent: lastMessageContent?.substring(0, 20),
-                isLastMessageEmptyAssistant,
-                shouldShowLoader
-              });
-              return shouldShowLoader;
-            })() && (
+            {/* Show thinking indicator when loading */}
+            {isLoading && (
               <div className="flex gap-3 group">
                 {/* Avatar */}
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full mt-1 bg-neutral-200 dark:bg-neutral-700">
