@@ -1,7 +1,7 @@
 "use client"
 import { cn } from "@/lib/utils";
-import { Bot, Sparkles, Copy, User } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Copy, User } from "lucide-react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import GeminiResponse from "./gemini-responses";
 import { Card, CardContent } from "@/components/ui/card";
 import { GradientText } from "@/components/ui/gradient-text";
@@ -66,6 +66,15 @@ export function ChatMessages({
     });
   };
 
+  // Extract text content from message parts
+  const getMessageContent = useCallback((message: UIMessage): string => {
+    const content = message.parts
+      .filter(part => part.type === 'text')
+      .map(part => part.text)
+      .join('');
+    return content;
+  }, []);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -75,15 +84,13 @@ export function ChatMessages({
     console.log('ChatMessages - isLoading:', isLoading);
     console.log('ChatMessages - messages count:', messages.length);
     console.log('ChatMessages - last message role:', messages[messages.length - 1]?.role);
-  }, [isLoading, messages]);
-
-  // Extract text content from message parts
-  const getMessageContent = (message: UIMessage): string => {
-    return message.parts
-      .filter(part => part.type === 'text')
-      .map(part => part.text)
-      .join('');
-  };
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      const content = getMessageContent(lastMessage);
+      console.log('ChatMessages - last message content length:', content.length);
+      console.log('ChatMessages - last message content preview:', content.substring(0, 100));
+    }
+  }, [isLoading, messages, getMessageContent]);
 
   return (
     <div className="flex-1  overflow-y-auto mb-7 mt-35 sm:mb-[180px] md:mt-10 pt-5 px-4 md:px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
@@ -170,10 +177,6 @@ export function ChatMessages({
             {/* Show thinking indicator when loading */}
             {isLoading && (
               <div className="flex gap-3 group">
-                {/* Avatar */}
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full mt-1 bg-neutral-200 dark:bg-neutral-700">
-                  <Bot className="w-4 h-4 text-neutral-600 dark:text-neutral-300" />
-                </div>
                 {/* Message Content */}
                 <div className="flex flex-col flex-1">
                   <div className="w-full">

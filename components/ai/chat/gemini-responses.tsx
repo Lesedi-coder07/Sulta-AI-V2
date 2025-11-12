@@ -112,74 +112,82 @@ function KaTeX({ texExpression, className }: { texExpression: string, className?
 }
 
 // Hook to create smooth streaming effect
-function useSmoothStream(fullContent: string, streamSpeed = 20) {
+function useSmoothStream(fullContent: string, streamSpeed = 10) {
   const [displayedContent, setDisplayedContent] = useState('');
-  const [isComplete, setIsComplete] = useState(false);
-  const rafRef = useRef<number>();
-  const lastUpdateRef = useRef(0);
-  const indexRef = useRef(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const prevContentLengthRef = useRef(0);
 
   useEffect(() => {
-    // Reset when content changes significantly (new message)
-    if (fullContent.length < displayedContent.length) {
+    // If content becomes empty or shorter (new message), reset
+    if (fullContent.length === 0 || fullContent.length < prevContentLengthRef.current) {
       setDisplayedContent('');
-      indexRef.current = 0;
-      setIsComplete(false);
-    }
-
-    // If content is already complete, just display it
-    if (fullContent === displayedContent) {
-      setIsComplete(true);
+      setCurrentIndex(0);
+      prevContentLengthRef.current = fullContent.length;
       return;
     }
 
-    const animate = (timestamp: number) => {
-      // Calculate how many characters to add based on time elapsed
-      if (timestamp - lastUpdateRef.current >= streamSpeed) {
-        const remaining = fullContent.length - indexRef.current;
-        
-        if (remaining > 0) {
-          // Add 1-3 characters at a time for smooth flow
-          const charsToAdd = Math.min(Math.ceil(Math.random() * 3) + 1, remaining);
-          indexRef.current += charsToAdd;
-          setDisplayedContent(fullContent.slice(0, indexRef.current));
-          lastUpdateRef.current = timestamp;
-        } else {
-          setIsComplete(true);
-          return;
-        }
+    // If we haven't caught up to the full content yet, animate
+    if (currentIndex < fullContent.length) {
+      // Clear any existing interval
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
 
-      rafRef.current = requestAnimationFrame(animate);
-    };
-
-    // Only animate if there's new content to show
-    if (indexRef.current < fullContent.length) {
-      setIsComplete(false);
-      rafRef.current = requestAnimationFrame(animate);
-    } else if (indexRef.current === fullContent.length && fullContent.length > 0) {
-      setIsComplete(true);
+      // Start a new interval to add characters
+      intervalRef.current = setInterval(() => {
+        setCurrentIndex((prevIndex) => {
+          const newIndex = Math.min(prevIndex + Math.floor(Math.random() * 3) + 2, fullContent.length);
+          setDisplayedContent(fullContent.slice(0, newIndex));
+          
+          // If we've reached the end, clear the interval
+          if (newIndex >= fullContent.length) {
+            if (intervalRef.current) {
+              clearInterval(intervalRef.current);
+              intervalRef.current = null;
+            }
+          }
+          
+          return newIndex;
+        });
+      }, streamSpeed);
+    } else {
+      // We've caught up, just display the full content
+      setDisplayedContent(fullContent);
     }
 
+    prevContentLengthRef.current = fullContent.length;
+
+    // Cleanup function
     return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
-  }, [fullContent, streamSpeed]);
+  }, [fullContent, currentIndex, streamSpeed]);
 
-  return { displayedContent, isComplete };
+  return { displayedContent };
 }
 
 export default function GeminiResponse({ content }: { content: string }) {
   const [codeBlockTheme, setCodeBlockTheme] = useState<'light' | 'dark'>('light');
   const { theme } = useTheme();
-  const { displayedContent, isComplete } = useSmoothStream(content, 15);
+  const { displayedContent } = useSmoothStream(content, 10);
+  
+  // Debug logging
+  useEffect(() => {
+    console.log('GeminiResponse - content length:', content.length);
+    console.log('GeminiResponse - displayedContent length:', displayedContent.length);
+  }, [content, displayedContent]);
 
   useEffect(()=> {
     
     setCodeBlockTheme(theme === 'dark' ? 'dark' : 'light');
   }, [theme])
+  
+  // Use displayedContent if it exists, otherwise fall back to content
+  const contentToRender = displayedContent || content;
 
   return (
     <ReactMarkdown
@@ -266,7 +274,7 @@ export default function GeminiResponse({ content }: { content: string }) {
       },
     }}
   >
-    {displayedContent}
+    {contentToRender}
   </ReactMarkdown>
   );
 }
