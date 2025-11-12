@@ -1,7 +1,7 @@
 "use client"
 import { cn } from "@/lib/utils";
 import { Copy, User } from "lucide-react";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import GeminiResponse from "./gemini-responses";
 import { Card, CardContent } from "@/components/ui/card";
 import { GradientText } from "@/components/ui/gradient-text";
@@ -66,15 +66,6 @@ export function ChatMessages({
     });
   };
 
-  // Extract text content from message parts
-  const getMessageContent = useCallback((message: UIMessage): string => {
-    const content = message.parts
-      .filter(part => part.type === 'text')
-      .map(part => part.text)
-      .join('');
-    return content;
-  }, []);
-
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -84,13 +75,15 @@ export function ChatMessages({
     console.log('ChatMessages - isLoading:', isLoading);
     console.log('ChatMessages - messages count:', messages.length);
     console.log('ChatMessages - last message role:', messages[messages.length - 1]?.role);
-    if (messages.length > 0) {
-      const lastMessage = messages[messages.length - 1];
-      const content = getMessageContent(lastMessage);
-      console.log('ChatMessages - last message content length:', content.length);
-      console.log('ChatMessages - last message content preview:', content.substring(0, 100));
-    }
-  }, [isLoading, messages, getMessageContent]);
+  }, [isLoading, messages]);
+
+  // Extract text content from message parts
+  const getMessageContent = (message: UIMessage): string => {
+    return message.parts
+      .filter(part => part.type === 'text')
+      .map(part => part.text)
+      .join('');
+  };
 
   return (
     <div className="flex-1  overflow-y-auto mb-7 mt-35 sm:mb-[180px] md:mt-10 pt-5 px-4 md:px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
@@ -155,16 +148,14 @@ export function ChatMessages({
                         </p>
                       ) : (
                         <div className="relative w-full">
-                          {content && content.trim().length > 0 ? (
-                            <>
-                              <div className="pr-8 text-base leading-[1.75] text-neutral-700 dark:text-neutral-300">
-                                <GeminiResponse content={content} />
-                              </div>
-                              <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
-                                <CopyButton textToCopy={content} />
-                              </div>
-                            </>
-                          ) : null}
+                          <div className="pr-8 text-base leading-[1.75] text-neutral-700 dark:text-neutral-300">
+                            <GeminiResponse content={content || ''} />
+                          </div>
+                          {content && content.trim().length > 0 && (
+                            <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
+                              <CopyButton textToCopy={content} />
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>

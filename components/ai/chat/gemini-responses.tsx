@@ -112,82 +112,112 @@ function KaTeX({ texExpression, className }: { texExpression: string, className?
 }
 
 // Hook to create smooth streaming effect
-function useSmoothStream(fullContent: string, streamSpeed = 10) {
+function useSmoothStream(fullContent: string, streamSpeed = 20) {
   const [displayedContent, setDisplayedContent] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const prevContentLengthRef = useRef(0);
+  const [isComplete, setIsComplete] = useState(false);
+  const rafRef = useRef<number>();
+  const lastUpdateRef = useRef(0);
+  const indexRef = useRef(0);
+  const prevContentRef = useRef('');
 
   useEffect(() => {
-    // If content becomes empty or shorter (new message), reset
-    if (fullContent.length === 0 || fullContent.length < prevContentLengthRef.current) {
+    // If this is a completely new message (content is shorter than before), reset everything
+    if (fullContent.length < prevContentRef.current.length) {
       setDisplayedContent('');
-      setCurrentIndex(0);
-      prevContentLengthRef.current = fullContent.length;
+      indexRef.current = 0;
+      setIsComplete(false);
+      prevContentRef.current = '';
+    }
+
+    // Store the current content for next comparison
+    prevContentRef.current = fullContent;
+
+    // If there's no content, don't do anything
+    if (!fullContent || fullContent.length === 0) {
+      setDisplayedContent('');
+      setIsComplete(false);
       return;
     }
 
-    // If we haven't caught up to the full content yet, animate
-    if (currentIndex < fullContent.length) {
-      // Clear any existing interval
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-
-      // Start a new interval to add characters
-      intervalRef.current = setInterval(() => {
-        setCurrentIndex((prevIndex) => {
-          const newIndex = Math.min(prevIndex + Math.floor(Math.random() * 3) + 2, fullContent.length);
-          setDisplayedContent(fullContent.slice(0, newIndex));
-          
-          // If we've reached the end, clear the interval
-          if (newIndex >= fullContent.length) {
-            if (intervalRef.current) {
-              clearInterval(intervalRef.current);
-              intervalRef.current = null;
-            }
-          }
-          
-          return newIndex;
-        });
-      }, streamSpeed);
-    } else {
-      // We've caught up, just display the full content
+    // If we've already displayed all the content, mark as complete
+    if (indexRef.current >= fullContent.length) {
       setDisplayedContent(fullContent);
+      setIsComplete(true);
+      return;
     }
 
-    prevContentLengthRef.current = fullContent.length;
+    const animate = (timestamp: number) => {
+      // Initialize lastUpdate if this is the first run
+      if (lastUpdateRef.current === 0) {
+        lastUpdateRef.current = timestamp;
+      }
 
-    // Cleanup function
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
+      // Calculate how many characters to add based on time elapsed
+      if (timestamp - lastUpdateRef.current >= streamSpeed) {
+        const remaining = fullContent.length - indexRef.current;
+        
+        if (remaining > 0) {
+          // Add 2-4 characters at a time for smooth flow (slightly faster)
+          const charsToAdd = Math.min(Math.ceil(Math.random() * 2) + 2, remaining);
+          indexRef.current += charsToAdd;
+          const newDisplayedContent = fullContent.slice(0, indexRef.current);
+          setDisplayedContent(newDisplayedContent);
+          lastUpdateRef.current = timestamp;
+          
+          // Continue animating if there's more content
+          if (indexRef.current < fullContent.length) {
+            rafRef.current = requestAnimationFrame(animate);
+          } else {
+            setIsComplete(true);
+          }
+        } else {
+          setDisplayedContent(fullContent);
+          setIsComplete(true);
+        }
+      } else {
+        // Not enough time has passed, continue animation loop
+        rafRef.current = requestAnimationFrame(animate);
       }
     };
-  }, [fullContent, currentIndex, streamSpeed]);
 
-  return { displayedContent };
+    // Start animation if we have content to show
+    if (indexRef.current < fullContent.length) {
+      setIsComplete(false);
+      rafRef.current = requestAnimationFrame(animate);
+    }
+
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, [fullContent, streamSpeed, displayedContent.length]);
+
+  return { displayedContent, isComplete };
 }
 
 export default function GeminiResponse({ content }: { content: string }) {
   const [codeBlockTheme, setCodeBlockTheme] = useState<'light' | 'dark'>('light');
   const { theme } = useTheme();
-  const { displayedContent } = useSmoothStream(content, 10);
-  
-  // Debug logging
-  useEffect(() => {
-    console.log('GeminiResponse - content length:', content.length);
-    console.log('GeminiResponse - displayedContent length:', displayedContent.length);
-  }, [content, displayedContent]);
+  const { displayedContent, isComplete } = useSmoothStream(content, 15);
 
   useEffect(()=> {
-    
     setCodeBlockTheme(theme === 'dark' ? 'dark' : 'light');
   }, [theme])
-  
-  // Use displayedContent if it exists, otherwise fall back to content
-  const contentToRender = displayedContent || content;
+
+  // Debug logging to track content
+  useEffect(() => {
+    if (content) {
+      console.log('GeminiResponse - Raw content length:', content.length);
+      console.log('GeminiResponse - Displayed content length:', displayedContent.length);
+      console.log('GeminiResponse - Is complete:', isComplete);
+    }
+  }, [content, displayedContent, isComplete])
+
+  // If no content at all, return null
+  if (!content && !displayedContent) {
+    return null;
+  }
 
   return (
     <ReactMarkdown
@@ -274,7 +304,7 @@ export default function GeminiResponse({ content }: { content: string }) {
       },
     }}
   >
-    {contentToRender}
+    {displayedContent}
   </ReactMarkdown>
   );
 }
