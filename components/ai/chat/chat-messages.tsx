@@ -76,7 +76,7 @@ export function ChatMessages({
   };
 
   return (
-    <div className="flex-1  overflow-y-auto mb-7 mt-35 sm:mb-[180px] md:mt-10 pt-5 px-4 md:px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
+    <div className="flex-1 overflow-y-auto mb-7 pt-[100px] sm:mb-[180px] md:pt-16 px-4 md:px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
       <div className="max-w-4xl mx-auto space-y-8">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 px-4">
@@ -98,7 +98,8 @@ export function ChatMessages({
                   key={message.id}
                   className={cn(
                     "flex gap-3 group",
-                    isUser ? "flex-row-reverse" : "flex-row"
+                    isUser ? "flex-row-reverse" : "flex-row",
+                    index === 0 && "mt-4 sm:mt-0"
                   )}
                 >
                   {/* Avatar - only show for user */}

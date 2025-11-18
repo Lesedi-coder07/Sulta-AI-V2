@@ -61,8 +61,6 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     const chatHook = useChat({
         transport: new DefaultChatTransport({
         prepareSendMessagesRequest({ messages: uiMessages, id }) {
-        // Determine if this is a new chat based on whether we've sent the first message
-        // If messages array only has the user's current message (length === 1), it's a new chat
         const isNewChatRequest = !hasSentFirstMessage.current;
         return {
           body: {
@@ -78,11 +76,11 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     const { messages, sendMessage, status } = chatHook;
 
     const handleNewMessage = (message: string) => {
-        // Check if this is the first message being sent
+        
         const localIsNewChat = !hasSentFirstMessage.current;
         setIsNewChat(localIsNewChat);
         
-        // Mark that we've sent the first message
+    
         if (localIsNewChat) {
             hasSentFirstMessage.current = true;
             sessionStorage.setItem('isNewChat', 'false');
@@ -96,9 +94,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         console.log('Chat status:', status);
         console.log('Messages count:', messages.length);
         console.log('Is streaming:', isStreaming);
-        
-        // If messages exist and we haven't marked as sent, update the ref
-        // This handles the case where messages might be loaded from elsewhere
+       
         if (messages.length > 0 && !hasSentFirstMessage.current) {
             hasSentFirstMessage.current = true;
             setIsNewChat(false);
