@@ -3,11 +3,9 @@
 import { useEffect, useState } from "react";
 import { AgentCard } from "./agent-card";
 import { auth } from "@/app/api/firebase/firebaseConfig";
-import { doc, collection, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/app/api/firebase/firebaseConfig";
-import { log } from "console";
 import AgentOptions from "./agent-options";
-import { useRouter } from "next/navigation";
 import { Agent } from "@/types/agent";
 
 interface AgentSelectorProps {
@@ -19,7 +17,6 @@ export function AgentSelector({ initialAgents, userId }: AgentSelectorProps) {
   const [agents, setAgents] = useState<Agent[]>(initialAgents);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [agentTabOpen, setAgentTabOpen] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const updateSelectedAgent = (agent: Agent | null, agentTabOpen: boolean) => {
     setSelectedAgent(agent);
@@ -35,7 +32,6 @@ export function AgentSelector({ initialAgents, userId }: AgentSelectorProps) {
           const agentIds: string[] = snapshot.data()?.agents || [];
           if (agentIds.length === 0) {
             setAgents([]);
-            setIsLoading(false);
             return;
           }
 
@@ -76,7 +72,6 @@ export function AgentSelector({ initialAgents, userId }: AgentSelectorProps) {
         };
       } else {
         setAgents([]);
-        setIsLoading(false);
       }
     });
 
@@ -84,13 +79,6 @@ export function AgentSelector({ initialAgents, userId }: AgentSelectorProps) {
       unsubscribeAuth();
     };
   }, []);
-
-  const router = useRouter()
-
-const handlePublicAgentClick = (url : string) => {
-  
-  router.push(url)
-}
 
   return (
     agentTabOpen ? <AgentOptions updateSelectedAgent={updateSelectedAgent} agent={selectedAgent as Agent} /> : (
@@ -105,36 +93,8 @@ const handlePublicAgentClick = (url : string) => {
             </p>
           </div>
 
-          <div className={`flex flex-row flex-wrap gap-4 w-full ${!isLoading ? 'overflow-y-auto' : ''}`}>
-            {isLoading ? (
-              <div className="flex flex-col mx-auto justify-center items-center w-full py-12">
-                <div className="relative">
-                  {/* Outer pulsing ring */}
-                  <div className="absolute inset-0 rounded-full border-4 border-neutral-200 dark:border-neutral-700 animate-pulse"></div>
-                  
-                  {/* Main spinning ring */}
-                  <div className="w-12 h-12 rounded-full border-4 border-transparent border-t-blue-500 border-r-blue-400 animate-spin"></div>
-                  
-                  {/* Inner gradient ring */}
-                  <div className="absolute inset-2 rounded-full border-2 border-transparent border-b-purple-400 border-l-purple-300 animate-spin" style={{animationDirection: 'reverse', animationDuration: '0.8s'}}></div>
-                  
-                  {/* Center dot */}
-                  <div className="absolute inset-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 animate-pulse"></div>
-                </div>
-                
-                {/* Loading text with animation */}
-                <div className="mt-6 text-center">
-                  <p className="text-sm font-medium text-neutral-600 dark:text-neutral-300 animate-pulse">
-                    Loading your AI agents...
-                  </p>
-                  <div className="flex justify-center mt-2 space-x-1">
-                    <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
-                    <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
-                    <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
-                  </div>
-                </div>
-              </div>
-            ) : agents.length === 0 ? (
+          <div className="flex flex-row flex-wrap gap-4 w-full overflow-y-auto">
+            {agents.length === 0 ? (
               <p className="text-sm text-neutral-500 dark:text-neutral-400">You don't have any agents yet</p>
             ) : (
               agents.map((agent) => (
