@@ -38,7 +38,7 @@ async function Dashboard() {
                             {/* Quick Actions and Usage Summary */}
                             <div className='grid gap-6 md:grid-cols-2'>
                                 <QuickActions />
-                                <UsageSummary />
+                                <UsageSummary agents={agents} />
                             </div>
                             
                             {/* Top Agents */}

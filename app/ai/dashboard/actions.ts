@@ -2,6 +2,7 @@
 
 import { adminDb } from '@/lib/firebase-admin';
 import { Agent } from '@/types/agent';
+import { FieldValue } from 'firebase-admin/firestore';
 
 export async function getAgents(userId: string): Promise<Agent[]> {
   try {
@@ -52,6 +53,32 @@ export async function getAgents(userId: string): Promise<Agent[]> {
   } catch (error) {
     console.error('Error fetching agents:', error);
     return [];
+  }
+}
+
+export async function updateAgentAnalytics(agentId: string, totalQueries: number, tokensUsed: number, totalChats: number = 0)  {
+  try {
+    if (!agentId) {
+      return;
+    }
+
+    const agentRef = adminDb.collection('agents').doc(agentId);
+    
+    // Use atomic increments for thread-safe updates
+    const updateData: Record<string, FieldValue> = {
+      totalQueries: FieldValue.increment(totalQueries),
+      tokensUsed: FieldValue.increment(tokensUsed),
+    };
+
+    // Only increment totalChats if it's greater than 0
+    if (totalChats > 0) {
+      updateData.totalChats = FieldValue.increment(totalChats);
+    }
+
+    await agentRef.update(updateData);
+  } catch (error) {
+    // Log error but don't throw - this is fire-and-forget
+    console.error('Error updating agent analytics:', error);
   }
 }
 

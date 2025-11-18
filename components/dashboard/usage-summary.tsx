@@ -3,19 +3,21 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { CreditCard, TrendingUp } from 'lucide-react';
+import { Agent } from '@/types/agent';
 
 interface UsageSummaryProps {
-  creditsRemaining?: number;
+  agents: Agent[];
   creditsLimit?: number;
-  monthlyUsage?: number;
 }
 
 export function UsageSummary({ 
-  creditsRemaining = 5000, 
-  creditsLimit = 5000,
-  monthlyUsage = 0 
+  agents,
+  creditsLimit = 50000
 }: UsageSummaryProps) {
-  const creditsUsed = creditsLimit - creditsRemaining;
+  // Calculate totals from agent data (similar to dashboard-stats.tsx)
+  const creditsUsed = agents.reduce((sum, agent) => sum + (agent.tokensUsed || 0), 0);
+  const totalQueries = agents.reduce((sum, agent) => sum + (agent.totalQueries || 0), 0);
+  const creditsRemaining = Math.max(0, creditsLimit - creditsUsed);
   const creditsPercentage = creditsLimit > 0 ? (creditsUsed / creditsLimit) * 100 : 0;
 
   return (
@@ -29,14 +31,14 @@ export function UsageSummary({
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Credits Used</span>
+            <span className="text-muted-foreground">Tokens Used</span>
             <span className="font-semibold">
               {creditsUsed.toLocaleString()} / {creditsLimit.toLocaleString()}
             </span>
           </div>
           <Progress value={creditsPercentage} className="h-2" />
           <div className="flex justify-between text-xs text-muted-foreground">
-            <span>{creditsRemaining.toLocaleString()} credits remaining</span>
+            <span>{creditsRemaining.toLocaleString()} tokens remaining</span>
             <span>{creditsPercentage.toFixed(0)}% used</span>
           </div>
         </div>
@@ -44,8 +46,8 @@ export function UsageSummary({
         <div className="pt-4 border-t">
           <div className="flex items-center gap-2 text-sm">
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            <span className="text-muted-foreground">This month:</span>
-            <span className="font-semibold">{monthlyUsage.toLocaleString()} queries</span>
+            <span className="text-muted-foreground">Total queries:</span>
+            <span className="font-semibold">{totalQueries.toLocaleString()}</span>
           </div>
         </div>
       </CardContent>

@@ -1,6 +1,7 @@
 import { openai } from '@ai-sdk/openai';
 import { streamText, convertToModelMessages } from 'ai';
 import { google } from '@ai-sdk/google';
+import { updateAgentAnalytics } from '@/app/ai/dashboard/actions';
 
 export const maxDuration = 55;
 export const runtime = 'nodejs';
@@ -19,7 +20,7 @@ function  messagesToModelMessages(messages: any[]) {
 
 export async function POST(req: Request) {
   try {
-    const { system, messages, chatId } = await req.json();
+    const { system, messages, chatId, agentId , newChat = false} = await req.json();
 
     // Validate that messages is an array
     if (!Array.isArray(messages)) {
@@ -45,9 +46,14 @@ export async function POST(req: Request) {
     ];
 
     const result = streamText({
-      model: google('gemini-2.5-flash'),
+      model: google('gemini-2.5-flash-lite'),
       messages: allMessages,
       temperature: 0.7,
+      onFinish: async ({usage}) => {
+        if (agentId) {
+          await updateAgentAnalytics(agentId, 1, usage?.totalTokens ?? 0, newChat ? 1 : 0);
+        }
+      },
     });
 
     console.log('Stream created, returning response');

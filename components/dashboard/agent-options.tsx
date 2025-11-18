@@ -4,7 +4,7 @@ import { Agent } from '@/types/agent'
 import FileUploader from './file-uploader'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, Settings, BarChart3, Code, MessageSquare, Users, Clock, Zap, Globe, Edit3, Save, X, Eye, EyeOff } from 'lucide-react'
+import { ArrowRight, Settings, BarChart3, Code, MessageSquare, Users, Clock, Zap, Globe, Edit3, Save, X, Eye, EyeOff, Activity } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -225,7 +225,7 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Total Queries</h3>
-            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">0</p>
+            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">{(agent.totalQueries || 0).toLocaleString()}</p>
           </div>
                 </div>
               </div>
@@ -236,20 +236,20 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
           </div>
                   <div>
                     <h3 className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Tokens Used</h3>
-            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">0</p>
+            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">{(agent.tokensUsed || 0).toLocaleString()}</p>
           </div>
         </div>
               </div>
               <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg border">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-purple-500 rounded-lg">
-                    <Clock className="h-4 w-4 text-white" />
+                    <Activity className="h-4 w-4 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Avg Response Time</h3>
-                    <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">0ms</p>
-                  </div>
-                </div>
+                    <h3 className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Total Chats</h3>
+            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">{(agent.totalChats || 0).toLocaleString()}</p>
+          </div>
+        </div>
               </div>
             </div>
           </CardContent>
