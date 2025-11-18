@@ -34,11 +34,11 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     const [profileImage, setProfileImage ] = useState<string | null>(null)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
 
-    // Use the agentData passed from server-side
+    
     const agent = agentData;
 
     useEffect(() => {
-        // Check if user has access to the agent
+        
         if (agent && !agent.isPublic && agent.ownerID !== currentUser) {
             setExists(false);
         } else {
@@ -51,7 +51,6 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
 
     const chatHook = useChat({
         transport: new DefaultChatTransport({
-
         prepareSendMessagesRequest({ messages: uiMessages, id }) {
         return {
           body: {
@@ -62,11 +61,8 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         };}
         }),
     });
-
     const { messages, sendMessage, status } = chatHook;
 
-    // Use the built-in status from useChat instead of manual tracking
-    // status can be: 'submitted', 'streaming', 'ready', or 'error'
     const isStreaming = status === 'submitted' || status === 'streaming';
     
     useEffect(() => {
@@ -91,43 +87,6 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
 
 
 
-
-    // const handleSendMessage = async (content: string, base64String: string | null, image: string | null, docUrl: string | null, powerUpSelected: string | null) => {
-    //   console.log(agent?.systemMessage)
-
-    //     setLoading(true)
-    //     const userMessage: Message = {
-    //         id: Date.now().toString(),
-    //         role: "user",
-    //         content,
-    //         timestamp: "just now",
-    //         image: null
-    //     };
-    //     setMessages((prev) => [...prev, userMessage]);
-
-        
-
-    //     try {
-          
-    
-    //         const aiMessage = await generateWithGemini(messages, agent?.systemMessage ?? 'You are a helpful AI agent.', content, auth.currentUser?.displayName ?? '');
-    //         setLoading(false)
-    //         setMessages((prev) => [...prev, {
-    //             id: (Date.now() + 1).toString(),
-    //             role: "assistant",
-    //             content: aiMessage.response,
-    //             timestamp: "just now",
-    //             image: aiMessage.imageUrl?.imageUrl ?? null,
-    //             docUrl: null
-    //         }]);
-    
-    //     } catch (error) {
-    //         console.error(error);
-    //         // You might want to show an error message to the user here
-    //     }
-    //     setLoading(false)
-       
-    // };
 
     const handleSidebarToggle = () => {
         setIsDrawerOpen(!isDrawerOpen);

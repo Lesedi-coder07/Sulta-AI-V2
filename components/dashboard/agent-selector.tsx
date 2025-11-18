@@ -8,44 +8,15 @@ import { db } from "@/app/api/firebase/firebaseConfig";
 import { log } from "console";
 import AgentOptions from "./agent-options";
 import { useRouter } from "next/navigation";
+import { Agent } from "@/types/agent";
 
-const agents1 = [
-  {
-    id: "1",
-    name: "Writing Assistant",
-    type: "Content" as const,
-    status: "online" as const,
-  },
-  {
-    id: "2",
-    name: "Melody Maker",
-    type: "Music" as const,
-    status: "online" as const,
-  },
-  {
-    id: "3",
-    name: "Text Analyzer",
-    type: "Text" as const,
-    status: "busy" as const,
-  },
-  {
-    id: "4",
-    name: "Blog Writer",
-    type: "Content" as const,
-    status: "offline" as const,
-  },
-];
-
-interface Agent {
-  id: string;
-  name: string;
-  type: string;
-  status: string;
-  isPublic: boolean;
+interface AgentSelectorProps {
+  initialAgents: Agent[];
+  userId: string;
 }
 
-export function AgentSelector() {
-  const [agents, setAgents] = useState<Agent[]>([]);
+export function AgentSelector({ initialAgents, userId }: AgentSelectorProps) {
+  const [agents, setAgents] = useState<Agent[]>(initialAgents);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [agentTabOpen, setAgentTabOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -68,40 +39,37 @@ export function AgentSelector() {
             return;
           }
 
-          try {
-            const agentPromises = agentIds.map((agentId) => {
-              const agentDocRef = doc(db, "agents", agentId);
-              return onSnapshot(agentDocRef, (agentSnapshot) => {
-                const agentData = agentSnapshot.data();
-                if (agentData) {
-                  const agent: Agent = {
-                    id: agentId,
-                    name: agentData.name,
-                    type: agentData.type,
-                    status: agentData.isPublic ? "online" : "offline",
-                    isPublic: agentData.isPublic,
-                  };
-                  setAgents((prevAgents) => {
-                    const otherAgents = prevAgents.filter((a) => a.id !== agentId);
-                    return [...otherAgents, agent];
-                  });
-                }
-              });
-            });
-
-            // Once initial agents are fetched, set loading to false
-            setIsLoading(false);
-
-            // Cleanup all agent listeners on unmount or when agents change
-            return () => {
-              agentPromises.forEach((unsubscribe) => unsubscribe());
+      // Set up listeners for each agent
+      const unsubscribeAgents = agentIds.map((agentId) => {
+        const agentDocRef = doc(db, "agents", agentId);
+        return onSnapshot(agentDocRef, (agentSnapshot) => {
+          const agentData = agentSnapshot.data();
+          if (agentData) {
+            const agent: Agent = {
+              id: agentId,
+              name: agentData.name,
+              type: agentData.type,
+              status: agentData.isPublic ? "online" : "offline",
+              isPublic: agentData.isPublic,
+              totalQueries: agentData.totalQueries || 0,
+              tokensUsed: agentData.tokensUsed || 0,
+              totalChats: agentData.totalChats || 0,
+              description: agentData.description,
+              createdAt: agentData.createdAt,
             };
-          } catch (error) {
-            console.error("Error fetching agents:", error);
-            setAgents([]);
-            setIsLoading(false);
+            setAgents((prevAgents) => {
+              const otherAgents = prevAgents.filter((a) => a.id !== agentId);
+              return [...otherAgents, agent];
+            });
           }
         });
+      });
+
+      // Cleanup agent listeners when agent list changes
+      return () => {
+        unsubscribeAgents.forEach((unsubscribe) => unsubscribe());
+      };
+    });
 
         return () => {
           unsubscribeUser();

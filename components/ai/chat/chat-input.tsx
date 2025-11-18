@@ -313,13 +313,7 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string) => v
             </div>
           </div>
 
-          {/* Disclaimer Text */}
-          <p className="mt-3 text-center text-xs text-neutral-500 dark:text-neutral-400">
-            Sulta AI may display inaccurate info, so please double check the response. {" "}
-            <a href="/learn-more" className="underline hover:text-neutral-700 dark:hover:text-neutral-300">
-              Your Privacy
-            </a>
-          </p>
+         
         </form>
       </div>
     </div>

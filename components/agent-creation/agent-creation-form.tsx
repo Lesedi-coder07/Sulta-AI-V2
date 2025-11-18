@@ -259,20 +259,20 @@ export function AgentCreationForm() {
         className="w-full"
         onValueChange={(value) => setAgentType(value as "text" | "customer-support" | "school-assistant" | "employee-onboarding")}
       >
-        <TabsList className="grid w-full  grid-cols-4 items-center justify-center bg-card border border-border">
-          <TabsTrigger value="text" className="space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+        <TabsList className="flex w-full overflow-x-auto sm:grid sm:grid-cols-4 items-center justify-start sm:justify-center bg-card border border-border gap-2 sm:gap-0 p-1">
+          <TabsTrigger value="text" className="flex-shrink-0 space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">
             <Bot className="h-4 w-4" />
             <span>General AI</span>
           </TabsTrigger>
-          <TabsTrigger value="customer-support" className="space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+          <TabsTrigger value="customer-support" className="flex-shrink-0 space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">
             <MessageCircle className="h-4 w-4" />
             <span>Support</span>
           </TabsTrigger>
-          <TabsTrigger value="school-assistant" className="space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+          <TabsTrigger value="school-assistant" className="flex-shrink-0 space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">
             <GraduationCap className="h-4 w-4" />
             <span>School</span>
           </TabsTrigger>
-          <TabsTrigger value="employee-onboarding" className="space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+          <TabsTrigger value="employee-onboarding" className="flex-shrink-0 space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">
             <Users className="h-4 w-4" />
             <span>Onboarding</span>
           </TabsTrigger>

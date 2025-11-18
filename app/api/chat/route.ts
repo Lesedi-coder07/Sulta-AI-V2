@@ -36,7 +36,6 @@ export async function POST(req: Request) {
     const cleanedModelMessages = messagesToModelMessages(messages);
     console.log("Cleaned model messages:", cleanedModelMessages[0]);
 
-
     const allMessages = [
       {
         role: 'system' as const,
@@ -44,7 +43,6 @@ export async function POST(req: Request) {
       },
       ...cleanedModelMessages,
     ];
-
 
     const result = streamText({
       model: google('gemini-2.5-flash'),
@@ -55,8 +53,6 @@ export async function POST(req: Request) {
     console.log('Stream created, returning response');
     
     return result.toUIMessageStreamResponse();
-
-    
   } catch (error) {
     console.error('Error in chat API:', error);
     return new Response(JSON.stringify({ error: 'Internal server error' }), {

@@ -8,17 +8,7 @@ import { GradientText } from "@/components/ui/gradient-text";
 import { TextShimmer } from '@/components/ui/text-shimmer';
 import { UIMessage } from "ai";
 
-const promptSuggestions = [
-  {
-    suggestion: 'What are some effective ways to reduce stress and anxiety?'
-  },
-  {
-    suggestion: 'Help me plan a balanced weekly meal schedule'
-  },
-  {
-    suggestion: 'Give me tips for improving my public speaking skills'
-  },
-]
+
 
 function CopyButton({ textToCopy }: { textToCopy: string }) {
   const [copied, setCopied] = useState(false);
@@ -95,18 +85,7 @@ export function ChatMessages({
             <div className="text-center mb-8">
               <GradientText className="text-lg">How can I help you today?</GradientText>
             </div>
-            <div className="flex flex-row flex-wrap gap-3 justify-center max-w-2xl">
-              {promptSuggestions.map((prompt) => (
-                <Card 
-                  key={prompt.suggestion}
-                  className="flex-1 min-w-[200px] max-w-[280px] hover:shadow-lg hover:shadow-blue-500/20 cursor-pointer transition-all duration-200 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 border-neutral-200 hover:border-blue-400 dark:hover:border-blue-500" 
-                >
-                  <CardContent className="p-4">
-                    <p className="text-sm leading-relaxed">{prompt.suggestion}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+
           </div>
         ) : (
           <>
