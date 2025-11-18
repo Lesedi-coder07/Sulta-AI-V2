@@ -40,13 +40,11 @@ export function TopAgents({ agents }: TopAgentsProps) {
             >
               <div className="flex items-center gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                  <Bot className="h-4 w-4 text-primary" />
+                  <Bot className="h-4 w-4 text-white/60" />
                 </div>
                 <div>
                   <div className="font-semibold text-sm">{agent.name}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {agent.type.charAt(0).toUpperCase() + agent.type.slice(1)} Agent
-                  </div>
+                  
                 </div>
               </div>
               <div className="flex items-center gap-2">

@@ -14,28 +14,28 @@ export function QuickActions() {
       description: 'Build a new AI agent',
       icon: Plus,
       onClick: () => router.push('/ai/create'),
-      color: 'bg-white hover:bg-white/80',
+      color: 'bg-white/80 hover:bg-white/80',
     },
     {
       title: 'Billing',
       description: 'Manage subscription',
       icon: CreditCard,
       onClick: () => router.push('/ai/billing'),
-      color: 'bg-white hover:bg-white/80',
+      color: 'bg-white/80 hover:bg-white/80',
     },
     {
       title: 'Settings',
       description: 'Account settings',
       icon: Settings,
       onClick: () => router.push('/ai/settings'),
-      color: 'bg-white hover:bg-white/80',
+      color: 'bg-white/80 hover:bg-white/80',
     },
     {
       title: 'Analytics',
       description: 'View insights',
       icon: BarChart3,
       onClick: () => router.push('/ai/dashboard'),
-      color: 'bg-white hover:bg-white/80',
+      color: 'bg-white/80 hover:bg-white/80',
     },
   ];
 

@@ -11,8 +11,8 @@ interface UsageSummaryProps {
 }
 
 export function UsageSummary({ 
-  creditsRemaining = 0, 
-  creditsLimit = 100,
+  creditsRemaining = 5000, 
+  creditsLimit = 5000,
   monthlyUsage = 0 
 }: UsageSummaryProps) {
   const creditsUsed = creditsLimit - creditsRemaining;

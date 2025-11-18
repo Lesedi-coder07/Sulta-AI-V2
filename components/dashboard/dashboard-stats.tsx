@@ -23,28 +23,28 @@ export function DashboardStats({ agents }: DashboardStatsProps) {
       value: totalAgents,
       icon: Bot,
       description: `${activeAgents} active`,
-      color: 'text-blue-500',
+      color: 'text-white/80',
     },
     {
       title: 'Total Queries',
       value: totalQueries.toLocaleString(),
       icon: MessageSquare,
       description: 'All time',
-      color: 'text-green-500',
+      color: 'text-white/80',
     },
     {
       title: 'Total Chats',
       value: totalChats.toLocaleString(),
       icon: Activity,
       description: 'Conversations',
-      color: 'text-purple-500',
+      color: 'text-white/80',
     },
     {
       title: 'Tokens Used',
       value: totalTokens.toLocaleString(),
       icon: Zap,
       description: 'Total usage',
-      color: 'text-orange-500',
+      color: 'text-white/80',
     },
   ];
 
