@@ -259,12 +259,13 @@ export function AgentCreationForm() {
         className="w-full"
         onValueChange={(value) => setAgentType(value as "text" | "customer-support" | "school-assistant" | "employee-onboarding")}
       >
-        <TabsList className="flex w-full overflow-x-auto sm:grid sm:grid-cols-4 items-center justify-start sm:justify-center bg-card border border-border gap-2 sm:gap-0 p-1">
+        <TabsList className="flex w-full overflow-x-auto sm:grid sm:grid-cols-1 items-center justify-start sm:justify-center bg-card border border-border gap-2 sm:gap-0 p-1">
           <TabsTrigger value="text" className="flex-shrink-0 space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">
             <Bot className="h-4 w-4" />
-            <span>General AI</span>
+            <span>New Agent</span>
           </TabsTrigger>
-          <TabsTrigger value="customer-support" className="flex-shrink-0 space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">
+          {/* Temporarily hidden while refining */}
+          {/* <TabsTrigger value="customer-support" className="flex-shrink-0 space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">
             <MessageCircle className="h-4 w-4" />
             <span>Support</span>
           </TabsTrigger>
@@ -275,7 +276,7 @@ export function AgentCreationForm() {
           <TabsTrigger value="employee-onboarding" className="flex-shrink-0 space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">
             <Users className="h-4 w-4" />
             <span>Onboarding</span>
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
 
         <Form {...form}>
@@ -296,7 +297,8 @@ export function AgentCreationForm() {
               <ExtraContextField form={form} />
             </TabsContent>
 
-            <TabsContent value="customer-support" className="space-y-8">
+            {/* Temporarily hidden while refining */}
+            {/* <TabsContent value="customer-support" className="space-y-8">
               <CustomerSupportConfig form={form} />
               <ExtraContextField form={form} />
             </TabsContent>
@@ -309,7 +311,7 @@ export function AgentCreationForm() {
             <TabsContent value="employee-onboarding" className="space-y-8">
               <EmployeeOnboardingConfig form={form} />
               <ExtraContextField form={form} />
-            </TabsContent>
+            </TabsContent> */}
 
             <div className="flex justify-end space-x-4">
               <Button variant="outline" type="button" className="border-border hover:bg-accent">
