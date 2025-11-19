@@ -21,7 +21,8 @@ export const metadata: Metadata = {
   title: 'AI Agent - Sulta AI',
   description: 'Custom AI Agent - Text',
   icons: {
-    icon: "/favicon.png",
+    icon: "/logos/Sulta/fav.png",
+    shortcut: { url: "/logos/Sulta/fav.png" }
 },
 }
 

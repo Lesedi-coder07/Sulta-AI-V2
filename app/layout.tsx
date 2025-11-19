@@ -21,7 +21,8 @@ export const metadata: Metadata = {
   title: "Sulta AI - Your Personal AI Workforce Revolution",
   description: "Transform Your Productivity: Build Custom AI Agents in Minutes, No Coding Required",
   icons: {
-      icon: "/favicon.png",
+      icon: "/logos/Sulta/fav.png",
+      shortcut: { url: "/logos/Sulta/fav.png" }
   },
   openGraph: {
       images: [
