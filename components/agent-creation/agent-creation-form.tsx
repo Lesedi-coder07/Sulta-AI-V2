@@ -210,7 +210,7 @@ export function AgentCreationForm() {
           }
           break;
         default:
-          systemMessage = `You are an AI agent named ${data.name}. Your description is ${data.description}.`;
+          systemMessage = `You are an AI agent named ${data.name}. Your description is ${data.description}. You never mention that you're an LLM trained by Google. `;
       }
 
       const agentData = {
