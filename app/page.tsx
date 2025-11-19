@@ -62,17 +62,7 @@ export default function Home() {
                 
                 <div className="container relative z-10 mx-auto px-4 pt-20 pb-16 flex-1 flex items-center justify-center">
                     <div className="max-w-5xl w-full text-center">
-                        {/* Badge */}
-                        <div className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full border border-blue-200 bg-blue-50/50 dark:bg-blue-950/30 dark:border-blue-900 backdrop-blur-sm transition-all hover:scale-105 hover:shadow-lg hover:shadow-blue-500/20">
-                            <Badge className="bg-blue-600 hover:bg-blue-700 text-white border-0">
-                                <Sparkles className="w-3 h-3 mr-1" />
-                                New
-                            </Badge>
-                            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                                Create Custom AI Agents in Minutes
-                            </span>
-                            <ArrowRight className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                        </div>
+                        
 
                         {/* Main Headline */}
                         <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
@@ -123,41 +113,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Trust Indicators */}
-            <section className="py-12 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50">
-                <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
-                        <div className="flex flex-col items-center text-center">
-                            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-950 mb-3">
-                                <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                            </div>
-                            <div className="text-2xl font-bold text-neutral-900 dark:text-white">10K+</div>
-                            <div className="text-sm text-neutral-600 dark:text-neutral-400">Active Users</div>
-                        </div>
-                        <div className="flex flex-col items-center text-center">
-                            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-950 mb-3">
-                                <Zap className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                            </div>
-                            <div className="text-2xl font-bold text-neutral-900 dark:text-white">50K+</div>
-                            <div className="text-sm text-neutral-600 dark:text-neutral-400">AI Agents Created</div>
-                        </div>
-                        <div className="flex flex-col items-center text-center">
-                            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-950 mb-3">
-                                <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                            </div>
-                            <div className="text-2xl font-bold text-neutral-900 dark:text-white">99.9%</div>
-                            <div className="text-sm text-neutral-600 dark:text-neutral-400">Uptime</div>
-                        </div>
-                        <div className="flex flex-col items-center text-center">
-                            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-950 mb-3">
-                                <Sparkles className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                            </div>
-                            <div className="text-2xl font-bold text-neutral-900 dark:text-white">24/7</div>
-                            <div className="text-sm text-neutral-600 dark:text-neutral-400">AI Support</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+         
 
             {/* Features Section - Redesigned */}
             <section className="relative py-24 overflow-hidden">
