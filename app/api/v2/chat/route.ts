@@ -4,10 +4,14 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
     const {prompt, messages, systemMessage} = await req.json();
+    const userMessage  = {
+        "role": "user",
+        "content": prompt
+    }
+    messages.push(userMessage);
 
     const result = await generateText({
         model: google('gemini-2.5-flash'),
-        prompt: prompt,
         messages: messages,
         system: systemMessage,
         maxRetries: 3,
