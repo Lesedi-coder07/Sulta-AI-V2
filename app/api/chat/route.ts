@@ -64,7 +64,7 @@ function messagesToModelMessages(messages: any[], imageBase64?: string | null) {
 
 export async function POST(req: Request) {
   try {
-    const { system, messages, chatId, agentId, newChat = false, imageBase64 } = await req.json();
+    const { system, messages, chatId, agentId, newChat = false, imageBase64, thinkEnabled = false } = await req.json();
 
     // Validate that messages is an array
     if (!Array.isArray(messages)) {
@@ -75,7 +75,9 @@ export async function POST(req: Request) {
       });
     }
 
-
+    // Select model based on thinking mode
+    const modelId = thinkEnabled ? 'gemini-3-pro-preview' : 'gemini-2.5-flash-lite';
+    console.log(`Using model: ${modelId} (thinking mode: ${thinkEnabled})`);
 
     const modelMessages = convertToModelMessages(messages);
 
@@ -92,12 +94,16 @@ export async function POST(req: Request) {
     ];
 
     const result = streamText({
-      model: google('gemini-2.5-flash-lite'),
+      model: google(modelId),
       messages: allMessages,
       temperature: 0.7,
       onFinish: async ({ usage }) => {
         if (agentId) {
-          await updateAgentAnalytics(agentId, 1, usage?.totalTokens ?? 0, newChat ? 1 : 0);
+          // Report 2x tokens when using thinking mode (gemini-3-pro-preview)
+          const tokenMultiplier = thinkEnabled ? 2 : 1;
+          const tokensToReport = (usage?.totalTokens ?? 0) * tokenMultiplier;
+          console.log(`Reporting tokens: ${tokensToReport} (multiplier: ${tokenMultiplier})`);
+          await updateAgentAnalytics(agentId, 1, tokensToReport, newChat ? 1 : 0);
         }
       },
     });

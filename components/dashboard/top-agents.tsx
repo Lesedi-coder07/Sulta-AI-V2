@@ -16,7 +16,7 @@ export function TopAgents({ agents }: TopAgentsProps) {
   // Sort agents by total queries (most used first)
   const topAgents = [...agents]
     .sort((a, b) => (b.totalQueries || 0) - (a.totalQueries || 0))
-    .slice(0, 5);
+    .slice(0, 3);
 
   if (topAgents.length === 0) {
     return null;

@@ -12,7 +12,7 @@ interface UsageSummaryProps {
 
 export function UsageSummary({
   agents,
-  creditsLimit = 50000
+  creditsLimit = 500000
 }: UsageSummaryProps) {
   // Calculate totals from agent data (similar to dashboard-stats.tsx)
   const creditsUsed = agents.reduce((sum, agent) => sum + (agent.tokensUsed || 0), 0);

@@ -12,13 +12,15 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { UIMessage } from "ai";
 interface ChatInputProps {
   sendMessage: (message: string, imageBase64?: string | null) => void;
+  thinkEnabled: boolean;
+  onThinkToggle: (enabled: boolean) => void;
 }
 
 
 
 
 
-export function ChatInput({ sendMessage }: { sendMessage: (message: string, imageBase64?: string | null) => void }) {
+export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInputProps) {
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLDivElement>(null);
@@ -32,7 +34,6 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string, imag
   const [docUrl, setDocUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [searchEnabled, setSearchEnabled] = useState<boolean>(false)
-  const [thinkEnabled, setThinkEnabled] = useState<boolean>(false)
   const [imageGenEnabled, setImageGenEnabled] = useState<boolean>(false);
   const [powerUpSelected, setPowerUpSelected] = useState<string | null>(null);
 
@@ -130,15 +131,15 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string, imag
     if (powerUpSelected === 'think') {
       setSearchEnabled(false)
       setImageGenEnabled(false)
-      setThinkEnabled(!thinkEnabled)
+      onThinkToggle(!thinkEnabled)
       setPowerUpSelected(powerUpSelected)
     } else if (powerUpSelected === 'search') {
       setImageGenEnabled(false)
-      setThinkEnabled(false)
+      onThinkToggle(false)
       setSearchEnabled(!searchEnabled)
       setPowerUpSelected(powerUpSelected)
     } else {
-      setThinkEnabled(false)
+      onThinkToggle(false)
       setSearchEnabled(false)
       setImageGenEnabled(!imageGenEnabled)
       setPowerUpSelected(powerUpSelected)
@@ -300,6 +301,21 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string, imag
                   )}
                 </div>
               </div>
+
+              {/* Think Toggle Button */}
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                className={`h-10 w-10 rounded-full transition-all duration-200 ${thinkEnabled
+                  ? 'bg-neutral-200 dark:bg-neutral-700 text-purple-600 dark:text-purple-400'
+                  : 'hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-600 dark:text-neutral-400'
+                  }`}
+                onClick={() => onThinkToggle(!thinkEnabled)}
+                title={thinkEnabled ? 'Thinking mode ON (uses Gemini 3 Pro)' : 'Enable thinking mode'}
+              >
+                <Brain className="h-5 w-5" />
+              </Button>
 
               {/* Send Button */}
               <Button

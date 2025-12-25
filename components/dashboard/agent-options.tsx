@@ -35,7 +35,7 @@ interface AgentOptionsProps {
   updateSelectedAgent: (agent: Agent | null, isEditing: boolean) => void;
 }
 
-function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
+function AgentOptions({ agent, updateSelectedAgent }: AgentOptionsProps) {
   const [editing, setEditing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [editForm, setEditForm] = useState({
@@ -49,15 +49,15 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
     isPublic: agent.isPublic
   });
 
-  const [formErrors, setFormErrors] = useState<{[key: string]: string}>({});
+  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
   const toggleEditing = () => {
     setEditing(!editing)
   }
 
   const validateForm = () => {
-    const errors: {[key: string]: string} = {};
-    
+    const errors: { [key: string]: string } = {};
+
     if (!editForm.name.trim()) {
       errors.name = 'Agent name is required';
     } else if (editForm.name.length < 2) {
@@ -65,15 +65,15 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
     } else if (editForm.name.length > 50) {
       errors.name = 'Agent name must be less than 50 characters';
     }
-    
+
     if (editForm.description && editForm.description.length > 500) {
       errors.description = 'Description must be less than 500 characters';
     }
-    
+
     if (editForm.contextMemory < 1 || editForm.contextMemory > 10) {
       errors.contextMemory = 'Context memory must be between 1 and 10';
     }
-    
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -83,7 +83,7 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
       ...prev,
       [field]: value
     }));
-    
+
     // Clear error for this field when user starts typing
     if (formErrors[field]) {
       setFormErrors(prev => ({
@@ -97,15 +97,15 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
     if (!validateForm()) {
       return;
     }
-    
+
     setIsLoading(true);
     try {
       const agentDocRef = doc(db, 'agents', agent.id);
       await updateDoc(agentDocRef, editForm);
-      
+
       // Update local agent object
       Object.assign(agent, editForm);
-      
+
       setEditing(false);
       setFormErrors({});
     } catch (error) {
@@ -128,11 +128,11 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
       editTabRef.current?.focus();
       editTabRef.current?.scrollIntoView({ behavior: 'smooth' });
     } else {
-      defaultTabREf.current?.scrollIntoView( {behavior: 'smooth'})
+      defaultTabREf.current?.scrollIntoView({ behavior: 'smooth' })
     }
   }, [editing]);
- const createEmbedCode = () => {
-  return ` <script src="https://ai.sultatech.com/cdn/agent-widget.js"></script>
+  const createEmbedCode = () => {
+    return ` <script src="https://ai.sultatech.com/cdn/agent-widget.js"></script>
     <script>
         initAIWidget({
             agentId: "${agent.id}",
@@ -141,252 +141,208 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
         });
 
     </script>`
- }
+  }
   const togglePublic = async () => {
-    
 
-    const agentDocRef = doc(db,'agents', agent.id)
+
+    const agentDocRef = doc(db, 'agents', agent.id)
     updateDoc(agentDocRef, {
       isPublic: (!agent.isPublic),
     }).then(() => {
       agent.isPublic = !agent.isPublic;
     })
-  
-   } 
-   const handleExit = () => {
-    updateSelectedAgent(null, false )
-   }
+
+  }
+  const handleExit = () => {
+    updateSelectedAgent(null, false)
+  }
   return (
-    <div className="w-full overflow-x-hidden space-y-6">
-      <div className="space-y-6 p-4">
-        {/* Header Section */}
-        <Card ref={defaultTabREf}>
-          <CardHeader className="pb-4">
-            <div className="flex flex-row justify-between items-start gap-4">
-              <div className="space-y-2">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-                    <MessageSquare className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                  </div>
+    <div className="w-full overflow-x-hidden space-y-6 p-6 animate-fade-in-up">
+      {/* Header Section */}
+      <div className="glass-card rounded-xl p-6">
+        <div className="flex flex-row justify-between items-start gap-4">
+          <div className="flex items-center gap-4">
+            <div className="icon-container p-3 bg-white/10 border border-white/10">
+              <MessageSquare className="h-6 w-6 text-white/80" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-white">{agent.name}</h2>
+              <div className="flex items-center gap-2 mt-2">
+                <Badge variant="secondary" className="capitalize bg-white/10 text-white/70 border-white/10">
+                  {agent.type}
+                </Badge>
+                <Badge
+                  variant={agent.isPublic ? "default" : "outline"}
+                  className={agent.isPublic
+                    ? "bg-green-500/20 text-green-400 border-green-500/30"
+                    : "bg-white/10 text-white/70 border-white/10"}
+                >
+                  {agent.isPublic ? <><Globe className="h-3 w-3 mr-1" />Public</> : <><EyeOff className="h-3 w-3 mr-1" />Private</>}
+                </Badge>
+              </div>
+              {agent.description && (
+                <p className="text-sm text-muted-foreground mt-3 max-w-xl">{agent.description}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => { togglePublic() }}
+              className="flex items-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-white"
+            >
+              {agent.isPublic ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+              {agent.isPublic ? 'Public' : 'Private'}
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => { handleExit() }}
+              className="text-white/60 hover:text-white hover:bg-white/10"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Analytics Section */}
+      <div className="glass-card rounded-xl p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="icon-container p-2">
+            <BarChart3 className="h-4 w-4 text-white/80" />
+          </div>
           <div>
-                    <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">{agent.name}</h2>
-                    <div className="flex items-center gap-2"><br /><br />
-                      <Badge variant="secondary" className="capitalize">{agent.type}</Badge>
-                      <Badge variant={agent.isPublic ? "default" : "outline"}>
-                        {agent.isPublic ? <><Globe className="h-3 w-3 mr-1" />Public</> : <><EyeOff className="h-3 w-3 mr-1" />Private</>}
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-                {agent.description && (
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-2">{agent.description}</p>
-                )}
-          </div>
-          
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {togglePublic()}}
-                  className="flex items-center gap-2"
-                >
-                  {agent.isPublic ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-                  {agent.isPublic ? 'Public' : 'Private'}
-                </Button>
-
-                <Button 
-                  variant="ghost"
-                  size="sm"
-              onClick={() => {handleExit()}}
-                  className="text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+            <h3 className="font-semibold text-white">Analytics</h3>
+            <p className="text-sm text-muted-foreground">Performance metrics for your agent</p>
           </div>
         </div>
-          </CardHeader>
-        </Card>
 
-        {/* Analytics Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" />
-              Analytics
-            </CardTitle>
-            <CardDescription>Performance metrics for your agent</CardDescription>
-          </CardHeader>
-          <CardContent>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg border">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-500 rounded-lg">
-                    <MessageSquare className="h-4 w-4 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Total Queries</h3>
-            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">{(agent.totalQueries || 0).toLocaleString()}</p>
+          <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-blue-500/20 rounded-xl border border-blue-500/30">
+                <MessageSquare className="h-4 w-4 text-blue-400" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Total Queries</p>
+                <p className="text-xl font-bold text-white number-animate">{(agent.totalQueries || 0).toLocaleString()}</p>
+              </div>
+            </div>
           </div>
+
+          <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-green-500/20 rounded-xl border border-green-500/30">
+                <Zap className="h-4 w-4 text-green-400" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Tokens Used</p>
+                <p className="text-xl font-bold text-white number-animate">{(agent.tokensUsed || 0).toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-purple-500/20 rounded-xl border border-purple-500/30">
+                <Activity className="h-4 w-4 text-purple-400" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Total Chats</p>
+                <p className="text-xl font-bold text-white number-animate">{(agent.totalChats || 0).toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="glass-card rounded-xl p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="icon-container p-2">
+            <Settings className="h-4 w-4 text-white/80" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-white">Actions</h3>
+            <p className="text-sm text-muted-foreground">Manage and interact with your agent</p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-white"
+              >
+                <Code className="h-4 w-4" />
+                Deploy
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] lg:max-w-[800px]">
+              <DialogHeader>
+                <DialogTitle>Deploy Agent to your website</DialogTitle>
+                <DialogDescription>
+                  Copy and paste this code to embed your agent on any website.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="embed">Embed Code</Label>
+                  <div className="relative">
+                    <SyntaxHighlighter
+                      language="javascript"
+                      style={vs2015}
+                      customStyle={{
+                        padding: '1rem',
+                        borderRadius: '0.75rem',
+                        height: '200px',
+                        width: '100%',
+                        overflow: 'auto',
+                        fontSize: '11px'
+                      }}
+                    >
+                      {createEmbedCode()}
+                    </SyntaxHighlighter>
+                  </div>
                 </div>
               </div>
-              <div className="p-4 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg border">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-500 rounded-lg">
-                    <Zap className="h-4 w-4 text-white" />
-          </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Tokens Used</h3>
-            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">{(agent.tokensUsed || 0).toLocaleString()}</p>
-          </div>
-        </div>
-              </div>
-              <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg border">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-500 rounded-lg">
-                    <Activity className="h-4 w-4 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Total Chats</h3>
-            <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">{(agent.totalChats || 0).toLocaleString()}</p>
-          </div>
-        </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              <DialogFooter>
+                <Button type="button" onClick={() => {
+                  navigator.clipboard.writeText(createEmbedCode());
+                }}>
+                  Copy Code
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
-        {/* Deploy Modal */}
-        {/* <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="default">Deploy</Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] lg:max-w-[800px]">
-            <DialogHeader>
-              <DialogTitle>Deploy Agent to your website</DialogTitle>
-              <DialogDescription>
-                Copy and paste this code to embed your agent on any website.
-              </DialogDescription>
-            </DialogHeader>
-
-
-            <div className="grid gap-4 py-4">
-             <div className="grid gap-2">
-  <Label htmlFor="embed">Embed Code</Label>
-  <div className="relative">
-    <SyntaxHighlighter
-      language="javascript"
-      style={vs2015}
-      customStyle={{
-        padding: '1rem',
-        borderRadius: '0.375rem',
-        height: '200px',
-        width: '700px',
-        overflow: 'auto',
-        fontSize: '11px'
-      }}
-    >
-      {createEmbedCode()}
-    </SyntaxHighlighter>
-    {/* <Button
-      className="absolute top-2 right-2"
-      variant="secondary"
-      size="sm"
-      onClick={() => navigator.clipboard.writeText(createEmbedCode())}
-    >
-      Copy
-    </Button> 
-  </div>
-</div>
-            </div>
-            <DialogFooter>
-              <Button type="button" onClick={() => {
-                navigator.clipboard.writeText(createEmbedCode());
-              }}>
-                Copy Code
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog> */}
-
-        {/* Action Buttons */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Settings className="h-5 w-5" />
-              Actions
-            </CardTitle>
-            <CardDescription>Manage and interact with your agent</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-3">
-             <Dialog>
-          <DialogTrigger asChild>
-                  <Button variant="default" className="flex items-center gap-2">
-                    <Code className="h-4 w-4" />
-                    Deploy
-                  </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] lg:max-w-[800px]">
-            <DialogHeader>
-              <DialogTitle>Deploy Agent to your website</DialogTitle>
-              <DialogDescription>
-                Copy and paste this code to embed your agent on any website.
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="grid gap-4 py-4">
-             <div className="grid gap-2">
-  <Label htmlFor="embed">Embed Code</Label>
-  <div className="relative">
-    <SyntaxHighlighter
-      language="javascript"
-      style={vs2015}
-      customStyle={{
-        padding: '1rem',
-        borderRadius: '0.375rem',
-        height: '200px',
-                            width: '100%',
-        overflow: 'auto',
-        fontSize: '11px'
-      }}
-    >
-      {createEmbedCode()}
-    </SyntaxHighlighter>
-  </div>
-</div>
-            </div>
-            <DialogFooter>
-              <Button type="button" onClick={() => {
-                navigator.clipboard.writeText(createEmbedCode());
-              }}>
-                Copy Code
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-    
           <Link href={`/ai/chat/${agent.id}`}>
-                <Button variant="default" className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4" />
-                  Use Agent
-                  <ArrowRight className="h-4 w-4" />
+            <Button className="bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/20 text-white flex items-center gap-2">
+              <MessageSquare className="h-4 w-4" />
+              Use Agent
+              <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
 
-          <Button 
+          <Button
             variant="outline"
-            onClick={() => {toggleEditing()}}
-                className="flex items-center gap-2"
+            onClick={() => { toggleEditing() }}
+            className="flex items-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-white"
           >
-                <Edit3 className="h-4 w-4" />
-                Edit Settings
+            <Edit3 className="h-4 w-4" />
+            Edit Settings
           </Button>
         </div>
-          </CardContent>
-        </Card>
       </div>
+
+      {/* Context Sheet */}
       <div className="max-w-full overflow-x-auto">
-        {/* <FileUploader /> */}
         <ContextSheet />
       </div>
 
@@ -407,7 +363,7 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
                 <TabsTrigger value="personality">Personality</TabsTrigger>
                 <TabsTrigger value="advanced">Advanced</TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="basic" className="space-y-4 mt-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -423,7 +379,7 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
                       <p className="text-sm text-red-500">{formErrors.name}</p>
                     )}
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="type">Agent Type</Label>
                     <Select value={editForm.type} onValueChange={(value) => handleInputChange('type', value)}>
@@ -439,7 +395,7 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
                     </Select>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="description">Description</Label>
                   <Textarea
@@ -453,8 +409,8 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
                   {formErrors.description && (
                     <p className="text-sm text-red-500">{formErrors.description}</p>
                   )}
-          </div>
-          
+                </div>
+
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="space-y-0.5">
                     <Label className="text-base">Public Agent</Label>
@@ -468,7 +424,7 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
                   />
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="personality" className="space-y-4 mt-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -485,7 +441,7 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="tone">Tone</Label>
                     <Select value={editForm.tone} onValueChange={(value) => handleInputChange('tone', value)}>
@@ -501,7 +457,7 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
                     </Select>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="expertise">Areas of Expertise</Label>
                   <Input
@@ -515,7 +471,7 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
                   </p>
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="advanced" className="space-y-4 mt-6">
                 <div className="space-y-2">
                   <Label htmlFor="contextMemory">Context Memory (1-10)</Label>
@@ -533,10 +489,10 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
                   <p className="text-sm text-muted-foreground">
                     How many previous messages the agent remembers in conversations
                   </p>
-          </div>
+                </div>
 
                 <Separator />
-                
+
                 <div className="space-y-2">
                   <Label>Agent Status</Label>
                   <div className="flex items-center gap-2">
@@ -546,20 +502,20 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
                     <span className="text-sm text-muted-foreground">
                       Last updated: {new Date().toLocaleDateString()}
                     </span>
-          </div>
-        </div>
+                  </div>
+                </div>
               </TabsContent>
             </Tabs>
-            
+
             {formErrors.general && (
               <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                 <p className="text-sm text-red-600 dark:text-red-400">{formErrors.general}</p>
               </div>
             )}
-            
+
             <div className="flex justify-end gap-2 mt-6 pt-4 border-t">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => {
                   setEditing(false);
                   setFormErrors({});
@@ -580,7 +536,7 @@ function AgentOptions ({agent, updateSelectedAgent}: AgentOptionsProps) {
                 <X className="h-4 w-4 mr-2" />
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={handleSaveChanges}
                 disabled={isLoading}
                 className="flex items-center gap-2"

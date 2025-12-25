@@ -52,7 +52,7 @@ export function AgentCard({ name, type, status, onClick, selected }: AgentCardPr
         "relative cursor-pointer overflow-hidden group",
         "transition-all duration-300",
         "glass-card hover-glow",
-        "p-5 space-y-4",
+        "p-5 flex flex-col justify-between",
         "w-64 h-36",
         "hover:scale-[1.02]",
         selected && "ring-1 ring-white/30 scale-[1.02]"
@@ -68,20 +68,21 @@ export function AgentCard({ name, type, status, onClick, selected }: AgentCardPr
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
       </div>
 
+      {/* Top section: Icon and Status */}
       <div className="relative flex items-start justify-between">
         <div className={cn(
-          "flex h-12 w-12 items-center justify-center rounded-xl",
+          "flex h-11 w-11 items-center justify-center rounded-xl",
           "bg-white/10 border border-white/10",
           "group-hover:scale-110 group-hover:border-white/20",
           "transition-all duration-300"
         )}>
-          <IconComponent className="h-6 w-6 text-white/80" />
+          <IconComponent className="h-5 w-5 text-white/80" />
         </div>
 
         {/* Status indicator */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <div className={cn(
-            "relative flex h-3 w-3 items-center justify-center",
+            "relative flex h-2.5 w-2.5 items-center justify-center",
             status === 'online' && "animate-pulse"
           )}>
             <span className={cn(
@@ -101,13 +102,11 @@ export function AgentCard({ name, type, status, onClick, selected }: AgentCardPr
         </div>
       </div>
 
+      {/* Bottom section: Name */}
       <div className="relative">
-        <h3 className="font-semibold text-base text-white group-hover:text-white transition-colors duration-300">
+        <h3 className="font-semibold text-sm text-white group-hover:text-white transition-colors duration-300 truncate">
           {name}
         </h3>
-        <p className="text-sm text-muted-foreground mt-1">
-          {type.charAt(0).toUpperCase() + type.slice(1)} Agent
-        </p>
       </div>
 
       {/* Bottom accent line */}

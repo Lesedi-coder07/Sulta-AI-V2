@@ -36,6 +36,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     const [isNewChat, setIsNewChat] = useState<boolean>(true);
     const hasSentFirstMessage = useRef<boolean>(false);
     const pendingImage = useRef<string | null>(null);
+    const [thinkEnabled, setThinkEnabled] = useState<boolean>(false);
 
     useEffect(() => {
         // Reset on component mount - this is a new chat session
@@ -74,6 +75,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
                         agentId: agent_id,
                         newChat: isNewChatRequest,
                         imageBase64: imageToSend,
+                        thinkEnabled,
                     },
                 };
             }
@@ -169,7 +171,11 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         exists ? (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
             <ChatHeader handleSidebarToggle={handleSidebarToggle} showImage={false} agent={agent} showButton={true} />
             <ChatMessages messages={messages} isLoading={isStreaming} messageImages={messageImages} />
-            <ChatInput sendMessage={(message: string, imageBase64?: string | null) => handleNewMessage(message, imageBase64)} />
+            <ChatInput
+                sendMessage={(message: string, imageBase64?: string | null) => handleNewMessage(message, imageBase64)}
+                thinkEnabled={thinkEnabled}
+                onThinkToggle={setThinkEnabled}
+            />
         </div>) : <h1 className="text-center mt-36 text-4xl font-bold">Agent not found <br /></h1>
     );
 
