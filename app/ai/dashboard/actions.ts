@@ -12,13 +12,13 @@ export async function getAgents(userId: string): Promise<Agent[]> {
 
     // Fetch user document
     const userDoc = await adminDb.collection('users').doc(userId).get();
-    
+
     if (!userDoc.exists) {
       return [];
     }
 
     const agentIds: string[] = userDoc.data()?.agents || [];
-    
+
     if (agentIds.length === 0) {
       return [];
     }
@@ -26,7 +26,7 @@ export async function getAgents(userId: string): Promise<Agent[]> {
     // Fetch all agents in parallel (much faster than sequential)
     const agentPromises = agentIds.map(async (agentId) => {
       const agentDoc = await adminDb.collection('agents').doc(agentId).get();
-      
+
       if (!agentDoc.exists) {
         return null;
       }
@@ -47,7 +47,7 @@ export async function getAgents(userId: string): Promise<Agent[]> {
     });
 
     const agents = await Promise.all(agentPromises);
-    
+
     // Filter out null values (agents that don't exist)
     return agents.filter((agent): agent is Agent => agent !== null);
   } catch (error) {
@@ -56,14 +56,14 @@ export async function getAgents(userId: string): Promise<Agent[]> {
   }
 }
 
-export async function updateAgentAnalytics(agentId: string, totalQueries: number, tokensUsed: number, totalChats: number = 0)  {
+export async function updateAgentAnalytics(agentId: string, totalQueries: number, tokensUsed: number, totalChats: number = 0) {
   try {
     if (!agentId) {
       return;
     }
 
     const agentRef = adminDb.collection('agents').doc(agentId);
-    
+
     // Use atomic increments for thread-safe updates
     const updateData: Record<string, FieldValue> = {
       totalQueries: FieldValue.increment(totalQueries),
@@ -82,3 +82,24 @@ export async function updateAgentAnalytics(agentId: string, totalQueries: number
   }
 }
 
+export async function deleteAgent(agentId: string, userId: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    if (!agentId || !userId) {
+      return { success: false, error: 'Missing agent ID or user ID' };
+    }
+
+    // Delete agent document
+    await adminDb.collection('agents').doc(agentId).delete();
+
+    // Remove agent from user's agents array
+    const userRef = adminDb.collection('users').doc(userId);
+    await userRef.update({
+      agents: FieldValue.arrayRemove(agentId)
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting agent:', error);
+    return { success: false, error: 'Failed to delete agent' };
+  }
+}

@@ -4,7 +4,7 @@ import { Agent } from '@/types/agent'
 import FileUploader from './file-uploader'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, Settings, BarChart3, Code, MessageSquare, Users, Clock, Zap, Globe, Edit3, Save, X, Eye, EyeOff, Activity } from 'lucide-react'
+import { ArrowRight, Settings, BarChart3, Code, MessageSquare, Users, Clock, Zap, Globe, Edit3, Save, X, Eye, EyeOff, Activity, Trash2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -29,15 +29,30 @@ import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { collection, updateDoc, doc, getDoc } from 'firebase/firestore'
 import { db } from '@/app/api/firebase/firebaseConfig'
 import ContextSheet from '@/components/dashboard/context-sheet'
+import { deleteAgent } from '@/app/ai/dashboard/actions'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface AgentOptionsProps {
   agent: Agent;
   updateSelectedAgent: (agent: Agent | null, isEditing: boolean) => void;
+  currentUserId?: string;
+  onAgentDeleted?: () => void;
 }
 
-function AgentOptions({ agent, updateSelectedAgent }: AgentOptionsProps) {
+function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDeleted }: AgentOptionsProps) {
   const [editing, setEditing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [editForm, setEditForm] = useState({
     name: agent.name,
     description: agent.description || '',
@@ -338,6 +353,51 @@ function AgentOptions({ agent, updateSelectedAgent }: AgentOptionsProps) {
             <Edit3 className="h-4 w-4" />
             Edit Settings
           </Button>
+
+          {/* Delete Button with Confirmation */}
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 bg-red-500/10 border-red-500/30 hover:bg-red-500/20 hover:border-red-500/50 text-red-400 hover:text-red-300"
+                disabled={isDeleting}
+              >
+                <Trash2 className="h-4 w-4" />
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Agent</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete <strong>{agent.name}</strong>? This action cannot be undone. All data associated with this agent will be permanently removed.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                  onClick={async () => {
+                    if (!currentUserId) {
+                      console.error('No user ID provided');
+                      return;
+                    }
+                    setIsDeleting(true);
+                    const result = await deleteAgent(agent.id, currentUserId);
+                    if (result.success) {
+                      updateSelectedAgent(null, false);
+                      onAgentDeleted?.();
+                    } else {
+                      console.error(result.error);
+                      setIsDeleting(false);
+                    }
+                  }}
+                >
+                  Delete Agent
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
 

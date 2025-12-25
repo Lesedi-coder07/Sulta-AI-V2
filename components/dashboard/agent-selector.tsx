@@ -84,8 +84,22 @@ export function AgentSelector({ initialAgents, userId }: AgentSelectorProps) {
     };
   }, []);
 
+  const handleAgentDeleted = () => {
+    // Remove the deleted agent from local state
+    if (selectedAgent) {
+      setAgents((prevAgents) => prevAgents.filter((a) => a.id !== selectedAgent.id));
+    }
+  };
+
   return (
-    agentTabOpen ? <AgentOptions updateSelectedAgent={updateSelectedAgent} agent={selectedAgent as Agent} /> : (
+    agentTabOpen ? (
+      <AgentOptions
+        updateSelectedAgent={updateSelectedAgent}
+        agent={selectedAgent as Agent}
+        currentUserId={userId}
+        onAgentDeleted={handleAgentDeleted}
+      />
+    ) : (
       <div className="w-full p-4 overflow-hidden animate-fade-in-up" style={{ animationDelay: '300ms' }}>
         <div className="space-y-6 w-full flex flex-col">
           {/* Section header */}
