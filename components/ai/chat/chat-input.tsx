@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ArrowUp, Paperclip, File, Globe, Image, Brain} from "lucide-react";
+import { ArrowUp, Paperclip, File, Globe, Image, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { db } from "@/app/api/firebase/firebaseConfig"; // Import your Firebase configuration
@@ -11,20 +11,20 @@ import { storage } from "@/app/api/firebase/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { UIMessage } from "ai";
 interface ChatInputProps {
-  sendMessage: (message: string) => void;
+  sendMessage: (message: string, imageBase64?: string | null) => void;
 }
 
 
 
 
 
-export function ChatInput({ sendMessage }: { sendMessage: (message: string) => void }) {
+export function ChatInput({ sendMessage }: { sendMessage: (message: string, imageBase64?: string | null) => void }) {
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLDivElement>(null);
   const [uploadedFileName, setUploadFileName] = useState<string | null>(null)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [fileBase64String, setFileBase64String ] = useState<string | null>(null)
+  const [fileBase64String, setFileBase64String] = useState<string | null>(null)
   const [imageUrl, setImageUrl] = useState<string | null>(null); // New state for image URL
   const imageInputRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
@@ -33,7 +33,7 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string) => v
   const [isUploading, setIsUploading] = useState(false);
   const [searchEnabled, setSearchEnabled] = useState<boolean>(false)
   const [thinkEnabled, setThinkEnabled] = useState<boolean>(false)
-  const [imageGenEnabled , setImageGenEnabled] = useState<boolean>(false);
+  const [imageGenEnabled, setImageGenEnabled] = useState<boolean>(false);
   const [powerUpSelected, setPowerUpSelected] = useState<string | null>(null);
 
 
@@ -46,14 +46,14 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string) => v
       try {
         // Create a storage reference
         const storageRef = ref(storage, `uploads/documents/${Date.now()}-${file.name}`);
-        
+
         // Upload file to Firebase Storage
         await uploadBytes(storageRef, file);
-        
+
         // Get the download URL
         const downloadUrl = await getDownloadURL(storageRef);
         setDocUrl(downloadUrl);
-        
+
         // You might want to update the message to indicate a document was attached
         // setMessage(prev => prev + `\n[Document attached: ${file.name}]`);
         console.log("docUrl", downloadUrl)
@@ -67,7 +67,7 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string) => v
   };
 
 
-  
+
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "inherit";
@@ -75,41 +75,41 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string) => v
     }
   }, [message]);
 
-   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0]
-     
+
       setUploadFileName(file.name)
-      
+
       const base64String = await convertFileToBase64(file)
       setFileBase64String(base64String)
 
       const url = URL.createObjectURL(file);
       setImageUrl(url);
-   
+
     }
-   
+
   }
 
   const handleSubmit = (e: React.FormEvent) => {
 
     e.preventDefault();
     if (message.trim()) {
-      sendMessage(message.trim());
+      sendMessage(message.trim(), fileBase64String);
       setMessage("");
       setFileBase64String(null)
       setUploadFileName(null)
       setImageUrl(null)
       setDocUrl(null)
       setShowFileInput(false)
-      if (imageInputRef.current ) {
+      if (imageInputRef.current) {
         imageInputRef.current.value = ""
       }
 
       if (formRef.current) {
         formRef.current.reset()
-       }
+      }
     }
   };
 
@@ -127,25 +127,25 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string) => v
   };
 
   const handlePowerUp = (powerUpSelected: string): void => {
-     if (powerUpSelected === 'think') {
-       setSearchEnabled(false)
-       setImageGenEnabled(false)
-       setThinkEnabled(!thinkEnabled)
-       setPowerUpSelected(powerUpSelected)
-     } else if (powerUpSelected === 'search') {
-        setImageGenEnabled(false)
-        setThinkEnabled(false)
-        setSearchEnabled(!searchEnabled)
-        setPowerUpSelected(powerUpSelected)
-     } else {
-        setThinkEnabled(false)
-        setSearchEnabled(false)
-        setImageGenEnabled(!imageGenEnabled)
-        setPowerUpSelected(powerUpSelected)
-     }
+    if (powerUpSelected === 'think') {
+      setSearchEnabled(false)
+      setImageGenEnabled(false)
+      setThinkEnabled(!thinkEnabled)
+      setPowerUpSelected(powerUpSelected)
+    } else if (powerUpSelected === 'search') {
+      setImageGenEnabled(false)
+      setThinkEnabled(false)
+      setSearchEnabled(!searchEnabled)
+      setPowerUpSelected(powerUpSelected)
+    } else {
+      setThinkEnabled(false)
+      setSearchEnabled(false)
+      setImageGenEnabled(!imageGenEnabled)
+      setPowerUpSelected(powerUpSelected)
+    }
   }
 
- 
+
 
   return (
     // <div className="fixed bottom-0 right-0 md:flex md:flex-row-reverse pl-44  border-neutral-200 md:flex-center w-full p-4 dark:border-neutral-800 dark:bg-neutral-900 flex justify-center">
@@ -170,7 +170,7 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string) => v
     //             className="flex flex-row gap-2 w-full px-4 hover:bg-slate-200 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
     //           >
     //             Upload Image
-              
+
     //           </label>
     //           <input 
     //             type="file" 
@@ -184,11 +184,11 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string) => v
     //             className="mt-2 block w-full hover:bg-slate-200 px-4 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
     //           >
     //             Upload Document
-             
+
     //           </label>
 
     //         </>) } 
-          
+
 
     //         </div>
     //         <Button
@@ -199,7 +199,7 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string) => v
     //         >
     //           <Plus />
     //         </Button>
-           
+
     //       </div>
     //       <Textarea
     //         ref={textareaRef}
@@ -229,7 +229,7 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string) => v
         <form ref={formRef} onSubmit={handleSubmit} className="w-full">
           {/* Main Input Container */}
           <div className="relative flex items-center gap-3 bg-neutral-100 dark:bg-neutral-800 rounded-3xl px-4 py-3 shadow-sm border border-neutral-200 dark:border-neutral-700">
-            
+
             {/* Textarea */}
             <Textarea
               ref={textareaRef}
@@ -256,8 +256,8 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string) => v
                 </Button>
 
                 {/* File Upload Dropdown */}
-                <div 
-                  ref={fileInputRef} 
+                <div
+                  ref={fileInputRef}
                   className={`absolute bottom-full right-0 mb-2 w-56 bg-white dark:bg-neutral-800 shadow-lg rounded-lg py-2 z-50 border border-neutral-200 dark:border-neutral-700 ${showFileInput ? '' : 'hidden'}`}
                 >
                   {uploadedFileName ? (
@@ -313,31 +313,31 @@ export function ChatInput({ sendMessage }: { sendMessage: (message: string) => v
             </div>
           </div>
 
-         
+
         </form>
       </div>
     </div>
   );
 }
 
-export const writeMessageToDb = async (chatId: string , messageContent:string , sender: string, imageUrl: string | null, docUrl: string | null) => {
+export const writeMessageToDb = async (chatId: string, messageContent: string, sender: string, imageUrl: string | null, docUrl: string | null) => {
   try {
-      const messagesRef = collection(db, `chats/${chatId}/messages`);
-      const newMessage = {
-          content: messageContent,
-          id: Date.now().toString(),
-          role: sender,
-          timestamp: serverTimestamp(),
-          image: imageUrl,
-          docUrl: docUrl
-      };
+    const messagesRef = collection(db, `chats/${chatId}/messages`);
+    const newMessage = {
+      content: messageContent,
+      id: Date.now().toString(),
+      role: sender,
+      timestamp: serverTimestamp(),
+      image: imageUrl,
+      docUrl: docUrl
+    };
 
-      console.log(newMessage)
+    console.log(newMessage)
 
-      // Add the new message to the messages subcollection
-      await addDoc(messagesRef, newMessage);
-      console.log('Message sent successfully!');
+    // Add the new message to the messages subcollection
+    await addDoc(messagesRef, newMessage);
+    console.log('Message sent successfully!');
   } catch (error) {
-      console.error('Error sending message: ', error);
+    console.error('Error sending message: ', error);
   }
 };

@@ -2,12 +2,11 @@
 
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark, prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Or any other theme
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import 'katex/dist/katex.min.css'; // Import KaTeX stylesheet
-import { InlineMath, BlockMath } from 'react-katex';
-import katex from "katex";
-import { useRef, useState, useMemo } from 'react';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import { useRef, useState } from 'react';
 import { useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { Copy, Check } from 'lucide-react';
@@ -58,7 +57,7 @@ function CodeBlock({ language, code, theme }: { language: string; code: string; 
         </span>
         <CodeCopyButton code={code} />
       </div>
-      
+
       {/* Code content */}
       <div className="overflow-x-auto">
         <SyntaxHighlighter
@@ -83,32 +82,6 @@ function CodeBlock({ language, code, theme }: { language: string; code: string; 
       </div>
     </div>
   );
-}
-
-// KaTeX component for rendering math expressions
-function KaTeX({ texExpression, className }: { texExpression: string, className?: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (containerRef.current) {
-      // Strip any LaTeX delimiters before rendering
-      const cleanExpression = texExpression
-        .replace(/^\$\$|\$\$$|^\$|\$$|^\\\(|\\\)$|^\\\[|\\\]$/g, '')
-        .trim();
-      
-      try {
-        katex.render(cleanExpression, containerRef.current, {
-          displayMode: className?.includes('block'), // Use display mode for block math
-          throwOnError: false // Prevent crashes on parse errors
-        });
-      } catch (error) {
-        console.error('KaTeX rendering error:', error);
-        containerRef.current.textContent = texExpression; // Fallback to plain text
-      }
-    }
-  }, [texExpression, className]);
-
-  return <div ref={containerRef} className={className} />;
 }
 
 // Hook to create smooth streaming effect
@@ -155,7 +128,7 @@ function useSmoothStream(fullContent: string, streamSpeed = 20) {
       // Calculate how many characters to add based on time elapsed
       if (timestamp - lastUpdateRef.current >= streamSpeed) {
         const remaining = fullContent.length - indexRef.current;
-        
+
         if (remaining > 0) {
           // Add 2-4 characters at a time for smooth flow (slightly faster)
           const charsToAdd = Math.min(Math.ceil(Math.random() * 2) + 2, remaining);
@@ -163,7 +136,7 @@ function useSmoothStream(fullContent: string, streamSpeed = 20) {
           const newDisplayedContent = fullContent.slice(0, indexRef.current);
           setDisplayedContent(newDisplayedContent);
           lastUpdateRef.current = timestamp;
-          
+
           // Continue animating if there's more content
           if (indexRef.current < fullContent.length) {
             rafRef.current = requestAnimationFrame(animate);
@@ -201,7 +174,7 @@ export default function GeminiResponse({ content }: { content: string }) {
   const { theme } = useTheme();
   const { displayedContent, isComplete } = useSmoothStream(content, 15);
 
-  useEffect(()=> {
+  useEffect(() => {
     setCodeBlockTheme(theme === 'dark' ? 'dark' : 'light');
   }, [theme])
 
@@ -221,90 +194,65 @@ export default function GeminiResponse({ content }: { content: string }) {
 
   return (
     <ReactMarkdown
-    className={'prose prose-neutral dark:prose-invert max-w-none'}
-    components={{
-      // Custom paragraph rendering
-      p({ children }) {
-        return (
-          <>
-            <p className="mb-4 leading-[1.75]">{children}</p>
-          </>
-        );
-      },
+      className={'prose prose-neutral dark:prose-invert max-w-none'}
+      remarkPlugins={[remarkMath]}
+      rehypePlugins={[rehypeKatex]}
+      components={{
+        // Custom paragraph rendering
+        p({ children }) {
+          return (
+            <>
+              <p className="mb-4 leading-[1.75]">{children}</p>
+            </>
+          );
+        },
 
-      // Headings with better spacing
-      h1({ children }) {
-        return <h1 className="text-2xl font-bold mt-6 mb-4">{children}</h1>;
-      },
-      h2({ children }) {
-        return <h2 className="text-xl font-bold mt-5 mb-3">{children}</h2>;
-      },
-      h3({ children }) {
-        return <h3 className="text-lg font-semibold mt-4 mb-2">{children}</h3>;
-      },
+        // Headings with better spacing
+        h1({ children }) {
+          return <h1 className="text-2xl font-bold mt-6 mb-4">{children}</h1>;
+        },
+        h2({ children }) {
+          return <h2 className="text-xl font-bold mt-5 mb-3">{children}</h2>;
+        },
+        h3({ children }) {
+          return <h3 className="text-lg font-semibold mt-4 mb-2">{children}</h3>;
+        },
 
-      // Lists with better spacing
-      ul({ children }) {
-        return <ul className="mb-4 ml-6 space-y-2 list-disc">{children}</ul>;
-      },
-      ol({ children }) {
-        return <ol className="mb-4 ml-6 space-y-2 list-decimal">{children}</ol>;
-      },
-      li({ children }) {
-        return <li className="leading-[1.75]">{children}</li>;
-      },
+        // Lists with better spacing
+        ul({ children }) {
+          return <ul className="mb-4 ml-6 space-y-2 list-disc">{children}</ul>;
+        },
+        ol({ children }) {
+          return <ol className="mb-4 ml-6 space-y-2 list-decimal">{children}</ol>;
+        },
+        li({ children }) {
+          return <li className="leading-[1.75]">{children}</li>;
+        },
 
-      code({ className, children, ...props }) {
-        const content = String(children);
-        
-        // Regular code handling
-        const isInline = !className;
-        const match = /language-(\w+)/.exec(className || '');
+        code({ className, children, ...props }) {
+          const content = String(children);
 
-        if (isInline) {
-          return <code className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-sm font-mono text-neutral-800 dark:text-neutral-200" {...props}>{children}</code>;
-        }
+          // Regular code handling
+          const isInline = !className;
+          const match = /language-(\w+)/.exec(className || '');
 
-        return match ? (
-          <CodeBlock 
-            language={match[1]} 
-            code={content.replace(/\n$/, '')} 
-            theme={codeBlockTheme} 
-          />
-        ) : (
-          <code className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-sm font-mono text-neutral-800 dark:text-neutral-200" {...props}>{children}</code>
-        );
-      },
-
-      // Inline Math
-      span({ children, ...props }) {
-        if (Array.isArray(children) && children.length > 0 && typeof children[0] === 'string' && children[0].startsWith('$') && children[0].endsWith('$')) {
-          try {
-            return <KaTeX texExpression={children[0].slice(1, -1)} />;
-          } catch (error) {
-            console.error('Error rendering inline math:', error);
-            return <span {...props}>{children}</span>; // Fallback to plain text
+          if (isInline) {
+            return <code className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-sm font-mono text-neutral-800 dark:text-neutral-200" {...props}>{children}</code>;
           }
-        }
-        return <span {...props}>{children}</span>;
-      },
 
-      // Block Math
-      div({ children, ...props }) {
-        if (Array.isArray(children) && children.length > 0 && typeof children[0] === 'string' && children[0].startsWith('$$') && children[0].endsWith('$$')) {
-          try {
-            // return <KaTeX texExpression={children[0].slice(2, -2)} />;
-            <p>Hi</p>
-          } catch (error) {
-            console.error('Error rendering block math:', error);
-            return <div {...props}>{children}</div>; // Fallback to plain text
-          }
-        }
-        return <div {...props}>{children}</div>;
-      },
-    }}
-  >
-    {displayedContent}
-  </ReactMarkdown>
+          return match ? (
+            <CodeBlock
+              language={match[1]}
+              code={content.replace(/\n$/, '')}
+              theme={codeBlockTheme}
+            />
+          ) : (
+            <code className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-sm font-mono text-neutral-800 dark:text-neutral-200" {...props}>{children}</code>
+          );
+        },
+      }}
+    >
+      {displayedContent}
+    </ReactMarkdown>
   );
 }

@@ -32,7 +32,7 @@ const items = [
         icon: DollarSignIcon,
     }
 
-  
+
     , {
         title: "Settings",
         href: "/ai/settings",
@@ -46,7 +46,7 @@ const items = [
 
 export function AppSidebar() {
     const handleLogout = () => {
-       auth.signOut();
+        auth.signOut();
     }
     const currentPage = usePathname();
     return (
@@ -66,8 +66,8 @@ export function AppSidebar() {
                 <SidebarMenu className="space-y-3">
                     {items.map((item) => item && (
                         <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton 
-                                asChild 
+                            <SidebarMenuButton
+                                asChild
                                 className={`w-full h-16 px-6 py-4 rounded-xl text-left transition-all duration-300 
                                          hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-md hover:scale-[1.02]
                                          data-[state=active]:bg-sidebar-primary data-[state=active]:text-sidebar-primary-foreground
@@ -86,16 +86,16 @@ export function AppSidebar() {
             </SidebarContent>
             <SidebarFooter className="px-4 py-6 border-t border-sidebar-border">
                 <SidebarMenuItem className="list-none">
-                    <SidebarMenuButton 
-                        asChild 
+                    <SidebarMenuButton
+                        asChild
                         className="w-full h-16 px-6 py-4 rounded-xl text-left transition-all duration-300 
                                  hover:bg-destructive/10 hover:text-destructive hover:shadow-md hover:scale-[1.02]
                                  border border-destructive/20 group"
                     >
-                        <Button 
-                            onClick={handleLogout} 
-                            variant="ghost" 
-                            className="w-full h-full justify-start p-0 border-none bg-white text-black"
+                        <Button
+                            onClick={handleLogout}
+                            variant="ghost"
+                            className="w-full h-full justify-start p-0 border-none bg-transparent hover:bg-transparent text-sidebar-foreground"
                         >
                             <div className="p-2 rounded-lg transition-colors">
                                 <LogOutIcon className="w-5 h-5 flex-shrink-0" />

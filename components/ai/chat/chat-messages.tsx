@@ -43,14 +43,16 @@ function CopyButton({ textToCopy }: { textToCopy: string }) {
 export function ChatMessages({
   messages,
   isLoading = false,
+  messageImages = {},
 }: {
   messages: UIMessage[];
   isLoading?: boolean;
+  messageImages?: Record<string, string>;
 }) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ 
+    messagesEndRef.current?.scrollIntoView({
       behavior: 'smooth',
       block: 'end',
     });
@@ -75,13 +77,20 @@ export function ChatMessages({
       .join('');
   };
 
+  // Extract image parts from message
+  const getMessageImages = (message: UIMessage): string[] => {
+    return message.parts
+      .filter(part => part.type === 'file' && part.mediaType?.startsWith('image/'))
+      .map(part => (part as any).url);
+  };
+
   return (
     <div className="flex-1 overflow-y-auto mb-7 pt-[100px] sm:mb-[180px] md:pt-16 px-4 md:px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
       <div className="max-w-4xl mx-auto space-y-8">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 px-4">
-            
-            
+
+
             <div className="text-center mb-8">
               <GradientText className="text-lg">How can I help you today?</GradientText>
             </div>
@@ -91,7 +100,10 @@ export function ChatMessages({
           <>
             {messages.map((message, index) => {
               const content = getMessageContent(message);
+              const images = getMessageImages(message);
               const isUser = message.role === 'user';
+              // Also check for images passed via messageImages prop
+              const externalImage = messageImages[message.id];
 
               return (
                 <div
@@ -111,9 +123,29 @@ export function ChatMessages({
 
                   {/* Message Content */}
                   <div className={cn(
-                    "flex flex-col",
+                    "flex flex-col gap-2",
                     isUser ? "max-w-[85%] md:max-w-[75%] lg:max-w-[65%] items-end" : "flex-1"
                   )}>
+                    {/* Image attachments - from message parts or external prop */}
+                    {(images.length > 0 || externalImage) && (
+                      <div className="flex flex-wrap gap-2">
+                        {externalImage && (
+                          <img
+                            src={externalImage}
+                            alt="Uploaded image"
+                            className="max-w-[200px] max-h-[200px] rounded-lg object-cover shadow-sm"
+                          />
+                        )}
+                        {images.map((imageUrl, imgIndex) => (
+                          <img
+                            key={imgIndex}
+                            src={imageUrl}
+                            alt={`Uploaded image ${imgIndex + 1}`}
+                            className="max-w-[200px] max-h-[200px] rounded-lg object-cover shadow-sm"
+                          />
+                        ))}
+                      </div>
+                    )}
                     <div
                       className={cn(
                         "transition-all duration-200",
@@ -144,7 +176,7 @@ export function ChatMessages({
                 </div>
               );
             })}
-            
+
             {/* Show thinking indicator when loading */}
             {isLoading && (
               <div className="flex gap-3 group">
@@ -166,7 +198,7 @@ export function ChatMessages({
   );
 }
 
-function TextShimmerColor({text}: {text: string}) {
+function TextShimmerColor({ text }: { text: string }) {
   return (
     <TextShimmer
       duration={1.2}
