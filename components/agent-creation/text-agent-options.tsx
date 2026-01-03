@@ -16,22 +16,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
-
-const expertiseOptions = [
-  "General Knowledge",
-  "Technical Writing",
-  "Creative Writing",
-  "Business",
-  "Science",
-  "Marketing",
-  "Education",
-  "Healthcare",
-  "Legal",
-  "Finance",
-];
+import { Textarea } from "@/components/ui/textarea";
+import { Brain, Sparkles } from "lucide-react";
 
 export function TextAgentOptions({ form }: { form: any }) {
   return (
@@ -73,8 +60,6 @@ export function TextAgentOptions({ form }: { form: any }) {
             )}
           />
 
-         
-
           <FormField
             control={form.control}
             name="textConfig.tone"
@@ -110,32 +95,16 @@ export function TextAgentOptions({ form }: { form: any }) {
             name="textConfig.expertise"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Areas of Expertise</FormLabel>
-                <ScrollArea className="h-[120px] rounded-md border p-4">
-                  <div className="space-x-2">
-                    {expertiseOptions.map((expertise) => (
-                      <Badge
-                        key={expertise}
-                        variant={
-                          field.value?.includes(expertise)
-                            ? "default"
-                            : "outline"
-                        }
-                        className="cursor-pointer"
-                        onClick={() => {
-                          const newValue = field.value?.includes(expertise)
-                            ? field.value.filter((e: string) => e !== expertise)
-                            : [...(field.value || []), expertise];
-                          field.onChange(newValue);
-                        }}
-                      >
-                        {expertise}
-                      </Badge>
-                    ))}
-                  </div>
-                </ScrollArea>
+                <FormLabel>Areas of Expertise (Optional)</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Describe your agent's areas of expertise, e.g.:&#10;- Technical support for SaaS products&#10;- Customer onboarding&#10;- Financial consulting"
+                    className="min-h-[100px]"
+                    {...field}
+                  />
+                </FormControl>
                 <FormDescription>
-                  Select relevant areas of expertise
+                  Describe the specific knowledge areas your agent should specialize in
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -162,6 +131,32 @@ export function TextAgentOptions({ form }: { form: any }) {
                   Number of previous messages to remember: {field.value}
                 </FormDescription>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Extended Thinking Toggle */}
+          <FormField
+            control={form.control}
+            name="textConfig.extendedThinking"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 bg-gradient-to-r from-purple-50/50 to-blue-50/50 dark:from-purple-950/20 dark:to-blue-950/20">
+                <div className="space-y-0.5 flex-1">
+                  <FormLabel className="text-base flex items-center gap-2">
+                    <Brain className="h-4 w-4 text-purple-500" />
+                    Extended Thinking
+                    <Sparkles className="h-3 w-3 text-amber-500" />
+                  </FormLabel>
+                  <FormDescription>
+                    Enable deeper reasoning for complex tasks. Uses more tokens and costs more.
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
               </FormItem>
             )}
           />

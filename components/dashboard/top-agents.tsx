@@ -30,7 +30,7 @@ export function TopAgents({ agents }: TopAgentsProps) {
   };
 
   return (
-    <Card className="glass-card hover-glow animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+    <Card className="glass-card hover-glow">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg">
           <div className="icon-container p-2">
@@ -48,9 +48,7 @@ export function TopAgents({ agents }: TopAgentsProps) {
               className="relative flex items-center justify-between p-4 rounded-xl 
                        border border-white/10 bg-white/5 
                        hover:bg-white/10 hover:border-white/20 hover:scale-[1.01] 
-                       cursor-pointer transition-all duration-300 group
-                       animate-fade-in-up"
-              style={{ animationDelay: `${(index + 3) * 100}ms` }}
+                       cursor-pointer transition-all duration-300 group"
             >
               {/* Rank indicator */}
               <div className="flex items-center gap-4">

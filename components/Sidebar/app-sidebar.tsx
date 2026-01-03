@@ -20,22 +20,22 @@ import { usePathname } from "next/navigation";
 const items = [
     {
         title: "Dashboard",
-        href: "/ai/dashboard",
+        href: "/dashboard",
         icon: HomeIcon,
     }, {
         title: 'New Agent',
-        href: "/ai/create",
+        href: "/create",
         icon: PlusIcon,
     }, {
         title: "Billing",  // New item
-        href: "/ai/billing",
+        href: "/billing",
         icon: DollarSignIcon,
     }
 
 
     , {
         title: "Settings",
-        href: "/ai/settings",
+        href: "/settings",
         icon: SettingsIcon,
     }
     // ... additional items can be added here

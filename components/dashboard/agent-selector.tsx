@@ -14,9 +14,10 @@ import { Button } from "@/components/ui/button";
 interface AgentSelectorProps {
   initialAgents: Agent[];
   userId: string;
+  onAgentSelected?: (isSelected: boolean) => void;
 }
 
-export function AgentSelector({ initialAgents, userId }: AgentSelectorProps) {
+export function AgentSelector({ initialAgents, userId, onAgentSelected }: AgentSelectorProps) {
   const [agents, setAgents] = useState<Agent[]>(initialAgents);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [agentTabOpen, setAgentTabOpen] = useState<boolean>(false);
@@ -25,6 +26,7 @@ export function AgentSelector({ initialAgents, userId }: AgentSelectorProps) {
   const updateSelectedAgent = (agent: Agent | null, agentTabOpen: boolean) => {
     setSelectedAgent(agent);
     setAgentTabOpen(agentTabOpen);
+    onAgentSelected?.(agentTabOpen);
   };
 
   useEffect(() => {
@@ -100,7 +102,7 @@ export function AgentSelector({ initialAgents, userId }: AgentSelectorProps) {
         onAgentDeleted={handleAgentDeleted}
       />
     ) : (
-      <div className="w-full p-4 overflow-hidden animate-fade-in-up" style={{ animationDelay: '300ms' }}>
+      <div className="w-full p-4 overflow-hidden">
         <div className="space-y-6 w-full flex flex-col">
           {/* Section header */}
           <div className="flex items-center justify-between">
@@ -119,7 +121,7 @@ export function AgentSelector({ initialAgents, userId }: AgentSelectorProps) {
             </div>
 
             <Button
-              onClick={() => router.push('/ai/create')}
+              onClick={() => router.push("/create")}
               className="bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/20 text-white transition-all duration-300"
             >
               <Plus className="h-4 w-4 mr-2" />
@@ -136,7 +138,7 @@ export function AgentSelector({ initialAgents, userId }: AgentSelectorProps) {
                 </div>
                 <p className="text-muted-foreground text-center mb-4">You don't have any agents yet</p>
                 <Button
-                  onClick={() => router.push('/ai/create')}
+                  onClick={() => router.push("/create")}
                   className="bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/20 text-white transition-all duration-300"
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -144,11 +146,9 @@ export function AgentSelector({ initialAgents, userId }: AgentSelectorProps) {
                 </Button>
               </div>
             ) : (
-              agents.map((agent, index) => (
+              agents.map((agent) => (
                 <div
                   key={agent.id}
-                  className="animate-fade-in-up"
-                  style={{ animationDelay: `${(index + 4) * 50}ms` }}
                 >
                   <AgentCard
                     name={agent.name}

@@ -13,22 +13,26 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verify the ID token with Firebase Admin
-    const decodedToken = await adminAuth.verifyIdToken(idToken);
+    // Create a session cookie that lasts 5 days
+    const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days in milliseconds
+    const sessionCookie = await adminAuth.createSessionCookie(idToken, { expiresIn });
 
     // Set the session cookie
     const cookieStore = await cookies();
-    cookieStore.set('session', idToken, {
+    cookieStore.set('session', sessionCookie, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 5, // 5 days in seconds
       path: '/',
     });
 
+    // Verify and get user info
+    const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie);
+
     return NextResponse.json({
       success: true,
-      uid: decodedToken.uid,
+      uid: decodedClaims.uid,
     });
   } catch (error) {
     console.error('Error setting session:', error);

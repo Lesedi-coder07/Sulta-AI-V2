@@ -10,7 +10,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { Agent } from "@/types/agent";
-import { generateSystemMessage } from "@/app/ai/create/generateSystemMessage";
+import { generateSystemMessage } from "@/app/(ai)/create/generateSystemMessage";
 
 export interface ChatAgent extends Agent {
     isPublic: boolean;
@@ -37,14 +37,12 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     const hasSentFirstMessage = useRef<boolean>(false);
     const pendingImage = useRef<string | null>(null);
     const [thinkEnabled, setThinkEnabled] = useState<boolean>(false);
+    const thinkEnabledRef = useRef<boolean>(false);
 
+    // Sync thinkEnabled state with ref so it can be read in callbacks
     useEffect(() => {
-        // Reset on component mount - this is a new chat session
-        sessionStorage.setItem('isNewChat', 'true');
-        hasSentFirstMessage.current = false;
-        setIsNewChat(true);
-    }, []);
-
+        thinkEnabledRef.current = thinkEnabled;
+    }, [thinkEnabled]);
 
     const agent = agentData;
 
@@ -58,24 +56,40 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     }, [agent, currentUser])
 
 
-    const systemMessage = generateSystemMessage(agentData.name, agentData?.description ?? '', agentData.type, agentData.personality, agentData.tone, agentData.expertise);
+    // Use custom system prompt if provided, otherwise generate one
+    const systemMessage = agentData.customSystemPrompt || generateSystemMessage(
+        agentData.name, 
+        agentData?.description ?? '', 
+        agentData.type, 
+        agentData.personality, 
+        agentData.tone, 
+        agentData.expertise
+    );
+
+    // Add guardrails to system message if provided
+    const systemMessageWithGuardrails = agentData.guardrails 
+        ? `${systemMessage}\n\n**IMPORTANT RESTRICTIONS:**\n${agentData.guardrails}`
+        : systemMessage;
 
     const chatHook = useChat({
         transport: new DefaultChatTransport({
             prepareSendMessagesRequest({ messages: uiMessages, id }) {
-                const isNewChatRequest = !hasSentFirstMessage.current;
+                // This is a new chat only if there are no messages yet
+                // (uiMessages will contain the message being sent, so check if length is 1)
+                const isNewChatRequest = uiMessages.length === 1;
                 const imageToSend = pendingImage.current;
                 // Clear the pending image after capturing it for the request
                 pendingImage.current = null;
                 return {
                     body: {
-                        system: systemMessage,
+                        system: systemMessageWithGuardrails,
                         messages: uiMessages,
                         chatId: id,
                         agentId: agent_id,
                         newChat: isNewChatRequest,
                         imageBase64: imageToSend,
-                        thinkEnabled,
+                        thinkEnabled: agentData.extendedThinking || thinkEnabledRef.current,
+                        llmConfig: agentData.llmConfig,
                     },
                 };
             }
@@ -96,7 +110,6 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
 
         if (localIsNewChat) {
             hasSentFirstMessage.current = true;
-            sessionStorage.setItem('isNewChat', 'false');
         }
 
         // Store the image in the ref so the transport can access it
@@ -139,7 +152,6 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         if (messages.length > 0 && !hasSentFirstMessage.current) {
             hasSentFirstMessage.current = true;
             setIsNewChat(false);
-            sessionStorage.setItem('isNewChat', 'false');
         }
     }, [status, messages.length, isStreaming]);
 

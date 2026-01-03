@@ -69,6 +69,7 @@ export function ChatMessages({
   messageImages?: Record<string, string>;
 }) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const prevMessageCountRef = useRef<number>(0);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({
@@ -77,9 +78,13 @@ export function ChatMessages({
     });
   };
 
+  // Only scroll to bottom when a new message is added, not during streaming updates
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (messages.length > prevMessageCountRef.current) {
+      scrollToBottom();
+    }
+    prevMessageCountRef.current = messages.length;
+  }, [messages.length]);
 
   // Debug: log loading state and messages
   useEffect(() => {

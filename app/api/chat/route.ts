@@ -1,7 +1,7 @@
 import { openai } from '@ai-sdk/openai';
 import { streamText, convertToModelMessages } from 'ai';
 import { google } from '@ai-sdk/google';
-import { updateAgentAnalytics } from '@/app/ai/dashboard/actions';
+import { updateAgentAnalytics } from '@/app/(ai)/dashboard/actions';
 
 export const maxDuration = 55;
 export const runtime = 'nodejs';
@@ -64,7 +64,7 @@ function messagesToModelMessages(messages: any[], imageBase64?: string | null) {
 
 export async function POST(req: Request) {
   try {
-    const { system, messages, chatId, agentId, newChat = false, imageBase64, thinkEnabled = false } = await req.json();
+    const { system, messages, chatId, agentId, newChat = false, imageBase64, thinkEnabled = false, llmConfig } = await req.json();
 
     // Validate that messages is an array
     if (!Array.isArray(messages)) {
@@ -75,9 +75,13 @@ export async function POST(req: Request) {
       });
     }
 
-    // Select model based on thinking mode
-    const modelId = thinkEnabled ? 'gemini-3-pro-preview' : 'gemini-2.5-flash-lite';
-    console.log(`Using model: ${modelId} (thinking mode: ${thinkEnabled})`);
+    // Select model from agent config or fallback to defaults
+    // When thinking is enabled by user, always use gemini-3-pro regardless of llmConfig
+    const modelId = thinkEnabled ? 'gemini-3-pro-preview' : (llmConfig?.model || 'gemini-2.5-flash-lite');
+    const temperature = llmConfig?.temperature ?? 0.7;
+    const maxTokens = llmConfig?.maxTokens ?? 8192;
+    
+    console.log(`Using model: ${modelId} (thinking: ${thinkEnabled}, temp: ${temperature}, maxTokens: ${maxTokens})`);
 
     const modelMessages = convertToModelMessages(messages);
 
@@ -96,7 +100,7 @@ export async function POST(req: Request) {
     const result = streamText({
       model: google(modelId),
       messages: allMessages,
-      temperature: 0.7,
+      temperature,
       onFinish: async ({ usage }) => {
         if (agentId) {
           // Report 2x tokens when using thinking mode (gemini-3-pro-preview)

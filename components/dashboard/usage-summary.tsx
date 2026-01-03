@@ -36,7 +36,7 @@ export function UsageSummary({
   const StatusIcon = status.icon;
 
   return (
-    <Card className="glass-card hover-glow animate-fade-in-up" style={{ animationDelay: '150ms' }}>
+    <Card className="glass-card hover-glow">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg">
           <div className="icon-container p-2">

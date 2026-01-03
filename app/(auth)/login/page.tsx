@@ -39,7 +39,7 @@ function Login() {
             // Wait a bit longer to ensure cookie is set and browser has processed it
             await new Promise(resolve => setTimeout(resolve, 300))
             // Use window.location for a hard redirect that includes cookies
-            window.location.replace('/ai/dashboard')
+            window.location.replace("/dashboard")
           } else {
             redirectingRef.current = false
           }
@@ -88,7 +88,7 @@ function Login() {
           // Wait a bit longer to ensure cookie is set and browser has processed it
           await new Promise(resolve => setTimeout(resolve, 300))
           // Use window.location.replace for a hard redirect that includes cookies
-          window.location.replace('/ai/dashboard')
+          window.location.replace("/dashboard")
         } else {
           redirectingRef.current = false
           setLoading(false)

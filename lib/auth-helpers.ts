@@ -12,11 +12,11 @@ export async function getCurrentUser() {
       return null;
     }
 
-    // Verify the session token
-    const decodedToken = await adminAuth.verifyIdToken(session);
+    // Verify the session cookie (checkRevoked=true ensures user hasn't been disabled)
+    const decodedClaims = await adminAuth.verifySessionCookie(session, true);
     return {
-      uid: decodedToken.uid,
-      email: decodedToken.email,
+      uid: decodedClaims.uid,
+      email: decodedClaims.email,
     };
   } catch (error) {
     console.error('Error verifying session:', error);

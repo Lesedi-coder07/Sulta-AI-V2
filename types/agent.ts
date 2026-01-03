@@ -7,7 +7,7 @@ export interface Agent {
     description?: string;
     personality?: string;
     tone?: string;
-    expertise?: string[];
+    expertise?: string; // Changed from string[] to optional text field
     contextMemory?: number;
     // Additional properties from Firebase
     userId?: string;
@@ -17,4 +17,18 @@ export interface Agent {
     totalQueries?: number;
     tokensUsed?: number;
     totalChats?: number;
+    // New fields
+    extendedThinking?: boolean;
+    guardrails?: string;
+    llmConfig?: {
+      model?: string;
+      temperature?: number;
+      maxTokens?: number;
+    };
+    customApiTool?: {
+      url?: string;
+      responseSchema?: string;
+      parameters?: string;
+    };
+    customSystemPrompt?: string;
   }

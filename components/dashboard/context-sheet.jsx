@@ -24,6 +24,7 @@ export default function ContextSheet() {
 
       <Textarea
         id="context"
+        rows={12}
         placeholder={`For example:
 
 • Company information: 'We are a sustainable fashion brand founded in 2020...'
@@ -31,7 +32,7 @@ export default function ContextSheet() {
 • Key facts to remember: 'Our return policy is 30 days...'
 • Specific responses: 'When asked about pricing, mention our subscription options...'
 • Industry knowledge: 'Key terms and concepts in our field...'`}
-        className="min-h-[200px] w-full resize-y p-4 text-sm leading-relaxed rounded-xl 
+        className="min-h-[500px] w-full resize-y p-4 text-sm leading-relaxed rounded-xl 
                    bg-white/5 border-white/10 text-white placeholder:text-white/30
                    focus:border-white/20 focus:ring-1 focus:ring-white/10
                    hover:bg-white/[0.07] transition-colors duration-200"

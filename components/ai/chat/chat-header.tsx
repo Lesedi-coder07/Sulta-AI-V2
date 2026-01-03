@@ -17,7 +17,7 @@ export function ChatHeader({ agent, showButton, showImage, handleSidebarToggle }
       <div className="max-w-4xl mx-auto flex items-center justify-between">
         {/* Left side - Back button */}
         <div className="flex items-center gap-2">
-          <Link href='/ai/dashboard'>
+          <Link href="/dashboard">
             <Button
               variant="ghost"
               size="sm"

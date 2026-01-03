@@ -17,8 +17,10 @@ import { EmployeeOnboardingConfig } from "@/components/agent-creation/agent-type
 import { arrayUnion, collection, doc, updateDoc, setDoc } from "firebase/firestore";
 import { addDoc } from "firebase/firestore";
 import AgentCreatedSuccessfully from "./agent-created-successfully";
-import { generateSystemMessage, generateCustomerSupportSystemPrompt, generateSchoolAssistantSystemPrompt, generateEmployeeOnboardingSystemPrompt } from "@/app/ai/create/generateSystemMessage";
+import { generateSystemMessage, generateCustomerSupportSystemPrompt, generateSchoolAssistantSystemPrompt, generateEmployeeOnboardingSystemPrompt } from "@/app/(ai)/create/generateSystemMessage";
 import ExtraContextField from "./extra-context-field";
+import { GuardrailsConfig } from "./guardrails-config";
+import { TechnicalConfig } from "./technical-config";
 
 const agentFormSchema = z.object({
   name: z.string().min(2).max(50),
@@ -30,8 +32,9 @@ const agentFormSchema = z.object({
   textConfig: z.object({
     personality: z.enum(["professional", "friendly", "creative", "technical"]),
     tone: z.enum(["formal", "casual", "enthusiastic", "neutral"]),
-    expertise: z.array(z.string()).min(1),
+    expertise: z.string().optional(),
     contextMemory: z.number().min(1).max(10),
+    extendedThinking: z.boolean().default(false),
   }).optional(),
 
   // Customer support agent configuration
@@ -83,6 +86,26 @@ const agentFormSchema = z.object({
   }).optional(),
 
   extraContext: z.string().default(''),
+
+  // Guardrails & Restrictions
+  guardrails: z.string().optional(),
+
+  // LLM Configuration
+  llmConfig: z.object({
+    model: z.string().default('gemini-3-flash'),
+    temperature: z.number().min(0).max(2).default(0.7),
+    maxTokens: z.number().min(100).max(100000).default(8192),
+  }).optional(),
+
+  // Custom API Tool (Experimental)
+  customApiTool: z.object({
+    url: z.string().url().optional().or(z.literal('')),
+    responseSchema: z.string().optional(),
+    parameters: z.string().optional(),
+  }).optional(),
+
+  // Custom System Prompt
+  customSystemPrompt: z.string().optional(),
 });
 
 type AgentFormValues = z.infer<typeof agentFormSchema>;
@@ -103,8 +126,9 @@ export function AgentCreationForm() {
       textConfig: {
         personality: "professional",
         tone: "formal",
-        expertise: [],
+        expertise: '',
         contextMemory: 5,
+        extendedThinking: false,
       },
       customerSupportConfig: {
         agentName: '',
@@ -213,12 +237,28 @@ export function AgentCreationForm() {
           systemMessage = `You are an AI agent named ${data.name}. Your description is ${data.description}. You never mention that you're an LLM trained by Google. `;
       }
 
-      const agentData = {
+      // Helper function to remove undefined values from objects (Firebase doesn't allow undefined)
+      const removeUndefined = (obj: any): any => {
+        if (obj === null || obj === undefined) return undefined;
+        if (typeof obj !== 'object') return obj;
+        if (Array.isArray(obj)) return obj.map(removeUndefined).filter(v => v !== undefined);
+        
+        const cleaned: any = {};
+        for (const [key, value] of Object.entries(obj)) {
+          const cleanedValue = removeUndefined(value);
+          if (cleanedValue !== undefined) {
+            cleaned[key] = cleanedValue;
+          }
+        }
+        return Object.keys(cleaned).length > 0 ? cleaned : undefined;
+      };
+
+      const agentData = removeUndefined({
         ...data,
         userId: user.uid,
         createdAt: new Date().toISOString(),
         systemMessage,
-      };
+      });
 
       // Create the agent document
       const agentRef = await addDoc(collection(db, "agents"), agentData);
@@ -259,11 +299,11 @@ export function AgentCreationForm() {
         className="w-full"
         onValueChange={(value) => setAgentType(value as "text" | "customer-support" | "school-assistant" | "employee-onboarding")}
       >
-        <TabsList className="flex w-full overflow-x-auto sm:grid sm:grid-cols-1 items-center justify-start sm:justify-center bg-card border border-border gap-2 sm:gap-0 p-1">
-          <TabsTrigger value="text" className="flex-shrink-0 space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">
+        <TabsList className="hidden w-full overflow-x-auto sm:grid sm:grid-cols-1 items-center justify-start sm:justify-center bg-card border border-border gap-2 sm:gap-0 p-1">
+          {/* <TabsTrigger value="text" className="flex-shrink-0 space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">
             <Bot className="h-4 w-4" />
             <span>New Agent</span>
-          </TabsTrigger>
+          </TabsTrigger> */}
           {/* Temporarily hidden while refining */}
           {/* <TabsTrigger value="customer-support" className="flex-shrink-0 space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">
             <MessageCircle className="h-4 w-4" />
@@ -294,6 +334,8 @@ export function AgentCreationForm() {
 
             <TabsContent value="text" className="space-y-8">
               <TextAgentOptions form={form} />
+              <GuardrailsConfig form={form} />
+              <TechnicalConfig form={form} />
               <ExtraContextField form={form} />
             </TabsContent>
 

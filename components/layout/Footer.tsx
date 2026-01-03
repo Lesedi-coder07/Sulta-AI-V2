@@ -49,7 +49,7 @@ const Footer = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/ai/dashboard" className="text-neutral-600 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                <Link href="/dashboard" className="text-neutral-600 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                                     Dashboard
                                 </Link>
                             </li>

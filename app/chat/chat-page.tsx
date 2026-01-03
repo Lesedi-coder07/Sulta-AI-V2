@@ -264,7 +264,7 @@ const fetchMessages = async (chatId: string) => {
                     style={{ transform: isDrawerOpen ? 'translateX(0)' : 'translateX(-100%)' }}>
                     <div className="flex flex-col h-full p-3">
                         <div className="flex items-center justify-between mb-6 px-2">
-                        <Link href="/ai/dashboard">
+                        <Link href="/dashboard">
                             <Image src={systemTheme === 'dark' ? "/logos/Sulta/White.png" : "/logos/Sulta/LogoDark.png"} width={150} height={150} alt="Sulta AI Logo" />
                             </Link>
                             {/* <Image src={"/logos/sulta/logoLight.png"}  width={150} height={150} alt="Sulta AI Logo"/> */}
@@ -272,14 +272,14 @@ const fetchMessages = async (chatId: string) => {
                         </div>
 
                         <div className="flex flex-col gap-1 mb-4 px-2">
-                            <Link href="/ai/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                            <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
                                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
                                     <LayoutDashboard className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
                                 </div>
                                 <span className="text-sm font-medium">Dashboard</span>
                             </Link>
 
-                            <Link href="/ai/create" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                            <Link href="/create" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
                                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
                                     <Bot className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
                                 </div>
@@ -396,7 +396,7 @@ const fetchMessages = async (chatId: string) => {
                     <div className="flex flex-col h-full">
                         <div className="p-3">
                             <div className="flex items-center justify-between mb-6 px-2">
-                                <Link href="/ai/dashboard">
+                                <Link href="/dashboard">
                                     <Image src={systemTheme === 'dark' ? "/logos/Sulta/White.png" : "/logos/Sulta/logoLight.png"} width={150} height={150} alt="Sulta AI Logo" priority />
                                 </Link>
                                 <button className="p-2 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-full transition-colors">
@@ -405,14 +405,14 @@ const fetchMessages = async (chatId: string) => {
                             </div>
 
                             <div className="flex flex-col gap-1 mb-4 px-2">
-                                <Link href="/ai/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                                <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
                                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
                                         <LayoutDashboard className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
                                     </div>
                                     <span className="text-sm font-medium">Dashboard</span>
                                 </Link>
 
-                                <Link href="/ai/create" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                                <Link href="/create" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
                                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
                                         <Bot className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
                                     </div>
@@ -512,7 +512,7 @@ const fetchMessages = async (chatId: string) => {
         </main>
         
         <h1 className="text-center mt-36 text-4xl font-bold">This Feature Has Been <br /> Deprecated.</h1>
-        <p className="text-center mt-4 text-lg">Create your own AI agent now with <Link href="/ai/create" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">Sulta AI</Link></p>
+        <p className="text-center mt-4 text-lg">Create your own AI agent now with <Link href="/create" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">Sulta AI</Link></p>
          </>
     );
 }

@@ -4,7 +4,7 @@ import { Agent } from '@/types/agent'
 import FileUploader from './file-uploader'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, Settings, BarChart3, Code, MessageSquare, Users, Clock, Zap, Globe, Edit3, Save, X, Eye, EyeOff, Activity, Trash2 } from 'lucide-react'
+import { ArrowRight, Settings, BarChart3, Code, MessageSquare, Users, Clock, Zap, Globe, Edit3, Save, X, Eye, EyeOff, Activity, Trash2, Sparkles, Shield } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -23,13 +23,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { Slider } from "@/components/ui/slider"
 
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { collection, updateDoc, doc, getDoc } from 'firebase/firestore'
 import { db } from '@/app/api/firebase/firebaseConfig'
 import ContextSheet from '@/components/dashboard/context-sheet'
-import { deleteAgent } from '@/app/ai/dashboard/actions'
+import { deleteAgent } from '@/app/(ai)/dashboard/actions'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -61,7 +62,16 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
     tone: agent.tone || 'neutral',
     expertise: agent.expertise || [],
     contextMemory: agent.contextMemory || 5,
-    isPublic: agent.isPublic
+    isPublic: agent.isPublic,
+    extendedThinking: (agent as any).extendedThinking || false,
+    guardrails: (agent as any).guardrails || '',
+    llmConfig: (agent as any).llmConfig || {
+      model: 'gemini-3-flash',
+      temperature: 0.7,
+      maxTokens: 8192
+    },
+    customSystemPrompt: (agent as any).customSystemPrompt || '',
+    extraContext: (agent as any).extraContext || ''
   });
 
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
@@ -337,7 +347,7 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
             </DialogContent>
           </Dialog>
 
-          <Link href={`/ai/chat/${agent.id}`}>
+          <Link href={`/chat/${agent.id}`}>
             <Button className="bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/20 text-white flex items-center gap-2">
               <MessageSquare className="h-4 w-4" />
               Use Agent
@@ -418,9 +428,10 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="basic" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="basic">Basic Info</TabsTrigger>
                 <TabsTrigger value="personality">Personality</TabsTrigger>
+                <TabsTrigger value="technical">Technical</TabsTrigger>
                 <TabsTrigger value="advanced">Advanced</TabsTrigger>
               </TabsList>
 
@@ -530,6 +541,151 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
                     Separate multiple areas with commas
                   </p>
                 </div>
+
+                <Separator />
+
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="space-y-0.5">
+                    <Label className="text-base flex items-center gap-2">
+                      <Sparkles className="h-4 w-4" />
+                      Extended Thinking
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Enable deeper reasoning for complex queries
+                    </p>
+                  </div>
+                  <Switch
+                    checked={editForm.extendedThinking}
+                    onCheckedChange={(checked) => handleInputChange('extendedThinking', checked)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="guardrails" className="flex items-center gap-2">
+                    <Shield className="h-4 w-4" />
+                    Guardrails & Restrictions
+                  </Label>
+                  <Textarea
+                    id="guardrails"
+                    value={editForm.guardrails}
+                    onChange={(e) => handleInputChange('guardrails', e.target.value)}
+                    placeholder="Define safety guidelines and restrictions for your agent..."
+                    rows={4}
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    Set boundaries for what the agent should and shouldn't do
+                  </p>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="technical" className="space-y-4 mt-6">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Sparkles className="h-5 w-5 text-purple-500" />
+                    <h4 className="font-semibold">LLM Configuration</h4>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="model">Model</Label>
+                      <Select 
+                        value={editForm.llmConfig.model} 
+                        onValueChange={(value) => handleInputChange('llmConfig', { ...editForm.llmConfig, model: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select model" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="gemini-3-pro-preview">
+                            <div className="flex items-center gap-2">
+                              <span>Gemini 3 Pro Preview</span>
+                              <span className="text-xs text-muted-foreground">Most capable</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="gemini-3-flash">
+                            <div className="flex items-center gap-2">
+                              <span>Gemini 3 Flash</span>
+                              <span className="text-xs text-muted-foreground">Fast & powerful</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="gemini-2.5-flash-lite">
+                            <div className="flex items-center gap-2">
+                              <span>Gemini 2.5 Flash Lite</span>
+                              <span className="text-xs text-muted-foreground">Super fast</span>
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="maxTokens">Max Tokens</Label>
+                      <Input
+                        id="maxTokens"
+                        type="number"
+                        value={editForm.llmConfig.maxTokens}
+                        onChange={(e) => handleInputChange('llmConfig', { ...editForm.llmConfig, maxTokens: parseInt(e.target.value) || 8192 })}
+                        placeholder="8192"
+                        min="100"
+                        max="100000"
+                      />
+                      <p className="text-sm text-muted-foreground">
+                        Maximum response length
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="temperature">
+                      Temperature: {editForm.llmConfig.temperature.toFixed(1)}
+                    </Label>
+                    <Slider
+                      value={[editForm.llmConfig.temperature]}
+                      onValueChange={(value) => handleInputChange('llmConfig', { ...editForm.llmConfig, temperature: value[0] })}
+                      min={0}
+                      max={2}
+                      step={0.1}
+                      className="py-4"
+                    />
+                    <p className="text-sm text-muted-foreground">
+                      Lower = more focused & deterministic. Higher = more creative & varied.
+                    </p>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-2">
+                  <Label htmlFor="customSystemPrompt" className="flex items-center gap-2">
+                    <Code className="h-4 w-4" />
+                    Custom System Prompt
+                  </Label>
+                  <Textarea
+                    id="customSystemPrompt"
+                    value={editForm.customSystemPrompt}
+                    onChange={(e) => handleInputChange('customSystemPrompt', e.target.value)}
+                    placeholder="You are a helpful assistant that specializes in..."
+                    rows={8}
+                    className="font-mono text-sm"
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    Override the auto-generated prompt based on your configuration
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="extraContext">Extra Context</Label>
+                  <Textarea
+                    id="extraContext"
+                    value={editForm.extraContext}
+                    onChange={(e) => handleInputChange('extraContext', e.target.value)}
+                    placeholder="Additional context or information for your agent..."
+                    rows={4}
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    Provide additional background information or instructions
+                  </p>
+                </div>
               </TabsContent>
 
               <TabsContent value="advanced" className="space-y-4 mt-6">
@@ -588,7 +744,16 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
                     tone: agent.tone || 'neutral',
                     expertise: agent.expertise || [],
                     contextMemory: agent.contextMemory || 5,
-                    isPublic: agent.isPublic
+                    isPublic: agent.isPublic,
+                    extendedThinking: (agent as any).extendedThinking || false,
+                    guardrails: (agent as any).guardrails || '',
+                    llmConfig: (agent as any).llmConfig || {
+                      model: 'gemini-3-flash',
+                      temperature: 0.7,
+                      maxTokens: 8192
+                    },
+                    customSystemPrompt: (agent as any).customSystemPrompt || '',
+                    extraContext: (agent as any).extraContext || ''
                   });
                 }}
                 disabled={isLoading}

@@ -90,8 +90,8 @@ const Navbar = () => {
                 {/* Desktop Auth Buttons */}
                 <div className="md:flex hidden flex-row items-center gap-3">
                     {loggedIn ? (
-                        <Link href='/ai/dashboard'>
-                            <Button className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 rounded-full px-6 transition-all hover:scale-105">
+                        <Link href="/dashboard">
+                            <Button className={"bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 rounded-full px-6 transition-all hover:scale-105"}>
                                 Go to Dashboard
                             </Button>
                         </Link>
@@ -134,7 +134,7 @@ const Navbar = () => {
                         </ul>
                         <div className="flex flex-col space-y-3">
                             {loggedIn ? (
-                                <Link href='/ai/dashboard'>
+                                <Link href="/dashboard">
                                     <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg shadow-blue-500/30 rounded-full">
                                         Go to Dashboard
                                     </Button>

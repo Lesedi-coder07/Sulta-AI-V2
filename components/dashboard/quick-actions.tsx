@@ -13,30 +13,30 @@ export function QuickActions() {
       title: 'New Agent',
       description: 'Build a new AI agent',
       icon: Plus,
-      onClick: () => router.push('/ai/create'),
+      onClick: () => router.push("/create"),
     },
     {
       title: 'Billing',
       description: 'Manage subscription',
       icon: CreditCard,
-      onClick: () => router.push('/ai/billing'),
+      onClick: () => router.push("/billing"),
     },
     {
       title: 'Settings',
       description: 'Account settings',
       icon: Settings,
-      onClick: () => router.push('/ai/settings'),
+      onClick: () => router.push("/settings"),
     },
     {
       title: 'Analytics',
       description: 'View insights',
       icon: BarChart3,
-      onClick: () => router.push('/ai/dashboard'),
+      onClick: () => router.push("/dashboard"),
     },
   ];
 
   return (
-    <Card className="glass-card hover-glow animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+    <Card className="glass-card hover-glow">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg">
           <span className="section-header">Quick Actions</span>
@@ -52,9 +52,7 @@ export function QuickActions() {
                 variant="outline"
                 className="relative h-auto w-full flex flex-col items-start justify-start p-4 gap-3 
                          border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 
-                         overflow-hidden group transition-all duration-300 hover:scale-[1.02]
-                         animate-fade-in-up"
-                style={{ animationDelay: `${(index + 1) * 100}ms` }}
+                         overflow-hidden group transition-all duration-300 hover:scale-[1.02]"
                 onClick={action.onClick}
               >
                 {/* Gradient border effect on hover */}
