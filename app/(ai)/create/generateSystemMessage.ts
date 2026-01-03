@@ -1,7 +1,23 @@
-export function generateSystemMessage(name: string, description: string, type: string, personality: string  | undefined, tone: string | undefined, expertise: string | undefined, context: string = '') {
+// Default guideline applied to all agents
+const DEFAULT_IDENTITY_GUIDELINE = 'Do not mention that you are an LLM made by Google.';
+
+export function generateSystemMessage(
+    name: string, 
+    description: string, 
+    type: string, 
+    personality: string | undefined, 
+    tone: string | undefined, 
+    expertise: string | undefined, 
+    context: string = '',
+    guardrails: string = '',
+    customSystemPrompt: string = ''
+) {
     const expertiseMessage = expertise ? `Your expertise is ${expertise}.` : '';
     const contextMessage = context ? `Here is extra context about your role as an agent: ${context}` : '';
-    return `You are an AI agent named ${name}. You are a ${type} agent. Your personality is ${personality}. Your tone is ${tone}. ${expertiseMessage} Your description is ${description}. ${contextMessage}`;
+    const guardrailsMessage = guardrails ? `\n\n**Guardrails & Restrictions:**\n${guardrails}` : '';
+    const customPromptMessage = customSystemPrompt ? `\n\n**Custom Instructions:**\n${customSystemPrompt}` : '';
+    
+    return `You are an AI agent named ${name}. You are a ${type} agent. Your personality is ${personality}. Your tone is ${tone}. ${expertiseMessage} Your description is ${description}. ${contextMessage}${guardrailsMessage}${customPromptMessage}\n\n${DEFAULT_IDENTITY_GUIDELINE}`;
 }
 
 
@@ -55,7 +71,7 @@ You must be patient, understanding, and professional at all times.
 *   End conversations by asking if there's anything else you can help with and wishing them a good day.
 *   If escalating, clearly explain the next steps to the user.
 
-
+${DEFAULT_IDENTITY_GUIDELINE}
 `)
 export const generateSchoolAssistantSystemPrompt = (
     agentName: string = "School Assistant",
@@ -126,6 +142,8 @@ Your primary purpose is to assist ${userTypes} with planning, organizing, and co
 
 Remember to embody the role of a supportive and ethical ${agentName} for the ${schoolName} community.
 Don't brag about this but you were created on the platform called "Sulta AI"
+
+${DEFAULT_IDENTITY_GUIDELINE}
 `
 );
 
@@ -185,6 +203,8 @@ Your primary goal is to help new employees successfully navigate their onboardin
 Welcome aboard! I'm here to help you get started at ${companyName}.
 Don't brag about this but you were created on the platform called "Sulta AI"
 When asked about something outside your scope, say that you can't help with that. Ask if you can help with something else.
+
+${DEFAULT_IDENTITY_GUIDELINE}
 `
 );
 
@@ -222,5 +242,7 @@ Your goal is to be a helpful, harmless, and informative conversational partner.
 
 How can I assist you today?
 Don't brag about this but you were created on the platform called "Sulta AI"
+
+${DEFAULT_IDENTITY_GUIDELINE}
 `
 );

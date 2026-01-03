@@ -5,19 +5,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { auth, db } from "@/app/api/firebase/firebaseConfig";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Bot, MessageCircle, GraduationCap, Users } from "lucide-react";
 import { Form, FormField } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TextAgentOptions } from "@/components/agent-creation/text-agent-options";
 import { BasicAgentConfig } from "@/components/agent-creation/basic-agent-config";
-import { CustomerSupportConfig } from "@/components/agent-creation/agent-types/customer-support-config";
-import { SchoolAssistantConfig } from "@/components/agent-creation/agent-types/school-assistant-config";
-import { EmployeeOnboardingConfig } from "@/components/agent-creation/agent-types/employee-onboarding-config";
 import { arrayUnion, collection, doc, updateDoc, setDoc } from "firebase/firestore";
 import { addDoc } from "firebase/firestore";
 import AgentCreatedSuccessfully from "./agent-created-successfully";
-import { generateSystemMessage, generateCustomerSupportSystemPrompt, generateSchoolAssistantSystemPrompt, generateEmployeeOnboardingSystemPrompt } from "@/app/(ai)/create/generateSystemMessage";
+import { generateSystemMessage } from "@/app/(ai)/create/generateSystemMessage";
 import ExtraContextField from "./extra-context-field";
 import { GuardrailsConfig } from "./guardrails-config";
 import { TechnicalConfig } from "./technical-config";
@@ -166,76 +162,18 @@ export function AgentCreationForm() {
         return;
       }
 
-      let systemMessage = '';
-      
-      switch (data.type) {
-        case 'text':
-          systemMessage = generateSystemMessage(
-            data.name, 
-            data.description, 
-            data.type,
-            data.textConfig?.personality,
-            data.textConfig?.tone, 
-            data.textConfig?.expertise,
-            data.extraContext
-          );
-          break;
-        case 'customer-support':
-          if (data.customerSupportConfig) {
-            systemMessage = generateCustomerSupportSystemPrompt(
-              data.customerSupportConfig.companyName,
-              data.customerSupportConfig.serviceType,
-              data.customerSupportConfig.keyFeatures,
-              data.customerSupportConfig.companyWebsite,
-              data.customerSupportConfig.otherSupportChannels,
-              data.customerSupportConfig.operatingHours,
-              data.customerSupportConfig.refundPolicySummary,
-              data.customerSupportConfig.privacyPolicySummary,
-              data.customerSupportConfig.tosSummary,
-              data.customerSupportConfig.currentPromotionsOrIssues,
-              data.customerSupportConfig.accountPageLink,
-              data.customerSupportConfig.specializedTeamContact,
-              data.customerSupportConfig.complaintProcedure,
-              data.customerSupportConfig.escalationProcess,
-              data.customerSupportConfig.commonRequests,
-              data.customerSupportConfig.tone
-            );
-          }
-          break;
-        case 'school-assistant':
-          if (data.schoolAssistantConfig) {
-            systemMessage = generateSchoolAssistantSystemPrompt(
-              data.schoolAssistantConfig.agentName,
-              data.schoolAssistantConfig.schoolName,
-              data.schoolAssistantConfig.userTypes,
-              data.schoolAssistantConfig.keyPlatforms,
-              data.schoolAssistantConfig.academicIntegrityPolicy,
-              data.schoolAssistantConfig.privacyPolicy,
-              data.schoolAssistantConfig.supportContacts,
-              data.schoolAssistantConfig.tone
-            );
-          }
-          break;
-        case 'employee-onboarding':
-          if (data.employeeOnboardingConfig) {
-            systemMessage = generateEmployeeOnboardingSystemPrompt(
-              data.employeeOnboardingConfig.agentName,
-              data.employeeOnboardingConfig.companyName,
-              data.employeeOnboardingConfig.companyCultureSummary,
-              data.employeeOnboardingConfig.keyPolicies,
-              data.employeeOnboardingConfig.benefitsOverview,
-              data.employeeOnboardingConfig.requiredTools,
-              data.employeeOnboardingConfig.firstWeekTasks,
-              data.employeeOnboardingConfig.keyContacts,
-              data.employeeOnboardingConfig.hrHelpdeskContact,
-              data.employeeOnboardingConfig.itHelpdeskContact,
-              data.employeeOnboardingConfig.tone
-            );
-          }
-          break;
-        default:
-          systemMessage = `You are an AI agent named ${data.name}. Your description is ${data.description}. You never mention that you're an LLM trained by Google. `;
-      }
+      // Generate system message using text agent config
+      const systemMessage = generateSystemMessage(
+        data.name, 
+        data.description, 
+        data.type,
+        data.textConfig?.personality,
+        data.textConfig?.tone, 
+        data.textConfig?.expertise,
+        data.extraContext,
+        data.guardrails,
+        data.customSystemPrompt
+      );
 
       // Helper function to remove undefined values from objects (Firebase doesn't allow undefined)
       const removeUndefined = (obj: any): any => {
