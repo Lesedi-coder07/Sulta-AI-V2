@@ -347,13 +347,17 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
             </DialogContent>
           </Dialog>
 
-          <Link href={`/chat/${agent.id}`}>
-            <Button className="bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/20 text-white flex items-center gap-2">
-              <MessageSquare className="h-4 w-4" />
-              Use Agent
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
+          <Button 
+            onClick={() => {
+              localStorage.setItem('lastUsedAgentId', agent.id);
+              window.location.href = `/chat/${agent.id}`;
+            }}
+            className="bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/20 text-white flex items-center gap-2"
+          >
+            <MessageSquare className="h-4 w-4" />
+            Use Agent
+            <ArrowRight className="h-4 w-4" />
+          </Button>
 
           <Button
             variant="outline"

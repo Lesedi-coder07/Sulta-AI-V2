@@ -59,7 +59,7 @@ export function DashboardStats({ agents }: DashboardStatsProps) {
         return (
           <Card
             key={stat.title}
-            className="relative overflow-hidden glass-card hover-glow group cursor-default transition-all duration-300 hover:scale-[1.02]"
+            className="relative overflow-hidden glass-card group cursor-default transition-all duration-300 hover:scale-[1.02]"
           >
             {/* Subtle gradient overlay */}
             <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-50`} />

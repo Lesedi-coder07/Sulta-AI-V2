@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { AgentSelector } from '@/components/dashboard/agent-selector';
 import { DashboardStats } from '@/components/dashboard/dashboard-stats';
-import { QuickActions } from '@/components/dashboard/quick-actions';
+import { RecentlyUsedAgent } from '@/components/dashboard/recently-used-agent';
 import { UsageSummary } from '@/components/dashboard/usage-summary';
 import { TopAgents } from '@/components/dashboard/top-agents';
 import { Sparkles } from 'lucide-react';
@@ -46,16 +46,16 @@ export function DashboardContent({ agents, userId }: DashboardContentProps) {
           {/* Dashboard Stats */}
           <DashboardStats agents={agents} />
 
-          {/* Quick Actions and Usage Summary */}
+          {/* Recently Used Agent and Usage Summary */}
           <div className='grid gap-6 md:grid-cols-2'>
-            <QuickActions />
+            <RecentlyUsedAgent agents={agents} />
             <UsageSummary agents={agents} />
           </div>
 
-          {/* Top Agents */}
+{/*          
           {agents.length > 0 && (
             <TopAgents agents={agents} />
-          )}
+          )} */}
 
           {/* Divider */}
           <div className="divider-gradient" />

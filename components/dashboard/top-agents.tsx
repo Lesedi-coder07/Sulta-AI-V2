@@ -30,7 +30,7 @@ export function TopAgents({ agents }: TopAgentsProps) {
   };
 
   return (
-    <Card className="glass-card hover-glow">
+    <Card className="glass-card">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg">
           <div className="icon-container p-2">

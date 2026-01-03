@@ -47,6 +47,13 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         }
     }, [agent, currentUser])
 
+    // Track agent usage in localStorage
+    useEffect(() => {
+        if (agent_id && typeof window !== 'undefined') {
+            localStorage.setItem('lastUsedAgentId', agent_id);
+        }
+    }, [agent_id]);
+
 
     // Use custom system prompt if provided, otherwise generate one
     const systemMessage = agentData.customSystemPrompt || generateSystemMessage(
@@ -99,7 +106,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     const handleSendMessage = (message: string) => {
         console.log('Sending message:', message);
         console.log('System message:', systemMessage.substring(0, 100));
-        sendMessage(message as any);
+        sendMessage({ text: message });
     };
 
 
