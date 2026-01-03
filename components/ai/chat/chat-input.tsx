@@ -19,7 +19,6 @@ interface ChatInputProps {
 
 
 
-
 export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInputProps) {
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -149,82 +148,6 @@ export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInpu
 
 
   return (
-    // <div className="fixed bottom-0 right-0 md:flex md:flex-row-reverse pl-44  border-neutral-200 md:flex-center w-full p-4 dark:border-neutral-800 dark:bg-neutral-900 flex justify-center">
-    //   <form ref={formRef} onSubmit={handleSubmit}  className="bg-red-500 max-w-3xl">
-    //     <div className="flex items-end gap-4 pb-[env(safe-area-inset-bottom)]">
-    //       <div className="relative">
-    //       <div ref={fileInputRef} className="hidden p-3 absolute bottom-full  mt-2 w-48 bg-white shadow-lg rounded-md py-2">
-    //         {uploadedFileName ? (<div className="flex flex-row gap-2">
-    //            <File />
-    //            <p className="text-xs">{uploadedFileName}</p>
-    //         </div>) : (<>
-    //           <input 
-    //             type="file" 
-    //             accept=".jpg, .jpeg, .png, .heic" 
-    //             className="hidden" 
-    //             id="fileInput1" 
-    //             onChange={handleImageUpload}
-    //             ref={imageInputRef}
-    //           />
-    //           <label 
-    //             htmlFor="fileInput1" 
-    //             className="flex flex-row gap-2 w-full px-4 hover:bg-slate-200 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
-    //           >
-    //             Upload Image
-
-    //           </label>
-    //           <input 
-    //             type="file" 
-    //             accept=".doc, .docx, .pdf" 
-    //             className="hidden" 
-    //             id="fileInput2" 
-    //             onChange={() => handleImageUpload}
-    //           />
-    //           <label 
-    //             htmlFor="fileInput2" 
-    //             className="mt-2 block w-full hover:bg-slate-200 px-4 py-2 text-sm text-gray-700 bg-white bg-clip-padding rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
-    //           >
-    //             Upload Document
-
-    //           </label>
-
-    //         </>) } 
-
-
-    //         </div>
-    //         <Button
-    //           type="button"
-    //           size="icon"
-    //           className="h-8 w-8 bg-neutral-200 hover:bg-neutral-300"
-    //           onClick={handleToggleFileInput}
-    //         >
-    //           <Plus />
-    //         </Button>
-
-    //       </div>
-    //       <Textarea
-    //         ref={textareaRef}
-    //         value={message}
-    //         onChange={(e) => setMessage(e.target.value)}
-    //         onKeyDown={handleKeyDown}
-    //         placeholder="Type your message..."
-    //         className="min-h-[20px] max-h-[200px] rounded-small resize-none bg-neutral-100 dark:bg-neutral-800"
-    //         rows={1}
-    //       />
-    //       <Button
-    //         type="submit"
-    //         size="icon"
-    //         className="h-10 w-10 shrink-0 bg-blue-600 hover:bg-primary/90"
-    //         disabled={!message.trim()}
-    //       >
-    //         <ArrowUp />
-    //       </Button>
-    //     </div>
-    //     <p className="mt-2 text-xs text-neutral-500">
-    //       Press Enter to send, Shift + Enter for new line
-    //     </p>
-    //   </form>
-    // </div>
     <div className="fixed bottom-0 left-0 right-0 w-full py-6 px-4 bg-white dark:bg-neutral-900  ">
       <div className="max-w-3xl mx-auto">
         <form ref={formRef} onSubmit={handleSubmit} className="w-full">
