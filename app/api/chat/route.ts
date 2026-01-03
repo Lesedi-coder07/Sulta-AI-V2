@@ -88,7 +88,6 @@ export async function POST(req: Request) {
     // Pass the imageBase64 to the conversion function
     const cleanedModelMessages = messagesToModelMessages(messages, imageBase64);
 
-
     const allMessages = [
       {
         role: 'system' as const,

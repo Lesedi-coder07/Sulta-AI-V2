@@ -33,21 +33,12 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     const [exists, setExists] = useState<false | true>(true);
     const [profileImage, setProfileImage] = useState<string | null>(null)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-    const [isNewChat, setIsNewChat] = useState<boolean>(true);
-    const hasSentFirstMessage = useRef<boolean>(false);
-    const pendingImage = useRef<string | null>(null);
-    const [thinkEnabled, setThinkEnabled] = useState<boolean>(false);
-    const thinkEnabledRef = useRef<boolean>(false);
 
-    // Sync thinkEnabled state with ref so it can be read in callbacks
-    useEffect(() => {
-        thinkEnabledRef.current = thinkEnabled;
-    }, [thinkEnabled]);
-
+    // Use the agentData passed from server-side
     const agent = agentData;
 
     useEffect(() => {
-
+        // Check if user has access to the agent
         if (agent && !agent.isPublic && agent.ownerID !== currentUser) {
             setExists(false);
         } else {
@@ -72,88 +63,43 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         : systemMessage;
 
     const chatHook = useChat({
-        transport: new DefaultChatTransport({
-            prepareSendMessagesRequest({ messages: uiMessages, id }) {
-                // This is a new chat only if there are no messages yet
-                // (uiMessages will contain the message being sent, so check if length is 1)
-                const isNewChatRequest = uiMessages.length === 1;
-                const imageToSend = pendingImage.current;
-                // Clear the pending image after capturing it for the request
-                pendingImage.current = null;
-                return {
-                    body: {
-                        system: systemMessageWithGuardrails,
-                        messages: uiMessages,
-                        chatId: id,
-                        agentId: agent_id,
-                        newChat: isNewChatRequest,
-                        imageBase64: imageToSend,
-                        thinkEnabled: agentData.extendedThinking || thinkEnabledRef.current,
-                        llmConfig: agentData.llmConfig,
-                    },
-                };
-            }
-        }),
-    });
-    const { messages, sendMessage, status } = chatHook;
+        body: {
+            system: systemMessage,
+        },
+        onError: (error: Error) => {
+            console.error('=== Chat Hook Error ===');
+            console.error('Chat error:', error);
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack,
+            });
+        },
+        onFinish: (message: any) => {
+            console.log('Message finished streaming:', message);
+        },
+    } as any);
 
-    const handleNewMessage = (message: string, imageBase64?: string | null) => {
+    const { messages, sendMessage, status, error } = chatHook;
 
-        const localIsNewChat = !hasSentFirstMessage.current;
-        setIsNewChat(localIsNewChat);
-
-        console.log('handleNewMessage called with:', { message, hasImage: !!imageBase64 });
-        if (imageBase64) {
-            console.log('Image base64 length:', imageBase64.length);
-            console.log('Image base64 prefix:', imageBase64.substring(0, 50));
-        }
-
-        if (localIsNewChat) {
-            hasSentFirstMessage.current = true;
-        }
-
-        // Store the image in the ref so the transport can access it
-        // Also save it for display in the UI
-        if (imageBase64) {
-            pendingImage.current = imageBase64;
-            // Store image for UI display - we'll use the next message ID
-            setPendingImageForUI(imageBase64);
-        }
-
-        // Send the message - image goes through pendingImage ref to the transport body
-        sendMessage({ text: message });
-    }
-
-    // State to track images for UI display
-    const [messageImages, setMessageImages] = useState<Record<string, string>>({});
-    const [pendingImageForUI, setPendingImageForUI] = useState<string | null>(null);
-
-    // When a new user message appears, associate the pending image with it
-    useEffect(() => {
-        if (pendingImageForUI && messages.length > 0) {
-            const lastUserMessage = [...messages].reverse().find(m => m.role === 'user');
-            if (lastUserMessage && !messageImages[lastUserMessage.id]) {
-                setMessageImages(prev => ({
-                    ...prev,
-                    [lastUserMessage.id]: pendingImageForUI
-                }));
-                setPendingImageForUI(null);
-            }
-        }
-    }, [messages, pendingImageForUI, messageImages]);
-
+    // Use the built-in status from useChat instead of manual tracking
+    // status can be: 'submitted', 'streaming', 'ready', or 'error'
     const isStreaming = status === 'submitted' || status === 'streaming';
 
     useEffect(() => {
         console.log('Chat status:', status);
         console.log('Messages count:', messages.length);
         console.log('Is streaming:', isStreaming);
-
-        if (messages.length > 0 && !hasSentFirstMessage.current) {
-            hasSentFirstMessage.current = true;
-            setIsNewChat(false);
+        if (error) {
+            console.error('Chat hook error:', error);
         }
-    }, [status, messages.length, isStreaming]);
+    }, [status, messages.length, isStreaming, error]);
+
+    // Simple wrapper to log message sending
+    const handleSendMessage = (message: string) => {
+        console.log('Sending message:', message);
+        console.log('System message:', systemMessage.substring(0, 100));
+        sendMessage(message as any);
+    };
 
 
 
@@ -182,13 +128,9 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
 
         exists ? (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
             <ChatHeader handleSidebarToggle={handleSidebarToggle} showImage={false} agent={agent} showButton={true} />
-            <ChatMessages messages={messages} isLoading={isStreaming} messageImages={messageImages} />
-            <ChatInput
-                sendMessage={(message: string, imageBase64?: string | null) => handleNewMessage(message, imageBase64)}
-                thinkEnabled={thinkEnabled}
-                onThinkToggle={setThinkEnabled}
-            />
-        </div>) : <h1 className="text-center mt-36 text-4xl font-bold">Agent not found <br /></h1>
+            <ChatMessages messages={messages} isLoading={isStreaming} />
+            <ChatInput sendMessage={handleSendMessage} onThinkToggle={setThinkEnabled} thinkEnabled={thinkEnabled} />
+        </div> ) : <h1 className="text-center mt-36 text-4xl font-bold">Agent not found <br /></h1>
     );
 
 }
