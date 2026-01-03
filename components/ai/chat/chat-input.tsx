@@ -329,7 +329,6 @@ export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInpu
             </div>
           </div>
 
-
         </form>
       </div>
     </div>

@@ -33,6 +33,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     const [exists, setExists] = useState<false | true>(true);
     const [profileImage, setProfileImage] = useState<string | null>(null)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+    const [thinkEnabled, setThinkEnabled] = useState<boolean>(agentData.extendedThinking || false);
 
     // Use the agentData passed from server-side
     const agent = agentData;
