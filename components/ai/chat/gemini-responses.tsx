@@ -10,6 +10,7 @@ import { useRef, useState } from 'react';
 import { useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { Copy, Check } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 // Copy button component for code blocks
 function CodeCopyButton({ code }: { code: string }) {
@@ -181,9 +182,9 @@ export default function GeminiResponse({ content }: { content: string }) {
   // Debug logging to track content
   useEffect(() => {
     if (content) {
-      console.log('GeminiResponse - Raw content length:', content.length);
-      console.log('GeminiResponse - Displayed content length:', displayedContent.length);
-      console.log('GeminiResponse - Is complete:', isComplete);
+      logger.log('GeminiResponse - Raw content length:', content.length);
+      logger.log('GeminiResponse - Displayed content length:', displayedContent.length);
+      logger.log('GeminiResponse - Is complete:', isComplete);
     }
   }, [content, displayedContent, isComplete])
 

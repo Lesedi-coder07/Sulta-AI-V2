@@ -11,6 +11,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { Agent } from "@/types/agent";
 import { generateSystemMessage } from "@/app/(ai)/create/generateSystemMessage";
+import { logger } from "@/lib/logger";
 
 export interface ChatAgent extends Agent {
     isPublic: boolean;
@@ -83,7 +84,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
             });
         },
         onFinish: (message: any) => {
-            console.log('Message finished streaming:', message);
+            logger.log('Message finished streaming:', message);
         },
     } as any);
 
@@ -94,18 +95,18 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     const isStreaming = status === 'submitted' || status === 'streaming';
 
     useEffect(() => {
-        console.log('Chat status:', status);
-        console.log('Messages count:', messages.length);
-        console.log('Is streaming:', isStreaming);
+        logger.log('Chat status:', status);
+        logger.log('Messages count:', messages.length);
+        logger.log('Is streaming:', isStreaming);
         if (error) {
-            console.error('Chat hook error:', error);
+            logger.error('Chat hook error:', error);
         }
     }, [status, messages.length, isStreaming, error]);
 
     // Simple wrapper to log message sending
     const handleSendMessage = (message: string) => {
-        console.log('Sending message:', message);
-        console.log('System message:', systemMessage.substring(0, 100));
+        logger.log('Sending message:', message);
+        logger.log('System message:', systemMessage.substring(0, 100));
         sendMessage({ text: message });
     };
 
@@ -130,7 +131,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         setIsDrawerOpen(!isDrawerOpen);
     }
 
-    console.log(agentData)
+    logger.log(agentData)
 
     return (
 

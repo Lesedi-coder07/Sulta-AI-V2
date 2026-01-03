@@ -1,5 +1,6 @@
 "use client"
 import { cn } from "@/lib/utils";
+import { logger } from "@/lib/logger";
 import { Copy, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import GeminiResponse from "./gemini-responses";
@@ -73,9 +74,9 @@ export function ChatMessages({
 
   // Debug: log loading state and messages
   useEffect(() => {
-    console.log('ChatMessages - isLoading:', isLoading);
-    console.log('ChatMessages - messages count:', messages.length);
-    console.log('ChatMessages - last message role:', messages[messages.length - 1]?.role);
+    logger.log('ChatMessages - isLoading:', isLoading);
+    logger.log('ChatMessages - messages count:', messages.length);
+    logger.log('ChatMessages - last message role:', messages[messages.length - 1]?.role);
   }, [isLoading, messages]);
 
   // Extract text content from message parts
