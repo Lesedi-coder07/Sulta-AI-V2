@@ -40,33 +40,18 @@ function CopyButton({ textToCopy }: { textToCopy: string }) {
   );
 }
 
-// Suggestion card for empty state
-function SuggestionCard({ title, description, icon }: { title: string; description: string; icon: string }) {
-  return (
-    <div className="group p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/50 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-600 transition-all duration-200 cursor-pointer hover:shadow-sm">
-      <div className="flex items-start gap-3">
-        <span className="text-2xl">{icon}</span>
-        <div>
-          <h3 className="font-medium text-neutral-900 dark:text-neutral-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-            {title}
-          </h3>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
-            {description}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
+
 
 export function ChatMessages({
   messages,
   isLoading = false,
   messageImages = {},
+  agentName,
 }: {
   messages: UIMessage[];
   isLoading?: boolean;
   messageImages?: Record<string, string>;
+  agentName?: string;
 }) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const prevMessageCountRef = useRef<number>(0);
@@ -112,33 +97,14 @@ export function ChatMessages({
     <div className="flex-1 overflow-y-auto mb-7 pt-[100px] sm:mb-[180px] md:pt-16 px-4 md:px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
       <div className="max-w-4xl mx-auto space-y-8">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 px-4">
-            <div className="text-center mb-8">
-              <GradientText className="text-lg">How can I help you today?</GradientText>
-            </div>
-
-            {/* Quick action suggestions */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl w-full">
-              <SuggestionCard
-                title="Explain a concept"
-                description="Break down complex topics simply"
-                icon="💡"
-              />
-              <SuggestionCard
-                title="Help me write"
-                description="Draft emails, essays, or code"
-                icon="✍️"
-              />
-              <SuggestionCard
-                title="Brainstorm ideas"
-                description="Generate creative solutions"
-                icon="🧠"
-              />
-              <SuggestionCard
-                title="Analyze something"
-                description="Review and provide insights"
-                icon="🔍"
-              />
+          <div className="flex flex-col items-center justify-center py-16 px-4">
+            <div className="text-center space-y-3">
+              <GradientText className="text-2xl font-semibold">
+                {agentName ? `Hi, I'm ${agentName}` : 'Hello!'}
+              </GradientText>
+              <p className="text-neutral-500 dark:text-neutral-400 text-base">
+                How can I help you today?
+              </p>
             </div>
           </div>
         ) : (

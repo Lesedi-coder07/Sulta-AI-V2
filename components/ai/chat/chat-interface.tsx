@@ -136,7 +136,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
 
         exists ? (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
             <ChatHeader handleSidebarToggle={handleSidebarToggle} showImage={false} agent={agent} showButton={true} />
-            <ChatMessages messages={messages} isLoading={isStreaming} />
+            <ChatMessages messages={messages} isLoading={isStreaming} agentName={agentData.name} />
             <ChatInput sendMessage={handleSendMessage} onThinkToggle={setThinkEnabled} thinkEnabled={thinkEnabled} />
         </div> ) : <h1 className="text-center mt-36 text-4xl font-bold">Agent not found <br /></h1>
     );
