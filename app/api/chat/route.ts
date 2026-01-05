@@ -105,7 +105,7 @@ export async function POST(req: Request) {
           // Report 2x tokens when using thinking mode (gemini-3-pro-preview)
           const tokenMultiplier = thinkEnabled ? 2 : 1;
           const tokensToReport = (usage?.totalTokens ?? 0) * tokenMultiplier;
-          console.log(`Reporting tokens: ${tokensToReport} (multiplier: ${tokenMultiplier})`);
+         
           await updateAgentAnalytics(agentId, 1, tokensToReport, newChat ? 1 : 0);
         }
       },

@@ -1,8 +1,3 @@
-/**
- * Logger utility that conditionally logs based on ENV_TYPE
- * Set NEXT_PUBLIC_ENV_TYPE="local" in your .env file to enable console logs
- * Set NEXT_PUBLIC_ENV_TYPE="prod" to disable console logs
- */
 
 const ENV_TYPE = process.env.NEXT_PUBLIC_ENV_TYPE || 'prod';
 
