@@ -58,19 +58,19 @@ export function RecentlyUsedAgent({ agents }: RecentlyUsedAgentProps) {
       <CardContent>
         <div className="relative">
           {/* Agent Card */}
-          <div className="relative p-5 rounded-xl border border-white/10 bg-white/5">
+          <div className="relative p-4 sm:p-5 rounded-xl border border-white/10 bg-white/5">
 
-            {/* Content */}
-            <div className="flex items-start justify-between gap-4 relative z-10">
+            {/* Content - stack on mobile, row on larger screens */}
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 relative z-10">
               <div className="flex-1 space-y-3">
                 {/* Agent name and icon */}
-                <div className="flex items-center gap-3">
-                  <div className="icon-container p-2.5">
-                    <MessageSquare className="h-5 w-5 text-white/80" />
+                <div className="flex items-start gap-3">
+                  <div className="icon-container p-2 sm:p-2.5 shrink-0">
+                    <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-white/80" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-lg text-white">{recentAgent.name}</h3>
-                    <div className="flex items-center gap-2 mt-1">
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-base sm:text-lg text-white">{recentAgent.name}</h3>
+                    <div className="flex flex-wrap items-center gap-2 mt-1">
                       <Badge 
                         variant="secondary" 
                         className="capitalize bg-white/10 text-white/70 border-white/10 text-xs"
@@ -109,10 +109,10 @@ export function RecentlyUsedAgent({ agents }: RecentlyUsedAgentProps) {
                 </div>
               </div>
 
-              {/* Use Agent Button */}
+              {/* Use Agent Button - full width on mobile */}
               <Button
                 onClick={handleUseAgent}
-                className="bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/20 text-white"
+                className="w-full sm:w-auto bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/20 text-white shrink-0"
               >
                 Use Agent
                 <ArrowRight className="h-4 w-4 ml-2" />

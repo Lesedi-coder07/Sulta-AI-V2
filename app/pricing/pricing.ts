@@ -14,10 +14,11 @@ export const tiers = [
   },
   {
     name: "API Access",
-    price: "Pay as you go",
+    price: "$20",
     description: "Flexible API access for developers and businesses",
     features: [
-      "Starts at $5 per 1000 messages",
+      "1000 messages per month",
+      "Then $5 per 1000 messages",
       "No monthly minimums",
       "Scalable usage",
       "Priority email support",

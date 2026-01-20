@@ -46,10 +46,10 @@ const Navbar = () => {
 
 
     return (
-        <nav className={`transition-all duration-300 ${
+        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
             scrolled 
-                ? 'sticky top-0 z-50 py-0 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-xl border-b border-neutral-200 dark:border-neutral-800 shadow-lg shadow-blue-500/5 dark:shadow-blue-500/10' 
-                : 'relative py-0 bg-transparent border-b border-transparent'
+                ? 'py-0 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-xl border-b border-neutral-200 dark:border-neutral-800 shadow-lg shadow-blue-500/5 dark:shadow-blue-500/10' 
+                : 'py-0 bg-transparent border-b border-transparent'
         }`}>
             <div className="container flex flex-row justify-between items-center">
                 <Link href="/" className="flex items-center transition-transform hover:scale-105">
@@ -115,11 +115,31 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu - Full Screen Overlay */}
             {mobileMenuOpen && (
-                <div className="md:hidden absolute top-full left-0 right-0 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 shadow-xl">
-                    <div className="container py-6">
-                        <ul className="flex flex-col space-y-4 mb-6">
+                <div className="md:hidden fixed inset-0 z-50 bg-white dark:bg-neutral-900">
+                    {/* Header with logo and close button */}
+                    <div className="container flex justify-between items-center py-4 border-b border-neutral-200 dark:border-neutral-800">
+                        <Link href="/" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
+                            <Image
+                                src={systemTheme === 'dark' ? '/logos/Sulta/White.png' : '/logos/Sulta/logoLight.png'}
+                                alt="Sulta AI Logo"
+                                width={120}
+                                height={40}
+                                priority
+                            />
+                        </Link>
+                        <button 
+                            onClick={() => setMobileMenuOpen(false)} 
+                            className="p-2 text-neutral-700 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg border-2 border-amber-500 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                        >
+                            <X className="h-6 w-6" />
+                        </button>
+                    </div>
+                    
+                    {/* Menu content */}
+                    <div className="container py-8">
+                        <ul className="flex flex-col space-y-4 mb-8">
                             {navLinks.map((link) => (
                                 <li key={link.title}>
                                     <Link 
@@ -134,14 +154,14 @@ const Navbar = () => {
                         </ul>
                         <div className="flex flex-col space-y-3">
                             {loggedIn ? (
-                                <Link href="/dashboard">
+                                <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
                                     <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg shadow-blue-500/30 rounded-full">
                                         Go to Dashboard
                                     </Button>
                                 </Link>
                             ) : (
                                 <>
-                                    <Link href='/login'>
+                                    <Link href='/login' onClick={() => setMobileMenuOpen(false)}>
                                         <Button 
                                             variant="outline" 
                                             className="w-full border-2 border-neutral-300 dark:border-neutral-700 hover:border-blue-600 dark:hover:border-blue-500 rounded-full"
@@ -149,7 +169,7 @@ const Navbar = () => {
                                             Login
                                         </Button>
                                     </Link>
-                                    <Link href='/signup'>
+                                    <Link href='/signup' onClick={() => setMobileMenuOpen(false)}>
                                         <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg shadow-blue-500/30 rounded-full">
                                             Sign Up
                                         </Button>

@@ -48,11 +48,11 @@ export function UsageSummary({
       <CardContent className="space-y-5">
         {/* Main usage display */}
         <div className="space-y-3">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
             <span className="text-sm text-muted-foreground">Tokens Used</span>
             <div className="flex items-center gap-2">
               <StatusIcon className={`h-3.5 w-3.5 ${status.color}`} />
-              <span className="font-bold number-animate">
+              <span className="font-bold number-animate text-sm sm:text-base">
                 {creditsUsed.toLocaleString()}
                 <span className="text-muted-foreground font-normal"> / {creditsLimit.toLocaleString()}</span>
               </span>

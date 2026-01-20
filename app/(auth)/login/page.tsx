@@ -34,12 +34,9 @@ function Login() {
             credentials: 'include', // Ensure cookies are included
           })
           
-          // Wait for cookie to be set, then use window.location for a hard redirect
           if (response.ok) {
-            // Wait a bit longer to ensure cookie is set and browser has processed it
-            await new Promise(resolve => setTimeout(resolve, 300))
-            // Use window.location for a hard redirect that includes cookies
-            window.location.replace("/dashboard")
+            // Use client-side navigation for instant transition
+            router.push('/dashboard')
           } else {
             redirectingRef.current = false
           }
@@ -85,10 +82,8 @@ function Login() {
         })
         
         if (response.ok) {
-          // Wait a bit longer to ensure cookie is set and browser has processed it
-          await new Promise(resolve => setTimeout(resolve, 300))
-          // Use window.location.replace for a hard redirect that includes cookies
-          window.location.replace("/dashboard")
+          // Use client-side navigation for instant transition
+          router.push('/dashboard')
         } else {
           redirectingRef.current = false
           setLoading(false)

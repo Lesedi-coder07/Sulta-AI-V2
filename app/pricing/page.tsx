@@ -76,7 +76,7 @@ export default function PricingPage() {
                     </p>
                     
                     <div className="mt-8 flex items-end gap-2 mb-8">
-                      <span className="text-6xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100">
+                      <span className="text-4xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100">
                         {tier.price}
                       </span>
                       {tier.price !== "Custom" && tier.price !== "Free" && tier.price !== "Pay as you go" && (
