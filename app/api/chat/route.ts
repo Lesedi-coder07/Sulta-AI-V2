@@ -1,4 +1,3 @@
-import { openai } from '@ai-sdk/openai';
 import { streamText, convertToModelMessages } from 'ai';
 import { google } from '@ai-sdk/google';
 import { updateAgentAnalytics } from '@/app/(ai)/dashboard/actions';
