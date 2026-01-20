@@ -184,15 +184,27 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
   return (
     <div className="w-full overflow-x-hidden space-y-6 p-6 animate-fade-in-up">
       {/* Header Section */}
-      <div className="glass-card rounded-xl p-6">
-        <div className="flex flex-row justify-between items-start gap-4">
-          <div className="flex items-center gap-4">
-            <div className="icon-container p-3 bg-white/10 border border-white/10">
+      <div className="glass-card rounded-xl p-4 sm:p-6">
+        {/* Close button - always top right */}
+        <div className="flex justify-end mb-3 sm:mb-0 sm:absolute sm:right-6 sm:top-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => { handleExit() }}
+            className="text-white/60 hover:text-white hover:bg-white/10"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+          <div className="flex flex-col sm:flex-row items-start gap-4">
+            <div className="icon-container p-3 bg-white/10 border border-white/10 shrink-0">
               <MessageSquare className="h-6 w-6 text-white/80" />
             </div>
-            <div>
-              <h2 className="text-2xl font-bold text-white">{agent.name}</h2>
-              <div className="flex items-center gap-2 mt-2">
+            <div className="min-w-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-white break-words">{agent.name}</h2>
+              <div className="flex flex-wrap items-center gap-2 mt-2">
                 <Badge variant="secondary" className="capitalize bg-white/10 text-white/70 border-white/10">
                   {agent.type}
                 </Badge>
@@ -211,24 +223,16 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Public/Private toggle - moved below content on mobile */}
+          <div className="flex items-center gap-2 sm:mt-0 mt-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => { togglePublic() }}
-              className="flex items-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-white"
+              className="flex items-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-white w-full sm:w-auto justify-center"
             >
               {agent.isPublic ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
               {agent.isPublic ? 'Public' : 'Private'}
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => { handleExit() }}
-              className="text-white/60 hover:text-white hover:bg-white/10"
-            >
-              <X className="h-5 w-5" />
             </Button>
           </div>
         </div>

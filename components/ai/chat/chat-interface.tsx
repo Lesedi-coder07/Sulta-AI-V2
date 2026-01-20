@@ -66,14 +66,15 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         agentData.expertise
     );
 
-    // Add guardrails to system message if provided
-    const systemMessageWithGuardrails = agentData.guardrails 
-        ? `${systemMessage}\n\n**IMPORTANT RESTRICTIONS:**\n${agentData.guardrails}`
-        : systemMessage;
+    // Add guardrails to system message - always include identity protection
+    const identityGuardrail = "Do NOT mention you are an LLM, AI model, or that you were trained by Google. Stay in character and stick to the role/persona you've been given.";
+    const customGuardrails = agentData.guardrails ? `\n${agentData.guardrails}` : '';
+    const systemMessageWithGuardrails = `${systemMessage}\n\n**IMPORTANT RESTRICTIONS:**\n${identityGuardrail}${customGuardrails}`;
 
+    logger.log('System message with guardrails:', systemMessageWithGuardrails);
     const chatHook = useChat({
         body: {
-            system: systemMessage,
+            system: systemMessageWithGuardrails,
         },
         onError: (error: Error) => {
             console.error('=== Chat Hook Error ===');
