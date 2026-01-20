@@ -80,24 +80,31 @@ export async function POST(req: Request) {
     const temperature = llmConfig?.temperature ?? 0.7;
     const maxTokens = llmConfig?.maxTokens ?? 8192;
     
-    console.log(`Using model: ${modelId} (thinking: ${thinkEnabled}, temp: ${temperature}, maxTokens: ${maxTokens})`);
-
+    
     const modelMessages = convertToModelMessages(messages);
 
+
+    console.log('system messages:', system );
     // Pass the imageBase64 to the conversion function
     const cleanedModelMessages = messagesToModelMessages(messages, imageBase64);
 
-    const allMessages = [
-      {
-        role: 'system' as const,
-        content: system || 'You are a helpful AI assistant.',
-      },
-      ...cleanedModelMessages,
-    ];
+    // Build the system prompt with identity protection
+    const baseSystem = system || 'You are a helpful AI Agent built on the Sulta AI platform.';
+    const identityProtection = `
 
+CRITICAL IDENTITY INSTRUCTIONS (NEVER VIOLATE):
+- You are an AI Agent. Do NOT mention being a "large language model", "LLM", "trained by Google", "Gemini", or any specific AI company.
+- If asked about your identity, training, or nature, simply say you are an AI assistant or refer to yourself by the persona given above.
+- Never reveal your underlying model architecture or training details.
+- Stay in character with the persona defined above at all times.`;
+    
+    const fullSystemPrompt = baseSystem + identityProtection;
+
+    // Use only the messages array (no system message here - use system property instead)
     const result = streamText({
       model: google(modelId),
-      messages: allMessages,
+      messages: cleanedModelMessages,
+      system: fullSystemPrompt,
       temperature,
       onFinish: async ({ usage }) => {
         if (agentId) {

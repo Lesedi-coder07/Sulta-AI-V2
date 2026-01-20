@@ -35,6 +35,15 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     const [profileImage, setProfileImage] = useState<string | null>(null)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [thinkEnabled, setThinkEnabled] = useState<boolean>(agentData.extendedThinking || false);
+    
+    // Refs for transport to access current values
+    const pendingImage = useRef<string | null>(null);
+    const thinkEnabledRef = useRef<boolean>(agentData.extendedThinking || false);
+    
+    // Keep thinkEnabledRef in sync with state
+    useEffect(() => {
+        thinkEnabledRef.current = thinkEnabled;
+    }, [thinkEnabled]);
 
     // Use the agentData passed from server-side
     const agent = agentData;
@@ -73,9 +82,28 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
 
     logger.log('System message with guardrails:', systemMessageWithGuardrails);
     const chatHook = useChat({
-        body: {
-            system: systemMessageWithGuardrails,
-        },
+        transport: new DefaultChatTransport({
+            prepareSendMessagesRequest({ messages: uiMessages, id }) {
+                // This is a new chat only if there are no messages yet
+                // (uiMessages will contain the message being sent, so check if length is 1)
+                const isNewChatRequest = uiMessages.length === 1;
+                const imageToSend = pendingImage.current;
+                // Clear the pending image after capturing it for the request
+                pendingImage.current = null;
+                return {
+                    body: {
+                        system: systemMessageWithGuardrails,
+                        messages: uiMessages,
+                        chatId: id,
+                        agentId: agent_id,
+                        newChat: isNewChatRequest,
+                        imageBase64: imageToSend,
+                        thinkEnabled: agentData.extendedThinking || thinkEnabledRef.current,
+                        llmConfig: agentData.llmConfig,
+                    },
+                };
+            }
+        }),
         onError: (error: Error) => {
             console.error('=== Chat Hook Error ===');
             console.error('Chat error:', error);
@@ -87,7 +115,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         onFinish: (message: any) => {
             logger.log('Message finished streaming:', message);
         },
-    } as any);
+    });
 
     const { messages, sendMessage, status, error } = chatHook;
 
