@@ -35,9 +35,11 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
     const [profileImage, setProfileImage] = useState<string | null>(null)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [thinkEnabled, setThinkEnabled] = useState<boolean>(agentData.extendedThinking || false);
+    const [messageImages, setMessageImages] = useState<Record<string, string>>({});
     
     // Refs for transport to access current values
     const pendingImage = useRef<string | null>(null);
+    const pendingImageForDisplay = useRef<string | null>(null);
     const thinkEnabledRef = useRef<boolean>(agentData.extendedThinking || false);
     
     // Keep thinkEnabledRef in sync with state
@@ -132,11 +134,35 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         }
     }, [status, messages.length, isStreaming, error]);
 
-    // Simple wrapper to log message sending
-    const handleSendMessage = (message: string) => {
+    // Wrapper to handle message sending with optional image
+    const handleSendMessage = (message: string, imageBase64?: string | null) => {
         logger.log('Sending message:', message);
+        logger.log('Has image:', !!imageBase64);
         logger.log('System message:', systemMessage.substring(0, 100));
+        
+        // Store the image in the ref so it can be picked up by the transport
+        if (imageBase64) {
+            pendingImage.current = imageBase64;
+            pendingImageForDisplay.current = imageBase64;
+        }
+        
         sendMessage({ text: message });
+        
+        // After sending, associate the image with the message for display
+        // We use a timeout to ensure the message is added to the messages array first
+        if (imageBase64) {
+            setTimeout(() => {
+                const latestMessages = chatHook.messages;
+                const lastUserMessage = latestMessages.findLast(m => m.role === 'user');
+                if (lastUserMessage && pendingImageForDisplay.current) {
+                    setMessageImages(prev => ({
+                        ...prev,
+                        [lastUserMessage.id]: `data:image/jpeg;base64,${pendingImageForDisplay.current}`
+                    }));
+                    pendingImageForDisplay.current = null;
+                }
+            }, 100);
+        }
     };
 
 
@@ -166,7 +192,7 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
 
         exists ? (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
             <ChatHeader handleSidebarToggle={handleSidebarToggle} showImage={false} agent={agent} showButton={true} />
-            <ChatMessages messages={messages} isLoading={isStreaming} agentName={agentData.name} />
+            <ChatMessages messages={messages} isLoading={isStreaming} agentName={agentData.name} messageImages={messageImages} />
             <ChatInput sendMessage={handleSendMessage} onThinkToggle={setThinkEnabled} thinkEnabled={thinkEnabled} />
         </div> ) : <h1 className="text-center mt-36 text-4xl font-bold">Agent not found <br /></h1>
     );
