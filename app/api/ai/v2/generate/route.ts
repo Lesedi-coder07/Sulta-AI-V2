@@ -12,5 +12,7 @@ export async function POST(req: Request) {
     messages: convertToModelMessages(messages),
   });
 
-  return result;
+
+  const data = await result;
+  return data.content;
 }
