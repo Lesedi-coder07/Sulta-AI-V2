@@ -1,6 +1,6 @@
-import {google} from '@ai-sdk/google';
 import {generateText} from 'ai';
 import { NextResponse } from 'next/server';
+import { googleAI } from '@/lib/ai/google-provider';
 
 export const maxDuration = 55;
 
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     
 
     const result = await generateText({
-        model: google('gemini-3-flash-preview'),
+        model: googleAI('gemini-3-flash-preview'),
         prompt: prompt,
         system: systemMessage,
         maxRetries: 3,

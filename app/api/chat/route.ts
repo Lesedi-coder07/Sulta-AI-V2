@@ -1,7 +1,7 @@
 import { streamText, convertToModelMessages } from 'ai';
-import { google } from '@ai-sdk/google';
 import { updateAgentAnalytics } from '@/app/(ai)/dashboard/actions';
 import { adminDb } from '@/lib/firebase-admin';
+import { googleAI } from '@/lib/ai/google-provider';
 
 export const maxDuration = 55;
 export const runtime = 'nodejs';
@@ -133,7 +133,7 @@ CRITICAL IDENTITY INSTRUCTIONS (NEVER VIOLATE):
 
     // Use only the messages array (no system message here - use system property instead)
     const result = streamText({
-      model: google(modelId),
+      model: googleAI(modelId),
       messages: cleanedModelMessages,
       system: fullSystemPrompt,
       temperature,

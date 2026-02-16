@@ -1,5 +1,5 @@
 import { generateText, type ModelMessage } from 'ai';
-import { google } from '@ai-sdk/google';
+import { googleAI } from '@/lib/ai/google-provider';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 50;
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
   }
 
   const result = await generateText({
-    model: google('gemini-3-flash-preview'),
+    model: googleAI('gemini-3-flash-preview'),
     messages: finalMessages,
   });
 

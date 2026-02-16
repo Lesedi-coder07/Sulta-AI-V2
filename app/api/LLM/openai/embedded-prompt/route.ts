@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateText, type ModelMessage } from 'ai';
-import { google } from '@ai-sdk/google';
+import { googleAI } from '@/lib/ai/google-provider';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await generateText({
-      model: google(modelId),
+      model: googleAI(modelId),
       system: systemMessage || undefined,
       messages: modelMessages,
       maxRetries: 2,

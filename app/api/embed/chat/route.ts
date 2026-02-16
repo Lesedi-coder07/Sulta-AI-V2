@@ -1,8 +1,8 @@
 import { generateText, type ModelMessage } from 'ai';
-import { google } from '@ai-sdk/google';
 import { adminDb } from '@/lib/firebase-admin';
 import { generateSystemMessage } from '@/app/(ai)/create/generateSystemMessage';
 import { FieldValue } from 'firebase-admin/firestore';
+import { googleAI, hasGoogleApiKey } from '@/lib/ai/google-provider';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -127,6 +127,13 @@ export async function OPTIONS() {
 
 export async function POST(req: Request) {
   try {
+    if (!hasGoogleApiKey) {
+      return jsonResponse(
+        { error: 'Model provider is not configured', code: 'MODEL_AUTH_ERROR' },
+        500
+      );
+    }
+
     const body = await req.json();
     const agentId = typeof body?.agentId === 'string' ? body.agentId.trim() : '';
     const message = typeof body?.message === 'string' ? body.message.trim() : '';
@@ -168,7 +175,7 @@ export async function POST(req: Request) {
     }
 
     const result = await generateText({
-      model: google(modelId),
+      model: googleAI(modelId),
       system,
       messages: modelMessages,
       temperature,
