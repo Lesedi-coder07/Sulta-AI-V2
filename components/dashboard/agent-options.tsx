@@ -188,15 +188,18 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
     }
   }, [editing]);
   const createEmbedCode = () => {
-    return ` <script src="https://ai.sultatech.com/cdn/agent-widget.js"></script>
-    <script>
-        initAIWidget({
-            agentId: "${agent.id}",
-            position: "bottom-right",
-            primaryColor: "#3254f4"
-        });
-
-    </script>`
+    return `<script src="https://ai.sultatech.com/cdn/agent-widget.js"></script>
+<script>
+  window.initAIWidget && window.initAIWidget({
+    agentId: "${agent.id}",
+    apiBase: "https://ai.sultatech.com",
+    position: "bottom-right",
+    primaryColor: "#3254f4",
+    title: "Chat with our assistant",
+    subtitle: "Replies in seconds",
+    placeholder: "Ask anything..."
+  });
+</script>`
   }
   const togglePublic = async () => {
 

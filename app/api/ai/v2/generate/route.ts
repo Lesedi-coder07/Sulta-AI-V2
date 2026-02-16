@@ -1,27 +1,43 @@
-import { generateText, convertToModelMessages } from 'ai';
+import { generateText, type ModelMessage } from 'ai';
 import { google } from '@ai-sdk/google';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 50;
 
-interface Message {
-  role: string;
-  content: string;
+type InputMessage = {
+  role?: unknown;
+  content?: unknown;
+};
+
+function sanitizeMessages(messages: unknown): ModelMessage[] {
+  if (!Array.isArray(messages)) return [];
+
+  const cleaned: ModelMessage[] = [];
+
+  for (const item of messages) {
+    const message = item as InputMessage;
+    const role = message.role;
+    const content = typeof message.content === 'string' ? message.content.trim() : '';
+    if (!content) continue;
+    if (role !== 'user' && role !== 'assistant' && role !== 'system') continue;
+
+    cleaned.push({
+      role,
+      content,
+    });
+  }
+
+  return cleaned.slice(-24);
 }
 
 export async function POST(req: Request) {
-  const { 
-    prompt, 
-    messages, 
-    systemMessage 
-  }: { 
-    prompt?: string;
-    messages: Message[]; 
-    systemMessage?: string;
-  } = await req.json();
+  const body = await req.json();
+  const prompt = typeof body?.prompt === 'string' ? body.prompt.trim() : '';
+  const systemMessage = typeof body?.systemMessage === 'string' ? body.systemMessage.trim() : '';
+  const messages = body?.messages;
 
   // Build the final messages array
-  const finalMessages: Message[] = [];
+  const finalMessages: ModelMessage[] = [];
   
   // Add system message if provided
   if (systemMessage) {
@@ -29,7 +45,7 @@ export async function POST(req: Request) {
   }
   
   // Add existing conversation messages
-  finalMessages.push(...messages);
+  finalMessages.push(...sanitizeMessages(messages));
   
   // Add the new user prompt if provided
   if (prompt) {
