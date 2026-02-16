@@ -1,8 +1,8 @@
 import { generateText, type ModelMessage } from 'ai';
 import { google } from '@ai-sdk/google';
 import { adminDb } from '@/lib/firebase-admin';
-import { updateAgentAnalytics } from '@/app/(ai)/dashboard/actions';
 import { generateSystemMessage } from '@/app/(ai)/create/generateSystemMessage';
+import { FieldValue } from 'firebase-admin/firestore';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -36,6 +36,10 @@ function normalizeModelId(modelId?: string) {
     modelId === 'gemini-1.5-flash' ||
     modelId === 'gemini-2.0-flash-thinking-exp-01-21'
   ) return 'gemini-3-flash-preview';
+
+  if (modelId !== 'gemini-3-flash-preview' && modelId !== 'gemini-3-pro-preview') {
+    return 'gemini-3-flash-preview';
+  }
 
   return modelId;
 }
@@ -129,21 +133,21 @@ export async function POST(req: Request) {
     const newChat = Boolean(body?.newChat);
 
     if (!agentId) {
-      return jsonResponse({ error: 'agentId is required' }, 400);
+      return jsonResponse({ error: 'agentId is required', code: 'INVALID_AGENT_ID' }, 400);
     }
 
     if (!message) {
-      return jsonResponse({ error: 'message is required' }, 400);
+      return jsonResponse({ error: 'message is required', code: 'INVALID_MESSAGE' }, 400);
     }
 
     const agentDoc = await adminDb.collection('agents').doc(agentId).get();
     if (!agentDoc.exists) {
-      return jsonResponse({ error: 'Agent not found' }, 404);
+      return jsonResponse({ error: 'Agent not found', code: 'AGENT_NOT_FOUND' }, 404);
     }
 
     const agentData = agentDoc.data() as AgentDoc;
     if (!agentData?.isPublic) {
-      return jsonResponse({ error: 'This agent is private' }, 403);
+      return jsonResponse({ error: 'This agent is private', code: 'AGENT_PRIVATE' }, 403);
     }
 
     const llmConfig = agentData?.llmConfig || {};
@@ -173,11 +177,25 @@ export async function POST(req: Request) {
 
     const content = (result.text || '').trim();
     if (!content) {
-      return jsonResponse({ error: 'Empty model response' }, 502);
+      return jsonResponse({ error: 'Empty model response', code: 'EMPTY_MODEL_RESPONSE' }, 502);
     }
 
     const tokensUsed = result.usage?.totalTokens ?? 0;
-    await updateAgentAnalytics(agentId, 1, tokensUsed, newChat ? 1 : 0);
+    try {
+      const updateData: Record<string, FieldValue> = {
+        totalQueries: FieldValue.increment(1),
+        tokensUsed: FieldValue.increment(tokensUsed),
+      };
+
+      if (newChat) {
+        updateData.totalChats = FieldValue.increment(1);
+      }
+
+      await adminDb.collection('agents').doc(agentId).update(updateData);
+    } catch (analyticsError) {
+      // Analytics should never break chat replies.
+      console.error('Embed chat analytics update failed:', analyticsError);
+    }
 
     return jsonResponse({
       content,
@@ -185,6 +203,23 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error('Embed chat error:', error);
-    return jsonResponse({ error: 'Internal server error' }, 500);
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
+    const lower = errorMessage.toLowerCase();
+
+    if (lower.includes('api key') || lower.includes('google_generative_ai_api_key')) {
+      return jsonResponse(
+        { error: 'Model provider is not configured', code: 'MODEL_AUTH_ERROR' },
+        500
+      );
+    }
+
+    if (lower.includes('model') && (lower.includes('not found') || lower.includes('unsupported'))) {
+      return jsonResponse(
+        { error: 'Selected model is unavailable', code: 'MODEL_UNAVAILABLE' },
+        502
+      );
+    }
+
+    return jsonResponse({ error: 'Internal server error', code: 'EMBED_INTERNAL_ERROR' }, 500);
   }
 }

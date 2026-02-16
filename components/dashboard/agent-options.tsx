@@ -188,7 +188,7 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
     }
   }, [editing]);
   const createEmbedCode = () => {
-    return `<script src="https://ai.sultatech.com/cdn/agent-widget.js"></script>
+    return `<script src="https://ai.sultatech.com/cdn/agent-widget.js?v=20260216"></script>
 <script>
   window.initAIWidget && window.initAIWidget({
     agentId: "${agent.id}",

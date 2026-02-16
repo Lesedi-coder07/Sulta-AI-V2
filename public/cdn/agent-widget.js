@@ -168,6 +168,7 @@
 
         .sulta-ai-widget-header {
           padding: 14px 14px 12px;
+          background: var(--sulta-widget-primary, #3254f4);
           color: #fff;
           display: flex;
           justify-content: space-between;
@@ -246,6 +247,7 @@
         }
 
         .sulta-ai-widget-message.user {
+          background: var(--sulta-widget-primary, #3254f4);
           color: #fff;
           align-self: flex-end;
           border-bottom-right-radius: 4px;
@@ -496,8 +498,9 @@
         }
         this.addMessage('assistant', assistantContent);
       } catch (error) {
-        console.error('[Sulta AI Widget] sendMessage error:', error);
-        this.addMessage('assistant', this.config.errorMessage, { error: true });
+        var errorSummary = error && error.message ? error.message : error;
+        console.error('[Sulta AI Widget] sendMessage error:', errorSummary, error);
+        this.addMessage('assistant', this.getDisplayErrorMessage(error), { error: true });
       } finally {
         this.hideTypingIndicator();
         this.isSending = false;
@@ -552,13 +555,57 @@
 
         if (!response.ok) {
           var errorMessage = toText(data && data.error) || 'Request failed';
-          throw new Error(errorMessage);
+          var requestError = new Error(errorMessage);
+          requestError.code = toText(data && data.code) || 'REQUEST_FAILED';
+          requestError.status = response.status;
+          requestError.payload = data;
+          throw requestError;
         }
 
         return data;
+      } catch (error) {
+        if (error && error.name === 'AbortError') {
+          var timeoutError = new Error('Request timed out. Please try again.');
+          timeoutError.code = 'REQUEST_TIMEOUT';
+          throw timeoutError;
+        }
+        throw error;
       } finally {
         clearTimeout(timeout);
       }
+    }
+
+    getDisplayErrorMessage(error) {
+      var code = toText(error && error.code).toUpperCase();
+      var message = toText(error && error.message);
+
+      if (code === 'AGENT_PRIVATE') {
+        return 'This agent is private. Set it to Public in your dashboard before using embed.';
+      }
+      if (code === 'AGENT_NOT_FOUND') {
+        return 'This embedded agent could not be found. Please copy the embed code again.';
+      }
+      if (code === 'INVALID_AGENT_ID') {
+        return 'Embed setup is missing an agentId. Please update your embed snippet.';
+      }
+      if (code === 'REQUEST_TIMEOUT') {
+        return 'The request timed out. Please check your connection and try again.';
+      }
+      if (code === 'MODEL_AUTH_ERROR') {
+        return 'The embed model is not configured on the server. Please set the model API key.';
+      }
+      if (code === 'MODEL_UNAVAILABLE') {
+        return 'The selected model is currently unavailable. Please try again shortly.';
+      }
+      if (code === 'EMBED_INTERNAL_ERROR') {
+        return 'Server error while generating a reply. Please try again.';
+      }
+
+      if (message) {
+        return message;
+      }
+
+      return this.config.errorMessage;
     }
 
     showTypingIndicator() {

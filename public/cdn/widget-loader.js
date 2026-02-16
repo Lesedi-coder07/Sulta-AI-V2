@@ -5,5 +5,4 @@
   js.async = 1;
   js.crossOrigin = 'anonymous';
   fjs.parentNode.insertBefore(js, fjs);
-})(window, document, 'script', 'https://ai.sultatech.com/cdn/agent-widget.js');
-
+})(window, document, 'script', 'https://ai.sultatech.com/cdn/agent-widget.js?v=20260216');
