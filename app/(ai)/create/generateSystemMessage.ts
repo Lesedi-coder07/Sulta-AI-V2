@@ -7,17 +7,36 @@ export function generateSystemMessage(
     type: string, 
     personality: string | undefined, 
     tone: string | undefined, 
-    expertise: string | undefined, 
+    expertise: string | string[] | undefined, 
     context: string = '',
     guardrails: string = '',
     customSystemPrompt: string = ''
 ) {
-    const expertiseMessage = expertise ? `Your expertise is ${expertise}.` : '';
-    const contextMessage = context ? `Here is extra context about your role as an agent: ${context}` : '';
+    const normalizedExpertise = Array.isArray(expertise) ? expertise.join(', ') : expertise;
+    const introParts = [
+        `You are an AI agent named ${name}.`,
+        `You are a ${type} agent.`,
+    ];
+
+    if (personality) {
+        introParts.push(`Your personality is ${personality}.`);
+    }
+    if (tone) {
+        introParts.push(`Your tone is ${tone}.`);
+    }
+    if (normalizedExpertise) {
+        introParts.push(`Your expertise is ${normalizedExpertise}.`);
+    }
+    if (description) {
+        introParts.push(`Your description is ${description}.`);
+    }
+
     const guardrailsMessage = guardrails ? `\n\n**Guardrails & Restrictions:**\n${guardrails}` : '';
     const customPromptMessage = customSystemPrompt ? `\n\n**Custom Instructions:**\n${customSystemPrompt}` : '';
-    
-    return `You are an AI agent named ${name}. You are a ${type} agent. Your personality is ${personality}. Your tone is ${tone}. ${expertiseMessage} Your description is ${description}. ${contextMessage}${guardrailsMessage}${customPromptMessage}\n\n${DEFAULT_IDENTITY_GUIDELINE}`;
+    const contextMessage = context ? `\n\n**Agent Context (Knowledge Base):**\n${context}` : '';
+
+    // Context is appended at the end of the normal system prompt.
+    return `${introParts.join(' ')}${guardrailsMessage}${customPromptMessage}${contextMessage}\n\n${DEFAULT_IDENTITY_GUIDELINE}`;
 }
 
 

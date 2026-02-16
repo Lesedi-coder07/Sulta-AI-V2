@@ -66,16 +66,25 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
         }
     }, [agent_id]);
 
+    const normalizedExpertise = Array.isArray(agentData.expertise)
+        ? agentData.expertise.join(', ')
+        : agentData.expertise;
+    const normalizedExtraContext = (agentData.extraContext || '').trim();
 
-    // Use custom system prompt if provided, otherwise generate one
-    const systemMessage = agentData.customSystemPrompt || generateSystemMessage(
+    // Build a base system prompt first, then always append agent context.
+    const baseSystemMessage = agentData.customSystemPrompt || generateSystemMessage(
         agentData.name, 
         agentData?.description ?? '', 
         agentData.type, 
         agentData.personality, 
         agentData.tone, 
-        agentData.expertise
+        normalizedExpertise,
+        '',
     );
+    const contextAppendix = normalizedExtraContext
+        ? `\n\n**Agent Context (Knowledge Base):**\n${normalizedExtraContext}`
+        : '';
+    const systemMessage = `${baseSystemMessage}${contextAppendix}`;
 
     // Add guardrails to system message - always include identity protection
     const identityGuardrail = "Do NOT mention you are an LLM, AI model, or that you were trained by Google. Stay in character and stick to the role/persona you've been given.";

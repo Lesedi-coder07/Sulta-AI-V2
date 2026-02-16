@@ -16,7 +16,7 @@ import { db } from "../api/firebase/firebaseConfig";
             updatedAt: new Date().toISOString(),
             status: 'active',
             metadata: {
-                model: 'gemini-pro',
+                model: 'gemini-3-flash-preview',
                 temperature: 0.7
             },
             lastMessageAt: new Date().toISOString(),

@@ -29,8 +29,14 @@ export function ExtraContextField({ form, className }: ExtraContextFieldProps) {
             </FormDescription>
             <FormControl>
               <Textarea
-                placeholder="Enter extra context here..."
-                className="mt-2"
+                placeholder={`Add detailed background the agent should use, for example:
+
+- Company or project facts
+- Key policies and constraints
+- Preferred response style
+- Domain-specific terminology`}
+                rows={8}
+                className="mt-2 min-h-[220px] resize-y"
                 {...field}
               />
             </FormControl>

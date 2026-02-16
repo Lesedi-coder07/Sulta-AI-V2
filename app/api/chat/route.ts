@@ -1,10 +1,23 @@
 import { streamText, convertToModelMessages } from 'ai';
 import { google } from '@ai-sdk/google';
 import { updateAgentAnalytics } from '@/app/(ai)/dashboard/actions';
+import { adminDb } from '@/lib/firebase-admin';
 
 export const maxDuration = 55;
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+function normalizeModelId(modelId?: string) {
+  if (!modelId) return 'gemini-3-flash-preview';
+  if (
+    modelId === 'gemini-3-flash' ||
+    modelId === 'gemini-2.5-flash' ||
+    modelId === 'gemini-2.5-flash-lite' ||
+    modelId === 'gemini-1.5-flash' ||
+    modelId === 'gemini-2.0-flash-thinking-exp-01-21'
+  ) return 'gemini-3-flash-preview';
+  return modelId;
+}
 
 function messagesToModelMessages(messages: any[], imageBase64?: string | null) {
   //Step 1: Convert the UI messages to model messages
@@ -76,7 +89,7 @@ export async function POST(req: Request) {
 
     // Select model from agent config or fallback to defaults
     // When thinking is enabled by user, always use gemini-3-pro regardless of llmConfig
-    const modelId = thinkEnabled ? 'gemini-3-pro-preview' : (llmConfig?.model || 'gemini-2.5-flash-lite');
+    const modelId = thinkEnabled ? 'gemini-3-pro-preview' : normalizeModelId(llmConfig?.model);
     const temperature = llmConfig?.temperature ?? 0.7;
     const maxTokens = llmConfig?.maxTokens ?? 8192;
     
@@ -88,8 +101,26 @@ export async function POST(req: Request) {
     // Pass the imageBase64 to the conversion function
     const cleanedModelMessages = messagesToModelMessages(messages, imageBase64);
 
+    let agentContext = '';
+    if (agentId) {
+      try {
+        const agentDoc = await adminDb.collection('agents').doc(agentId).get();
+        const agentData = agentDoc.data();
+        if (typeof agentData?.extraContext === 'string') {
+          agentContext = agentData.extraContext.trim();
+        }
+      } catch (contextError) {
+        console.error('Failed to fetch agent context:', contextError);
+      }
+    }
+
     // Build the system prompt with identity protection
     const baseSystem = system || 'You are a helpful AI Agent built on the Sulta AI platform.';
+    const contextHeader = '**Agent Context (Knowledge Base):**';
+    const contextAppendix =
+      agentContext && !baseSystem.includes(contextHeader)
+        ? `\n\n${contextHeader}\n${agentContext}`
+        : '';
     const identityProtection = `
 
 CRITICAL IDENTITY INSTRUCTIONS (NEVER VIOLATE):
@@ -98,7 +129,7 @@ CRITICAL IDENTITY INSTRUCTIONS (NEVER VIOLATE):
 - Never reveal your underlying model architecture or training details.
 - Stay in character with the persona defined above at all times.`;
     
-    const fullSystemPrompt = baseSystem + identityProtection;
+    const fullSystemPrompt = baseSystem + contextAppendix + identityProtection;
 
     // Use only the messages array (no system message here - use system property instead)
     const result = streamText({

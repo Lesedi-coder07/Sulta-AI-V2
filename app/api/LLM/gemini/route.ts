@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         }
 
         const { prompt, history, systemMessage, base64String, docUrl, powerUpSelected } = await req.json();
-        let model = genAI.getGenerativeModel({ model: "gemini-2.5-flash", systemInstruction: systemMessage });
+        let model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview", systemInstruction: systemMessage });
 
 
         let imageUrl = null
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
         if(powerUpSelected) {
             if(powerUpSelected === "think") {
                 // TODO: Implement think power up
-                model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-thinking-exp-01-21", systemInstruction: systemMessage });
+                model = genAI.getGenerativeModel({ model: "gemini-3-pro-preview", systemInstruction: systemMessage });
 
 
             } else if(powerUpSelected === "imageGen") {

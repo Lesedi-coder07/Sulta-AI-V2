@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     
 
     const result = await generateText({
-        model: google('gemini-2.5-flash'),
+        model: google('gemini-3-flash-preview'),
         prompt: prompt,
         system: systemMessage,
         maxRetries: 3,

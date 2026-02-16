@@ -88,7 +88,7 @@ const agentFormSchema = z.object({
 
   // LLM Configuration
   llmConfig: z.object({
-    model: z.string().default('gemini-3-flash'),
+    model: z.string().default('gemini-3-flash-preview'),
     temperature: z.number().min(0).max(2).default(0.7),
     maxTokens: z.number().min(100).max(100000).default(8192),
   }).optional(),

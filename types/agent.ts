@@ -7,7 +7,7 @@ export interface Agent {
     description?: string;
     personality?: string;
     tone?: string;
-    expertise?: string; // Changed from string[] to optional text field
+    expertise?: string | string[]; // Supports legacy array and current text input
     contextMemory?: number;
     // Additional properties from Firebase
     userId?: string;
@@ -31,4 +31,5 @@ export interface Agent {
       parameters?: string;
     };
     customSystemPrompt?: string;
+    extraContext?: string;
   }

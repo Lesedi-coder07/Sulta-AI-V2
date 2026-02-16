@@ -58,6 +58,16 @@ export function AgentSelector({ initialAgents, userId, onAgentSelected }: AgentS
                   totalChats: agentData.totalChats || 0,
                   description: agentData.description,
                   createdAt: agentData.createdAt,
+                  personality: agentData.personality,
+                  tone: agentData.tone,
+                  expertise: agentData.expertise,
+                  contextMemory: agentData.contextMemory,
+                  extendedThinking: agentData.extendedThinking,
+                  guardrails: agentData.guardrails,
+                  llmConfig: agentData.llmConfig,
+                  customApiTool: agentData.customApiTool,
+                  customSystemPrompt: agentData.customSystemPrompt,
+                  extraContext: agentData.extraContext || '',
                 };
                 setAgents((prevAgents) => {
                   const otherAgents = prevAgents.filter((a) => a.id !== agentId);

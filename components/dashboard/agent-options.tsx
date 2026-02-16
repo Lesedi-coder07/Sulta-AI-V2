@@ -53,7 +53,21 @@ interface AgentOptionsProps {
 function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDeleted }: AgentOptionsProps) {
   const [editing, setEditing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isContextSaving, setIsContextSaving] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const normalizedModelId = (modelId?: string) => {
+    if (!modelId) return undefined;
+    if (
+      modelId === 'gemini-3-flash' ||
+      modelId === 'gemini-2.5-flash' ||
+      modelId === 'gemini-2.5-flash-lite' ||
+      modelId === 'gemini-1.5-flash' ||
+      modelId === 'gemini-2.0-flash-thinking-exp-01-21'
+    ) {
+      return 'gemini-3-flash-preview';
+    }
+    return modelId;
+  };
   const [editForm, setEditForm] = useState({
     name: agent.name,
     description: agent.description || '',
@@ -65,10 +79,10 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
     isPublic: agent.isPublic,
     extendedThinking: (agent as any).extendedThinking || false,
     guardrails: (agent as any).guardrails || '',
-    llmConfig: (agent as any).llmConfig || {
-      model: 'gemini-3-flash',
-      temperature: 0.7,
-      maxTokens: 8192
+    llmConfig: {
+      model: normalizedModelId((agent as any).llmConfig?.model) || 'gemini-3-flash-preview',
+      temperature: (agent as any).llmConfig?.temperature ?? 0.7,
+      maxTokens: (agent as any).llmConfig?.maxTokens ?? 8192
     },
     customSystemPrompt: (agent as any).customSystemPrompt || '',
     extraContext: (agent as any).extraContext || ''
@@ -141,6 +155,23 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
     }
   }
 
+  const handleSaveContext = async () => {
+    setIsContextSaving(true);
+    try {
+      const agentDocRef = doc(db, 'agents', agent.id);
+      await updateDoc(agentDocRef, { extraContext: editForm.extraContext });
+
+      // Keep local state in sync after successful persistence
+      agent.extraContext = editForm.extraContext;
+      setFormErrors(prev => ({ ...prev, general: '' }));
+    } catch (error) {
+      console.error('Error saving agent context:', error);
+      setFormErrors({ general: 'Failed to save context. Please try again.' });
+    } finally {
+      setIsContextSaving(false);
+    }
+  }
+
 
 
   const editTabRef = useRef<HTMLDivElement>(null);
@@ -184,9 +215,9 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
   return (
     <div className="w-full overflow-x-hidden space-y-6 p-6 animate-fade-in-up">
       {/* Header Section */}
-      <div className="glass-card rounded-xl p-4 sm:p-6">
+      <div className="glass-card relative rounded-xl p-4 sm:p-6">
         {/* Close button - always top right */}
-        <div className="flex justify-end mb-3 sm:mb-0 sm:absolute sm:right-6 sm:top-6">
+        <div className="absolute right-3 top-3 sm:right-6 sm:top-6 z-10">
           <Button
             variant="ghost"
             size="icon"
@@ -197,7 +228,7 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
           </Button>
         </div>
         
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 pr-10 sm:pr-14">
           <div className="flex flex-col sm:flex-row items-start gap-4">
             <div className="icon-container p-3 bg-white/10 border border-white/10 shrink-0">
               <MessageSquare className="h-6 w-6 text-white/80" />
@@ -421,7 +452,12 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
 
       {/* Context Sheet */}
       <div className="max-w-full overflow-x-auto">
-        <ContextSheet />
+        <ContextSheet
+          value={editForm.extraContext}
+          onChange={(value: string) => handleInputChange('extraContext', value)}
+          onSave={handleSaveContext}
+          isSaving={isContextSaving}
+        />
       </div>
 
       {/* Comprehensive Edit Form */}
@@ -610,16 +646,10 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
                               <span className="text-xs text-muted-foreground">Most capable</span>
                             </div>
                           </SelectItem>
-                          <SelectItem value="gemini-3-flash">
+                          <SelectItem value="gemini-3-flash-preview">
                             <div className="flex items-center gap-2">
-                              <span>Gemini 3 Flash</span>
+                              <span>Gemini 3 Flash Preview</span>
                               <span className="text-xs text-muted-foreground">Fast & powerful</span>
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="gemini-2.5-flash-lite">
-                            <div className="flex items-center gap-2">
-                              <span>Gemini 2.5 Flash Lite</span>
-                              <span className="text-xs text-muted-foreground">Super fast</span>
                             </div>
                           </SelectItem>
                         </SelectContent>
@@ -755,10 +785,10 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
                     isPublic: agent.isPublic,
                     extendedThinking: (agent as any).extendedThinking || false,
                     guardrails: (agent as any).guardrails || '',
-                    llmConfig: (agent as any).llmConfig || {
-                      model: 'gemini-3-flash',
-                      temperature: 0.7,
-                      maxTokens: 8192
+                    llmConfig: {
+                      model: normalizedModelId((agent as any).llmConfig?.model) || 'gemini-3-flash-preview',
+                      temperature: (agent as any).llmConfig?.temperature ?? 0.7,
+                      maxTokens: (agent as any).llmConfig?.maxTokens ?? 8192
                     },
                     customSystemPrompt: (agent as any).customSystemPrompt || '',
                     extraContext: (agent as any).extraContext || ''

@@ -35,8 +35,7 @@ interface TechnicalConfigProps {
 
 const AVAILABLE_MODELS = [
   { value: "gemini-3-pro-preview", label: "Gemini 3 Pro Preview", description: "Most capable" },
-  { value: "gemini-3-flash", label: "Gemini 3 Flash", description: "Fast & powerful" },
-  { value: "gemini-2.5-flash-lite", label: "Gemini 2.5 Flash Lite", description: "Super fast" },
+  { value: "gemini-3-flash-preview", label: "Gemini 3 Flash Preview", description: "Fast & powerful" },
 ];
 
 export function TechnicalConfig({ form, className }: TechnicalConfigProps) {
@@ -86,7 +85,7 @@ export function TechnicalConfig({ form, className }: TechnicalConfigProps) {
                         <FormLabel>Model</FormLabel>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value || "gemini-3-flash"}
+                          defaultValue={field.value || "gemini-3-flash-preview"}
                         >
                           <FormControl>
                             <SelectTrigger>

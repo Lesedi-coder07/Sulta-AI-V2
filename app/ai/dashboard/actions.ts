@@ -42,6 +42,16 @@ export async function getAgents(userId: string): Promise<Agent[]> {
         totalChats: agentData?.totalChats || 0,
         description: agentData?.description,
         createdAt: agentData?.createdAt,
+        personality: agentData?.personality,
+        tone: agentData?.tone,
+        expertise: agentData?.expertise,
+        contextMemory: agentData?.contextMemory,
+        extendedThinking: agentData?.extendedThinking,
+        guardrails: agentData?.guardrails,
+        llmConfig: agentData?.llmConfig,
+        customApiTool: agentData?.customApiTool,
+        customSystemPrompt: agentData?.customSystemPrompt,
+        extraContext: agentData?.extraContext || '',
       } as Agent;
     });
 
@@ -54,4 +64,3 @@ export async function getAgents(userId: string): Promise<Agent[]> {
     return [];
   }
 }
-
