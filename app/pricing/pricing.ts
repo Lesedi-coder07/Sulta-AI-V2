@@ -1,30 +1,29 @@
 export const tiers = [
   {
-    name: "App Access",
+    name: "Free",
     price: "Free",
-    description: "Use the app for free with generous monthly limits",
+    description: "For getting started with agent building and day-to-day usage",
     features: [
-      "Up to 1,000 messages per month",
-      "100K tokens per month",
-      "All core features included",
+      "500K tokens per month",
+      "Build and run agents in hosted app",
+      "Agent builder + configuration controls",
       "Community support"
     ],
-    highlighted: true,
-    cta: "Start For Free"
+    highlighted: false,
+    cta: "Start Free"
   },
   {
-    name: "API Access",
+    name: "Pro",
     price: "$20",
-    description: "Flexible API access for developers and businesses",
+    description: "For technical teams that need higher-volume usage",
     features: [
-      "1000 messages per month",
-      "Then $5 per 1000 messages",
-      "No monthly minimums",
-      "Scalable usage",
+      "10M tokens per month",
+      "Everything in Free",
+      "API access",
       "Priority email support",
       "Detailed usage analytics"
     ],
-    highlighted: false,
-    cta: "Get API Access"
+    highlighted: true,
+    cta: "Upgrade to Pro"
   }
 ];

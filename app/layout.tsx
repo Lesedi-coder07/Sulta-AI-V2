@@ -18,8 +18,8 @@ const geistMono = localFont({
 
 
 export const metadata: Metadata = {
-  title: "Sulta AI - Your Personal AI Workforce Revolution",
-  description: "Transform Your Productivity: Build Custom AI Agents in Minutes, No Coding Required",
+  title: "Sulta AI - Build, Host, and Deploy AI Agents",
+  description: "A way to build, host, and deploy AI agents with chat and API access.",
   icons: {
       icon: "/logos/Sulta/fav.png",
       shortcut: { url: "/logos/Sulta/fav.png" }
@@ -30,14 +30,14 @@ export const metadata: Metadata = {
               url: 'https://www.sultatech.com/img/ai-thumb.jpg',
               width: 1200,
               height: 800,
-              alt: 'Sulta AI - Custom AI Agents',
+              alt: 'Sulta AI - Build, Host, and Deploy AI Agents',
           }
       ],
   },
   twitter: {
       card: 'summary_large_image',
       images: ['https://www.sultatech.com/img/ai-thumb.jpg'],
-      description: "Unleash the Power of AI: Create Custom AI Agents That Work for You 24/7",
+      description: "Build, host, and deploy AI agents with web chat and API routes.",
 }}
 
 export default function RootLayout({

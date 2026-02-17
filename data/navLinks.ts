@@ -1,15 +1,18 @@
 export const navLinks = [
-    {
-        title: "Pricing",
-        href: "/pricing",
-    },
- 
-    {
-        title: "Try AI Chat",
-        href: "/chat",
-    },
-    {
-        title: "Contact",
-        href: "https://sultatech.com/book",
-    },
+  {
+    title: "Product",
+    href: "/learn-more",
+  },
+  {
+    title: "Pricing",
+    href: "/pricing",
+  },
+  {
+    title: "Docs",
+    href: "/docs/api",
+  },
+  {
+    title: "Try Demo",
+    href: "/chat",
+  },
 ];

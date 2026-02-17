@@ -1,205 +1,236 @@
-'use client'
-import { Check, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { tiers } from "./pricing";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import Link from "next/link";
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { Check, CircleHelp, TrendingUp } from 'lucide-react';
+
+import Footer from '@/components/layout/Footer';
+import Navbar from '@/components/layout/Navbar';
+import { tiers } from '@/app/pricing/pricing';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+
+export const metadata: Metadata = {
+  title: 'Sulta AI Pricing',
+  description: 'Pricing for building, hosting, and deploying AI agents.',
+};
+
+const faqs = [
+  {
+    title: 'Can we start small and scale later?',
+    description:
+      'Yes. Start on the Free tier with 500K monthly tokens, then move to Pro when you need more capacity.',
+  },
+  {
+    title: 'How is usage priced?',
+    description:
+      'Pricing is fully token-based. Your monthly token allowance is tied to your plan, with no message-based billing.',
+  },
+  {
+    title: 'What does Pro include?',
+    description:
+      'Pro includes 10M monthly tokens plus API access, priority support, and usage analytics.',
+  },
+  {
+    title: 'Can I change plans anytime?',
+    description:
+      'Yes. You can switch plans at any time as your team usage changes.',
+  },
+];
 
 export default function PricingPage() {
   return (
-    <>
+    <div className="min-h-screen bg-[#03060D] text-slate-100">
       <Navbar />
-      <main className="min-h-screen transition-colors duration-300">
-        {/* Hero Section */}
-        <div className="relative overflow-hidden bg-gradient-to-b from-blue-50/50 via-white to-white dark:from-neutral-950 dark:via-neutral-900 dark:to-background">
-          {/* Background Pattern */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#e5e7eb_1px,transparent_1px),linear-gradient(to_bottom,#e5e7eb_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] opacity-20" />
-          
-          {/* Gradient Orbs */}
-          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
 
-          <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full border border-blue-200 bg-blue-50/50 dark:bg-blue-950/30 dark:border-blue-900">
-                <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                  Simple, Transparent Pricing
-                </span>
+      <main className="relative overflow-hidden pb-14 pt-20">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute left-[-140px] top-24 h-[520px] w-[320px] rounded-full bg-[#fb923c]/18 blur-[150px]" />
+          <div className="absolute right-[-100px] top-56 h-[460px] w-[280px] rounded-full bg-[#22d3ee]/12 blur-[140px]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:48px_48px] opacity-20" />
+        </div>
+
+        <section className="relative mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+            <article className="rounded-[28px] border border-white/10 bg-[#090F1A]/85 p-6 sm:p-7">
+              <p className="inline-flex rounded-full border border-[#fdba74]/45 bg-[#fb923c]/12 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[#fdba74]">
+                Pricing
+              </p>
+              <h1 className="mt-4 text-[clamp(2rem,3.8vw,3.3rem)] font-semibold leading-tight text-white">
+                Pricing for building
+                <br />
+                and deploying agents
+              </h1>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">
+                Keep pricing simple with token-based plans. Start free with 500K tokens, then scale to 10M tokens on
+                Pro for heavier workloads.
+              </p>
+
+              <div className="mt-5 grid gap-2.5 text-sm text-slate-300 sm:grid-cols-2">
+                {[
+                  'Simple token-based pricing',
+                  '500K free tokens every month',
+                  '10M monthly tokens on Pro',
+                  'Same quota for app + API usage',
+                ].map((item) => (
+                  <div key={item} className="flex items-start gap-2 rounded-lg border border-white/10 bg-[#060B14]/80 p-2.5">
+                    <Check className="mt-0.5 h-4 w-4 text-[#67e8f9]" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className="rounded-[28px] border border-white/10 bg-[#090F1A]/85 p-6">
+              <p className="text-sm font-semibold text-slate-300">Token Overview</p>
+              <div className="mt-3 rounded-2xl border border-white/10 bg-[#060B14] p-3.5">
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.16em] text-slate-500">Pro Plan</p>
+                    <p className="mt-1.5 text-2xl font-semibold text-white">$20 / month</p>
+                  </div>
+                  <span className="rounded-full bg-[#22d3ee]/15 px-3 py-1 text-xs font-semibold text-[#67e8f9]">
+                    <TrendingUp className="mr-1 inline h-3.5 w-3.5" />
+                    token based
+                  </span>
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-2.5">
+                  <div className="rounded-lg border border-white/10 bg-[#050a13] p-3">
+                    <p className="text-xs text-slate-500">Free plan</p>
+                    <p className="mt-1 text-sm font-semibold text-white">500K tokens / month</p>
+                  </div>
+                  <div className="rounded-lg border border-white/10 bg-[#050a13] p-3">
+                    <p className="text-xs text-slate-500">Pro plan</p>
+                    <p className="mt-1 text-sm font-semibold text-white">10M tokens / month</p>
+                  </div>
+                </div>
               </div>
 
-              {/* Headline */}
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
-                <span className="bg-gradient-to-r from-neutral-900 to-neutral-700 dark:from-white dark:to-neutral-300 bg-clip-text text-transparent">
-                  Choose Your
-                </span>
-                <br />
-                <span className="bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
-                  Perfect Plan
-                </span>
-              </h1>
-              
-              <p className="mt-6 text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto leading-relaxed">
-                Start free and scale as you grow. All plans include access to our powerful AI agent platform.
-              </p>
-            </div>
+              <div className="mt-4 rounded-2xl border border-white/10 bg-[#060B14] p-3.5 text-sm text-slate-300">
+                <p className="font-medium text-white">Need help choosing a plan?</p>
+                <p className="mt-2 text-slate-400">
+                  Choose based on monthly token volume. Upgrade when your team needs higher throughput.
+                </p>
+                <Link href="https://sultatech.com/book" target="_blank" rel="noreferrer noopener">
+                  <Button
+                    variant="outline"
+                    className="mt-4 h-10 rounded-lg border-white/20 bg-transparent text-slate-100 hover:bg-white/5"
+                  >
+                    Talk to Team
+                  </Button>
+                </Link>
+              </div>
+            </article>
+          </div>
+        </section>
 
-            {/* Pricing Cards */}
-            <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-10 max-w-4xl mx-auto">
-              {tiers.map((tier) => (
-                <Card
-                  key={tier.name}
-                  className={`relative flex flex-col rounded-3xl overflow-hidden transition-all duration-300 ${
-                    tier.highlighted
-                      ? 'border-2 border-blue-500 dark:border-blue-500 shadow-2xl shadow-blue-500/20 scale-105 bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/30 dark:to-neutral-900'
-                      : 'border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:shadow-xl hover:-translate-y-1'
-                  }`}
-                >
-                  {tier.highlighted && (
-                    <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 px-4 py-3 text-center">
-                      <span className="text-sm font-bold text-white flex items-center justify-center gap-2">
-                        <Sparkles className="w-4 h-4" />
-                        Most Popular Choice
-                      </span>
-                    </div>
-                  )}
+        <section className="relative mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {tiers.map((tier) => (
+              <Card
+                key={tier.name}
+                className={`relative overflow-hidden rounded-[26px] border p-0 ${
+                  tier.highlighted
+                    ? 'border-[#fb923c]/60 bg-gradient-to-b from-[#211103] to-[#111827] shadow-[0_16px_60px_rgba(251,146,60,0.25)]'
+                    : 'border-white/10 bg-[#090F1A]/85'
+                }`}
+              >
+                {tier.highlighted && (
+                  <div className="border-b border-[#fb923c]/40 bg-[#fb923c]/20 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#fdba74]">
+                    Recommended to get started
+                  </div>
+                )}
 
-                  <div className={`p-10 flex flex-col flex-1 ${tier.highlighted ? 'pt-20' : 'pt-10'}`}>
-                    <h2 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-3 tracking-tight">
-                      {tier.name}
-                    </h2>
-                    <p className="mt-2 text-base text-neutral-600 dark:text-neutral-400 min-h-[48px] leading-relaxed">
-                      {tier.description}
-                    </p>
-                    
-                    <div className="mt-8 flex items-end gap-2 mb-8">
-                      <span className="text-4xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100">
-                        {tier.price}
-                      </span>
-                      {tier.price !== "Custom" && tier.price !== "Free" && tier.price !== "Pay as you go" && (
-                        <span className="text-xl text-neutral-500 dark:text-neutral-400 font-medium mb-2">
-                          /month
-                        </span>
-                      )}
-                    </div>
+                <div className="p-5 sm:p-6">
+                  <h2 className="text-2xl font-semibold text-white">{tier.name}</h2>
+                  <p className="mt-2 min-h-[40px] text-sm leading-6 text-slate-300">{tier.description}</p>
 
+                  <div className="mt-5 flex items-end gap-2">
+                    <p className="text-4xl font-semibold text-white">{tier.price}</p>
+                    {tier.price !== 'Custom' && tier.price !== 'Free' && tier.price !== 'Pay as you go' && (
+                      <span className="pb-1.5 text-sm text-slate-400">/month</span>
+                    )}
+                  </div>
+
+                  <Link href="/signup">
                     <Button
-                      className={`w-full py-6 text-lg font-semibold rounded-full shadow-lg transition-all duration-300 ${
+                      className={`mt-5 h-10 w-full rounded-lg text-sm font-semibold ${
                         tier.highlighted
-                          ? 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-105'
-                          : 'bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 dark:text-neutral-900 text-white hover:scale-105'
+                          ? 'border border-[#fb923c]/65 bg-gradient-to-r from-[#fb923c] to-[#f97316] text-slate-950 hover:from-[#fdba74] hover:to-[#fb923c]'
+                          : 'border border-white/20 bg-white/5 text-white hover:bg-white/10'
                       }`}
                     >
                       {tier.cta}
                     </Button>
+                  </Link>
 
-                    <ul className="mt-10 space-y-4 flex-1">
-                      <div className="text-sm font-semibold text-neutral-900 dark:text-white mb-4">
-                        Everything included:
+                  <div className="mt-6 space-y-2.5">
+                    {tier.features.slice(0, 4).map((feature) => (
+                      <div key={feature} className="flex items-start gap-2.5 rounded-lg border border-white/10 bg-[#050a13]/80 px-3 py-2">
+                        <span
+                          className={`mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full ${
+                            tier.highlighted ? 'bg-[#fb923c] text-slate-950' : 'bg-[#22d3ee]/15 text-[#67e8f9]'
+                          }`}
+                        >
+                          <Check className="h-3.5 w-3.5" />
+                        </span>
+                        <p className="text-sm text-slate-300">{feature}</p>
                       </div>
-                      {tier.features.map((feature) => (
-                        <li key={feature} className="flex items-start text-base gap-3">
-                          <span className={`flex items-center justify-center h-6 w-6 rounded-full mt-0.5 flex-shrink-0 ${
-                            tier.highlighted
-                              ? 'bg-blue-500'
-                              : 'bg-blue-100 dark:bg-blue-950'
-                          }`}>
-                            <Check className={`h-4 w-4 ${tier.highlighted ? 'text-white' : 'text-blue-600 dark:text-blue-400'}`} />
-                          </span>
-                          <span className="text-neutral-700 dark:text-neutral-300 leading-relaxed">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    ))}
+                    {tier.features.length > 4 && (
+                      <p className="text-xs text-slate-500">+ {tier.features.length - 4} more included features</p>
+                    )}
                   </div>
-                </Card>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="rounded-[26px] border border-white/10 bg-[#090F1A]/85 p-7 sm:p-8">
+            <div className="mb-7 flex items-center gap-2 text-[#67e8f9]">
+              <CircleHelp className="h-4 w-4" />
+              <p className="text-xs font-semibold uppercase tracking-[0.18em]">FAQ</p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              {faqs.map((faq) => (
+                <article key={faq.title} className="rounded-xl border border-white/10 bg-[#060B14]/80 p-4">
+                  <h3 className="text-base font-semibold text-white">{faq.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">{faq.description}</p>
+                </article>
               ))}
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* FAQ/Features Section */}
-        <div className="relative py-24 bg-white dark:bg-background border-t border-neutral-200 dark:border-neutral-800">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 dark:text-white mb-4">
-                Frequently Asked Questions
-              </h2>
-              <p className="text-lg text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
-                Got questions? We've got answers.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-              <Card className="p-6 border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
-                <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">
-                  Can I switch plans anytime?
-                </h3>
-                <p className="text-neutral-600 dark:text-neutral-400">
-                  Yes! You can upgrade, downgrade, or cancel your plan at any time. Changes take effect immediately.
-                </p>
-              </Card>
-
-              <Card className="p-6 border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
-                <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">
-                  Do I need a credit card for the free plan?
-                </h3>
-                <p className="text-neutral-600 dark:text-neutral-400">
-                  No credit card required! Start building AI agents immediately with our generous free tier.
-                </p>
-              </Card>
-
-              <Card className="p-6 border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
-                <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">
-                  What payment methods do you accept?
-                </h3>
-                <p className="text-neutral-600 dark:text-neutral-400">
-                  We accept all major credit cards, PayPal, and can arrange invoicing for enterprise customers.
-                </p>
-              </Card>
-
-              <Card className="p-6 border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
-                <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">
-                  Is there a limit on AI agents?
-                </h3>
-                <p className="text-neutral-600 dark:text-neutral-400">
-                  Create unlimited AI agents on all plans. Usage limits apply to messages and tokens only.
-                </p>
-              </Card>
-            </div>
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="relative py-24 overflow-hidden border-t border-neutral-200 dark:border-neutral-800">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700" />
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff15_1px,transparent_1px),linear-gradient(to_bottom,#ffffff15_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-          
-          <div className="relative z-10 mx-auto max-w-4xl px-4 text-center">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to Get Started?
-            </h2>
-            <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
-              Join thousands of users building their AI workforce with Sulta AI today.
+        <section className="relative mx-auto max-w-6xl px-4 pb-2 sm:px-6 lg:px-8">
+          <div className="rounded-[26px] border border-white/10 bg-gradient-to-r from-[#101728] via-[#111a2e] to-[#0f1f2a] p-8 text-center sm:p-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#fdba74]">Ready when you are</p>
+            <h2 className="mt-4 text-3xl font-semibold text-white sm:text-4xl">Start free, scale with token-based Pro</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
+              Begin with 500K monthly tokens, then move to 10M monthly tokens as your usage grows.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
               <Link href="/signup">
-                <Button size="lg" className="bg-white hover:bg-neutral-100 text-blue-600 px-8 py-6 text-lg rounded-full shadow-xl hover:shadow-2xl transition-all hover:scale-105">
-                  Start Building Free
+                <Button className="h-11 rounded-lg border border-[#fb923c]/65 bg-gradient-to-r from-[#fb923c] to-[#f97316] px-6 text-slate-950 hover:from-[#fdba74] hover:to-[#fb923c]">
+                  Start Free
                 </Button>
               </Link>
-              <Link href="/chat">
-                <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 px-8 py-6 text-lg rounded-full transition-all hover:scale-105">
-                  Explore AI Agents
+              <Link href="/learn-more">
+                <Button
+                  variant="outline"
+                  className="h-11 rounded-lg border-white/20 bg-transparent px-6 text-slate-100 hover:bg-white/5"
+                >
+                  Explore Product
                 </Button>
               </Link>
             </div>
           </div>
-        </div>
+        </section>
       </main>
+
       <Footer />
-    </>
+    </div>
   );
 }
