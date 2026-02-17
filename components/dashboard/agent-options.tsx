@@ -55,6 +55,9 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isContextSaving, setIsContextSaving] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [apiKey, setApiKey] = useState<string>('');
+  const [isApiKeyLoading, setIsApiKeyLoading] = useState<boolean>(false);
+  const [apiKeyError, setApiKeyError] = useState<string>('');
   const normalizedModelId = (modelId?: string) => {
     if (!modelId) return undefined;
     if (
@@ -201,6 +204,69 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
   });
 </script>`
   }
+
+  const getApiKey = async (rotate = false) => {
+    setIsApiKeyLoading(true);
+    setApiKeyError('');
+    try {
+      const response = await fetch('/api/account/api-key', {
+        method: rotate ? 'POST' : 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch API key');
+      }
+
+      const data = await response.json();
+      if (!data?.apiKey) {
+        throw new Error('No API key returned');
+      }
+
+      setApiKey(data.apiKey);
+    } catch (error) {
+      console.error('API key error:', error);
+      setApiKeyError('Failed to load API key. Please try again.');
+    } finally {
+      setIsApiKeyLoading(false);
+    }
+  };
+
+  const createApiCurlCode = () => {
+    const key = apiKey || 'YOUR_API_KEY';
+    return `curl -X POST "https://ai.sultatech.com/api/agents/chat" \\
+  -H "Content-Type: application/json" \\
+  -H "X-API-Key: ${key}" \\
+  -d '{
+    "agentId": "${agent.id}",
+    "message": "Hello!",
+    "stream": false
+  }'`;
+  };
+
+  const createApiFetchCode = () => {
+    const key = apiKey || 'YOUR_API_KEY';
+    return `const response = await fetch("https://ai.sultatech.com/api/agents/chat", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "X-API-Key": "${key}"
+  },
+  body: JSON.stringify({
+    agentId: "${agent.id}",
+    message: "Hello!",
+    stream: true
+  })
+});
+
+if (!response.ok) throw new Error("Request failed");
+const reader = response.body?.getReader();
+const decoder = new TextDecoder();
+while (reader) {
+  const { value, done } = await reader.read();
+  if (done) break;
+  console.log(decoder.decode(value));
+}`;
+  };
   const togglePublic = async () => {
 
 
@@ -348,38 +414,118 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px] lg:max-w-[800px]">
               <DialogHeader>
-                <DialogTitle>Deploy Agent to your website</DialogTitle>
+                <DialogTitle>Deploy Agent</DialogTitle>
                 <DialogDescription>
-                  Copy and paste this code to embed your agent on any website.
+                  Embed the widget or use the API with your account API key.
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
+              <Tabs defaultValue="embed" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="embed">Embed</TabsTrigger>
+                  <TabsTrigger value="api">API</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="embed" className="mt-4 space-y-2">
                   <Label htmlFor="embed">Embed Code</Label>
-                  <div className="relative">
+                  <SyntaxHighlighter
+                    language="javascript"
+                    style={vs2015}
+                    customStyle={{
+                      padding: '1rem',
+                      borderRadius: '0.75rem',
+                      height: '220px',
+                      width: '100%',
+                      overflow: 'auto',
+                      fontSize: '11px'
+                    }}
+                  >
+                    {createEmbedCode()}
+                  </SyntaxHighlighter>
+                </TabsContent>
+
+                <TabsContent value="api" className="mt-4 space-y-4">
+                  <div className="space-y-2">
+                    <Label>Account API Key</Label>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Input
+                        readOnly
+                        value={apiKey || 'Click "Get API Key" to load your key'}
+                        className="font-mono text-xs"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => getApiKey(false)}
+                        disabled={isApiKeyLoading}
+                      >
+                        {isApiKeyLoading ? 'Loading...' : 'Get API Key'}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => getApiKey(true)}
+                        disabled={isApiKeyLoading}
+                      >
+                        Rotate
+                      </Button>
+                    </div>
+                    {apiKeyError ? (
+                      <p className="text-xs text-red-500">{apiKeyError}</p>
+                    ) : null}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Chat API (cURL)</Label>
+                    <SyntaxHighlighter
+                      language="bash"
+                      style={vs2015}
+                      customStyle={{
+                        padding: '1rem',
+                        borderRadius: '0.75rem',
+                        height: '190px',
+                        width: '100%',
+                        overflow: 'auto',
+                        fontSize: '11px'
+                      }}
+                    >
+                      {createApiCurlCode()}
+                    </SyntaxHighlighter>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Chat API (JavaScript streaming)</Label>
                     <SyntaxHighlighter
                       language="javascript"
                       style={vs2015}
                       customStyle={{
                         padding: '1rem',
                         borderRadius: '0.75rem',
-                        height: '200px',
+                        height: '220px',
                         width: '100%',
                         overflow: 'auto',
                         fontSize: '11px'
                       }}
                     >
-                      {createEmbedCode()}
+                      {createApiFetchCode()}
                     </SyntaxHighlighter>
                   </div>
-                </div>
-              </div>
+                </TabsContent>
+              </Tabs>
               <DialogFooter>
                 <Button type="button" onClick={() => {
                   navigator.clipboard.writeText(createEmbedCode());
                 }}>
-                  Copy Code
+                  Copy Embed Code
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    navigator.clipboard.writeText(createApiCurlCode());
+                  }}
+                >
+                  Copy API cURL
                 </Button>
               </DialogFooter>
             </DialogContent>
