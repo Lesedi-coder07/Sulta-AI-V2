@@ -1,11 +1,14 @@
-import { GoogleGenerativeAI } from "@google/generative-ai"
-import {GoogleGenAI, DynamicRetrievalConfigMode} from '@google/genai';
+import { GoogleGenAI } from '@google/genai';
+import { googleApiKey } from "@/lib/ai/google-provider";
 
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 export async function search(query: string) { 
     try {
+    if (!googleApiKey) {
+      throw new Error('GEMINI_API_KEY is not configured');
+    }
 
+    const ai = new GoogleGenAI({ apiKey: googleApiKey });
     let response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: [

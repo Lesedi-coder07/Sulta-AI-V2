@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from "@google/generative-ai"
 import * as fs from 'fs';
 import { NextResponse } from 'next/server';
 import * as admin from 'firebase-admin';
@@ -24,7 +23,6 @@ const openai = new OpenAI({
   
 
 const bucket = admin.storage().bucket("sulta-ai.firebasestorage.app");
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export const generateImage = async (prompt: string, base64String: string | null) => {
     try {

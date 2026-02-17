@@ -1,8 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai"
 import { generateImage } from "./image"
 import { search } from "./search";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+import { googleApiKey } from "@/lib/ai/google-provider";
 
 export async function OPTIONS(req: Request) {
     return new Response(JSON.stringify({ message: 'OK' }), {
@@ -18,9 +17,10 @@ export async function OPTIONS(req: Request) {
 
 export async function POST(req: Request) {
     try {
-        if (!process.env.GEMINI_API_KEY) {
+        if (!googleApiKey) {
             throw new Error('GEMINI_API_KEY is not configured');
         }
+        const genAI = new GoogleGenerativeAI(googleApiKey);
 
         const { prompt, history, systemMessage, base64String, docUrl, powerUpSelected } = await req.json();
         let model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview", systemInstruction: systemMessage });

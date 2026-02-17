@@ -343,7 +343,7 @@ function AgentOptions({ agent, updateSelectedAgent, currentUserId, onAgentDelete
                 className="flex items-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-white"
               >
                 <Code className="h-4 w-4" />
-                Deploy
+                Embed Agent
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px] lg:max-w-[800px]">
