@@ -71,7 +71,7 @@ const Navbar = () => {
         <div className="hidden items-center gap-3 lg:flex">
           {loggedIn ? (
             <Link href="/dashboard">
-              <Button className="rounded-lg border border-[#fb923c]/50 bg-[#fb923c] text-slate-950 hover:bg-[#f97316]">
+              <Button className="rounded-lg border border-white/15 bg-white text-slate-950 hover:bg-slate-200">
                 Go to Dashboard
               </Button>
             </Link>
@@ -86,7 +86,7 @@ const Navbar = () => {
                 </Button>
               </Link>
               <Link href="/signup">
-                <Button className="rounded-lg border border-[#fb923c]/50 bg-gradient-to-r from-[#fb923c] to-[#f97316] text-slate-950 hover:from-[#fdba74] hover:to-[#fb923c]">
+                <Button className="rounded-lg border border-white/15 bg-white text-slate-950 hover:bg-slate-200">
                   Get Started
                   <ArrowUpRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -97,7 +97,7 @@ const Navbar = () => {
 
         <button
           onClick={() => setMobileMenuOpen((current) => !current)}
-          className="inline-flex rounded-lg border border-white/15 bg-white/5 p-2 text-slate-200 transition hover:border-[#fb923c]/60 hover:text-white lg:hidden"
+          className="inline-flex rounded-lg border border-white/15 bg-white/5 p-2 text-slate-200 transition hover:border-white/30 hover:text-white lg:hidden"
           aria-label="Toggle menu"
         >
           {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -129,7 +129,7 @@ const Navbar = () => {
           <div className="mt-5 grid grid-cols-1 gap-3">
             {loggedIn ? (
               <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                <Button className="w-full rounded-lg border border-[#fb923c]/50 bg-[#fb923c] text-slate-950 hover:bg-[#f97316]">
+                <Button className="w-full rounded-lg border border-white/15 bg-white text-slate-950 hover:bg-slate-200">
                   Go to Dashboard
                 </Button>
               </Link>
@@ -144,7 +144,7 @@ const Navbar = () => {
                   </Button>
                 </Link>
                 <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="w-full rounded-lg border border-[#fb923c]/50 bg-gradient-to-r from-[#fb923c] to-[#f97316] text-slate-950 hover:from-[#fdba74] hover:to-[#fb923c]">
+                  <Button className="w-full rounded-lg border border-white/15 bg-white text-slate-950 hover:bg-slate-200">
                     Start Free
                   </Button>
                 </Link>

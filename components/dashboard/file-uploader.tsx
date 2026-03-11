@@ -49,12 +49,12 @@ export default function FileUploader() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row h-auto md:h-[400px] w-full max-w-3xl overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900 shadow-lg">
+    <div className="app-panel flex h-auto w-full max-w-3xl flex-col overflow-hidden rounded-2xl md:h-[400px] md:flex-row">
       <div className="flex-1 p-6">
-        <h2 className="mb-4 text-2xl font-semibold text-neutral-100">KnowledgeBase</h2>
+        <h2 className="mb-4 text-2xl font-semibold text-slate-100">KnowledgeBase</h2>
         <div
-          className={`flex h-48 items-center justify-center rounded-lg border-2 border-dashed p-4 transition-colors ${
-            isDragging ? 'border-blue-400 bg-blue-950/50' : 'border-neutral-700'
+          className={`flex h-48 items-center justify-center rounded-xl border-2 border-dashed p-4 transition-colors ${
+            isDragging ? 'border-blue-400 bg-blue-950/40' : 'border-white/10 bg-white/[0.02]'
           }`}
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
@@ -62,15 +62,15 @@ export default function FileUploader() {
         >
           {isUploading ? (
             <div className="text-center">
-              <div className="mb-2 text-xl font-semibold text-neutral-100">Uploading...</div>
-              <div className="h-2 w-48 overflow-hidden rounded-full bg-neutral-800">
+              <div className="mb-2 text-xl font-semibold text-slate-100">Uploading...</div>
+              <div className="h-2 w-48 overflow-hidden rounded-full bg-[#0B1220]">
                 <div className="h-full w-1/2 animate-[upload_1.5s_ease-in-out_infinite] rounded-full bg-blue-500"></div>
               </div>
             </div>
           ) : (
             <div className="text-center">
-              <Upload className="mx-auto mb-2 h-12 w-12 text-neutral-400" />
-              <p className="mb-2 text-sm text-neutral-400">Drag and drop files here, or click to select files</p>
+              <Upload className="mx-auto mb-2 h-12 w-12 text-slate-400" />
+              <p className="mb-2 text-sm text-slate-400">Drag and drop files here, or click to select files</p>
               <input
                 type="file"
                 multiple
@@ -80,7 +80,7 @@ export default function FileUploader() {
               />
               <label
                 htmlFor="fileInput"
-                className="cursor-pointer rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="cursor-pointer rounded-md bg-white px-4 py-2 text-sm font-medium text-slate-950 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Select Files
               </label>
@@ -88,16 +88,16 @@ export default function FileUploader() {
           )}
         </div>
       </div>
-      <div className="w-full md:w-64 overflow-y-auto border-t md:border-l border-neutral-800 bg-neutral-800 p-4">
-        <h3 className="mb-4 text-lg font-semibold text-neutral-100">Uploaded Files</h3>
+      <div className="w-full overflow-y-auto border-t border-white/10 bg-[#0B1220]/80 p-4 md:w-64 md:border-l md:border-t-0">
+        <h3 className="mb-4 text-lg font-semibold text-slate-100">Uploaded Files</h3>
         <ul className="space-y-2">
           {files.map((file, index) => (
-            <li key={index} className="flex items-center justify-between rounded-md bg-neutral-900 p-2 shadow-sm">
+            <li key={index} className="flex items-center justify-between rounded-md border border-white/10 bg-[#070D18] p-2 shadow-sm">
               <div className="flex items-center space-x-2">
-                <File className="h-5 w-5 text-neutral-400" />
-                <span className="text-sm text-neutral-300">{file.name}</span>
+                <File className="h-5 w-5 text-slate-400" />
+                <span className="text-sm text-slate-300">{file.name}</span>
               </div>
-              <button onClick={() => removeFile(index)} className="text-neutral-400 hover:text-red-500">
+              <button onClick={() => removeFile(index)} className="text-slate-400 hover:text-red-400">
                 <X className="h-4 w-4" />
               </button>
             </li>

@@ -34,10 +34,8 @@ export default function CreateAgentPage() {
         <SidebarProvider>
             <AppSidebar />
 
-
-
-
-            <main className="container">
+            <main className="app-shell min-h-screen flex-1 overflow-hidden">
+                <div className="relative z-10 px-4 py-4 md:px-6">
                 <SidebarTrigger />
                 <div className="container mx-auto max-w-4xl px-4 py-8">
                     <div className="space-y-2">
@@ -47,6 +45,7 @@ export default function CreateAgentPage() {
                         </p>
                     </div>
                     <AgentCreationForm />
+                </div>
                 </div>
 
             </main>

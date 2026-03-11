@@ -4,43 +4,43 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 222 63% 3%; /* #03060D */
+    --foreground: 210 40% 96%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 219 55% 6%; /* #070D18 */
+    --card-foreground: 210 40% 96%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 219 55% 6%;
+    --popover-foreground: 210 40% 96%;
 
     --primary: 217 91% 60%; /* Vibrant Blue #3B82F6 */
-    --primary-foreground: 0 0% 100%; /* White text on blue */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 220 49% 8%; /* #0B1220 */
+    --secondary-foreground: 210 40% 96%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 219 37% 12%;
+    --muted-foreground: 215 20% 70%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 220 49% 8%;
+    --accent-foreground: 210 40% 96%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 217 91% 60%; /* Blue ring for focus */
+    --border: 219 32% 16%;
+    --input: 219 32% 16%;
+    --ring: 217 91% 60%;
 
     --radius: 1.25rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
+    --sidebar-background: 219 55% 6%;
+    --sidebar-foreground: 210 40% 96%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 49% 8%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 219 32% 16%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
     /* Financial Dashboard Accent Colors */
@@ -57,51 +57,43 @@
   }
 
   .dark {
-    /* Main dark backgrounds - rich dark grays */
-    --background: 0 0% 10%; /* #1A1A1A - main app background */
-    --foreground: 0 0% 98%; /* White text */
+    --background: 222 63% 3%;
+    --foreground: 210 40% 96%;
 
-    /* Card backgrounds - slightly lighter dark gray */
-    --card: 0 0% 13%; /* #222222 - content panels/cards */
-    --card-foreground: 0 0% 98%;
+    --card: 219 55% 6%;
+    --card-foreground: 210 40% 96%;
 
-    --popover: 0 0% 13%; /* #222222 */
-    --popover-foreground: 0 0% 98%;
+    --popover: 219 55% 6%;
+    --popover-foreground: 210 40% 96%;
 
-    /* Primary colors - vibrant blue */
-    --primary: 217 91% 60%; /* Vibrant Blue #3B82F6 */
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - charcoal gray */
-    --secondary: 0 0% 20%; /* #333333 */
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 220 49% 8%;
+    --secondary-foreground: 210 40% 96%;
 
-    /* Muted - dark gray for less important elements */
-    --muted: 0 0% 20%; /* #333333 */
-    --muted-foreground: 0 0% 65%; /* Light gray #AAAAAA */
+    --muted: 219 37% 12%;
+    --muted-foreground: 215 20% 70%;
 
-    /* Accent - teal for highlights */
-    --accent: 180 100% 40%; /* Teal #00CC99 */
-    --accent-foreground: 0 0% 100%;
+    --accent: 220 49% 8%;
+    --accent-foreground: 210 40% 96%;
 
     /* Destructive - red for negative indicators */
     --destructive: 0 100% 50%; /* Red #FF0000 */
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders and inputs - dark gray */
-    --border: 0 0% 20%; /* #333333 */
-    --input: 0 0% 20%; /* #333333 */
-    --ring: 217 91% 60%; /* Blue ring for focus */
+    --border: 219 32% 16%;
+    --input: 219 32% 16%;
+    --ring: 217 91% 60%;
 
-    /* Sidebar - dark theme */
-    --sidebar-background: 0 0% 13%; /* #222222 */
-    --sidebar-foreground: 0 0% 95%; /* Light gray */
-    --sidebar-primary: 217 91% 60%; /* Vibrant blue */
+    --sidebar-background: 219 55% 6%;
+    --sidebar-foreground: 210 40% 96%;
+    --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 20%; /* #333333 */
-    --sidebar-accent-foreground: 0 0% 95%;
-    --sidebar-border: 0 0% 20%; /* #333333 */
-    --sidebar-ring: 217 91% 60%; /* Blue ring */
+    --sidebar-accent: 220 49% 8%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 219 32% 16%;
+    --sidebar-ring: 217 91% 60%;
 
     /* Financial Dashboard Accent Colors */
     --success: 120 100% 50%; /* Vibrant green #00FF00 */
@@ -124,6 +116,30 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.app-shell {
+  background-color: hsl(var(--background));
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.08), transparent 28%),
+    radial-gradient(circle at 100% 18%, rgba(148, 163, 184, 0.12), transparent 24%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: auto, auto, 48px 48px, 48px 48px;
+  background-position: 0 0, 100% 0, 0 0, 0 0;
+}
+
+.app-panel {
+  background: linear-gradient(180deg, rgba(11, 18, 32, 0.92) 0%, rgba(7, 13, 24, 0.96) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 60px rgba(3, 6, 13, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.app-panel-muted {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Financial Dashboard Utility Classes */

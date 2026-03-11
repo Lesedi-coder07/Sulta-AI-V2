@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import 'katex/dist/katex.min.css'; // Import KaTeX stylesheet
+import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { useRef, useState } from 'react';
@@ -29,7 +30,7 @@ function CodeCopyButton({ code }: { code: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-neutral-300 hover:text-white hover:bg-neutral-700/50 rounded-md transition-all duration-150"
+      className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-slate-300 transition-all duration-150 hover:bg-white/10 hover:text-white"
       aria-label="Copy code"
     >
       {copied ? (
@@ -50,10 +51,10 @@ function CodeCopyButton({ code }: { code: string }) {
 // Enhanced code block component
 function CodeBlock({ language, code, theme }: { language: string; code: string; theme: 'light' | 'dark' }) {
   return (
-    <div className="relative my-4 rounded-lg overflow-hidden border border-neutral-700 bg-[#0d1117] shadow-lg">
+    <div className="relative my-4 overflow-hidden rounded-lg border border-white/10 bg-[#070D18] shadow-[0_18px_45px_rgba(3,6,13,0.35)]">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[#161b22] border-b border-neutral-700">
-        <span className="text-xs font-semibold text-neutral-300 uppercase tracking-wider">
+      <div className="flex items-center justify-between border-b border-white/10 bg-[#0B1220] px-4 py-2">
+        <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">
           {language}
         </span>
         <CodeCopyButton code={code} />
@@ -196,7 +197,7 @@ export default function GeminiResponse({ content }: { content: string }) {
   return (
     <ReactMarkdown
       className={'prose prose-neutral dark:prose-invert max-w-none'}
-      remarkPlugins={[remarkMath]}
+      remarkPlugins={[remarkGfm, remarkMath]}
       rehypePlugins={[rehypeKatex]}
       components={{
         // Custom paragraph rendering
@@ -230,6 +231,47 @@ export default function GeminiResponse({ content }: { content: string }) {
           return <li className="leading-[1.75]">{children}</li>;
         },
 
+        table({ children, ...props }) {
+          return (
+            <div className="my-6 w-full overflow-x-auto rounded-lg border border-white/10 bg-white/[0.02]">
+              <table {...props} className="min-w-full border-collapse text-left text-sm">
+                {children}
+              </table>
+            </div>
+          );
+        },
+        thead({ children, ...props }) {
+          return (
+            <thead {...props} className="bg-white/[0.04]">
+              {children}
+            </thead>
+          );
+        },
+        tbody({ children, ...props }) {
+          return (
+            <tbody {...props} className="divide-y divide-white/10">
+              {children}
+            </tbody>
+          );
+        },
+        tr({ children, ...props }) {
+          return <tr {...props} className="align-top">{children}</tr>;
+        },
+        th({ children, ...props }) {
+          return (
+            <th {...props} className="border-b border-white/10 px-4 py-3 font-semibold text-slate-100">
+              {children}
+            </th>
+          );
+        },
+        td({ children, ...props }) {
+          return (
+            <td {...props} className="px-4 py-3 text-slate-300">
+              {children}
+            </td>
+          );
+        },
+
         code({ className, children, ...props }) {
           const content = String(children);
 
@@ -238,7 +280,7 @@ export default function GeminiResponse({ content }: { content: string }) {
           const match = /language-(\w+)/.exec(className || '');
 
           if (isInline) {
-            return <code className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-sm font-mono text-neutral-800 dark:text-neutral-200" {...props}>{children}</code>;
+            return <code className="rounded bg-white/10 px-1.5 py-0.5 text-sm font-mono text-slate-100" {...props}>{children}</code>;
           }
 
           return match ? (
@@ -248,7 +290,7 @@ export default function GeminiResponse({ content }: { content: string }) {
               theme={codeBlockTheme}
             />
           ) : (
-            <code className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-sm font-mono text-neutral-800 dark:text-neutral-200" {...props}>{children}</code>
+            <code className="rounded bg-white/10 px-1.5 py-0.5 text-sm font-mono text-slate-100" {...props}>{children}</code>
           );
         },
       }}

@@ -19,12 +19,12 @@ interface GuardrailsConfigProps {
 export function GuardrailsConfig({ form, className }: GuardrailsConfigProps) {
   return (
     <div className={className}>
-      <div className="rounded-lg border border-neutral-200 p-6 dark:border-neutral-800">
+      <div className="app-panel rounded-2xl p-6">
         <div className="flex items-center gap-2 mb-2">
           <Shield className="h-5 w-5 text-amber-500" />
           <h3 className="text-lg font-semibold">Guardrails & Restrictions</h3>
         </div>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-4">
+        <p className="mb-4 text-sm text-slate-400">
           Define what your agent should NOT do. These restrictions help keep your agent secure and focused.
         </p>
 

@@ -71,7 +71,7 @@ export function AppSidebar() {
                                 className={`w-full h-16 px-6 py-4 rounded-xl text-left transition-all duration-300 
                                          hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-md hover:scale-[1.02]
                                          data-[state=active]:bg-sidebar-primary data-[state=active]:text-sidebar-primary-foreground
-                                         data-[state=active]:shadow-lg data-[state=active]:scale-[1.02] group ${currentPage === item.href ? 'bg-black/20 text-white shadow-lg scale-[1.02]' : ''}`}
+                                         data-[state=active]:shadow-lg data-[state=active]:scale-[1.02] group ${currentPage === item.href ? 'border border-white/10 bg-white/10 text-white shadow-lg scale-[1.02]' : ''}`}
                             >
                                 <a href={item.href} className="flex items-center space-x-4">
                                     <div className="p-2 rounded-lg bg-sidebar-accent/20 group-hover:bg-sidebar-accent/40 group-data-[state=active]:bg-sidebar-primary-foreground/20 transition-colors">

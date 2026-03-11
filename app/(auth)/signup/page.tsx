@@ -29,9 +29,24 @@ function SignUp() {
         try {
             const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth')
             const provider = new GoogleAuthProvider()
-            await signInWithPopup(auth, provider)
+            const result = await signInWithPopup(auth, provider)
+            const idToken = await result.user.getIdToken()
+
+            const response = await fetch('/api/auth/session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ idToken }),
+                credentials: 'include',
+            })
+
+            if (!response.ok) {
+                throw new Error('Failed to establish auth session')
+            }
+
             await writeUserToDatabase()
-            router.push('/waitlist')
+            router.push('/dashboard')
         } catch (error) {
             console.error('Error: Cannot Create Account with Google!', error)
         } finally {

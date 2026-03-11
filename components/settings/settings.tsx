@@ -24,9 +24,9 @@ export default function Settings () {
           </p>
         </div>
 
-        <div className="rounded-lg border border-neutral-200 p-6 dark:border-neutral-800">
+        <div className="app-panel rounded-2xl p-6">
           <h3 className="text-lg font-semibold">Account Settings</h3>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-sm text-slate-400">
             Update your account information and preferences
           </p>
           <Form {...form}>
@@ -94,35 +94,35 @@ export default function Settings () {
             </div>
           </Form>
           <div className="mt-6 space-y-6">
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            <p className="text-sm text-slate-400">
               Keep us up to date!
             </p>
           </div>
         </div>
 
-        <div className="rounded-lg border border-neutral-200 p-6 dark:border-neutral-800">
+        <div className="app-panel rounded-2xl p-6">
           <h3 className="text-lg font-semibold">Appearance</h3>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-sm text-slate-400">
             Customize how the application looks and feels
           </p>
 
           <div className="mt-6 space-y-6">
             {/* Appearance settings form fields will go here */}
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            <p className="text-sm text-slate-400">
               Appearance settings coming soon
             </p>
           </div>
         </div>
 
-        <div className="rounded-lg border border-neutral-200 p-6 dark:border-neutral-800">
+        <div className="app-panel rounded-2xl p-6">
           <h3 className="text-lg font-semibold">Notifications</h3>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-sm text-slate-400">
             Configure your notification preferences
           </p>
 
           <div className="mt-6 space-y-6">
             {/* Notification settings form fields will go here */}
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            <p className="text-sm text-slate-400">
               Notification settings coming soon
             </p>
           </div>

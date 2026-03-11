@@ -14,9 +14,9 @@ import { Textarea } from "@/components/ui/textarea";
 export function SchoolAssistantConfig({ form }: { form: any }) {
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-neutral-200 p-6 dark:border-neutral-800">
+      <div className="app-panel rounded-2xl p-6">
         <h3 className="text-lg font-semibold">School Assistant Configuration</h3>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+        <p className="text-sm text-slate-400">
           Configure your school assistant agent with institution-specific information
         </p>
 

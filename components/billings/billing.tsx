@@ -24,9 +24,9 @@ export default function Billing() {
           </p>
         </div>
 
-        <div className="rounded-lg border border-neutral-200 p-6 dark:border-neutral-800">
+        <div className="app-panel rounded-2xl p-6">
           <h3 className="text-lg font-semibold">Subscription Plans</h3>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-sm text-slate-400">
             Choose the plan that best fits your needs
           </p>
 
@@ -47,7 +47,7 @@ export default function Billing() {
                           <RadioGroupItem value="free" className="absolute right-4 top-4" />
                           <div className="space-y-2">
                             <h4 className="font-semibold">Free</h4>
-                            <p className="text-sm text-neutral-500">$0/month</p>
+                            <p className="text-sm text-slate-400">$0/month</p>
                             <ul className="text-sm space-y-2">
                               <li>100 credits/month</li>
                               <li>Basic features</li>
@@ -59,7 +59,7 @@ export default function Billing() {
                           <RadioGroupItem value="pro" className="absolute right-4 top-4" />
                           <div className="space-y-2">
                             <h4 className="font-semibold">Pro</h4>
-                            <p className="text-sm text-neutral-500">$29/month</p>
+                            <p className="text-sm text-slate-400">$29/month</p>
                             <ul className="text-sm space-y-2">
                               <li>1000 credits/month</li>
                               <li>Advanced features</li>
@@ -71,7 +71,7 @@ export default function Billing() {
                           <RadioGroupItem value="enterprise" className="absolute right-4 top-4" />
                           <div className="space-y-2">
                             <h4 className="font-semibold">Enterprise</h4>
-                            <p className="text-sm text-neutral-500">Custom pricing</p>
+                            <p className="text-sm text-slate-400">Custom pricing</p>
                             <ul className="text-sm space-y-2">
                               <li>Unlimited credits</li>
                               <li>Custom features</li>
@@ -89,9 +89,9 @@ export default function Billing() {
           </Form>
         </div>
 
-        <div className="rounded-lg border border-neutral-200 p-6 dark:border-neutral-800">
+        <div className="app-panel rounded-2xl p-6">
           <h3 className="text-lg font-semibold">Purchase Additional Credits</h3>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-sm text-slate-400">
             Need more credits? Purchase them here
           </p>
 
@@ -99,35 +99,35 @@ export default function Billing() {
             <Card className="p-6">
               <div className="space-y-2">
                 <h4 className="font-semibold">100 Credits</h4>
-                <p className="text-sm text-neutral-500">$10</p>
+                <p className="text-sm text-slate-400">$10</p>
                 <Button className="w-full">Purchase</Button>
               </div>
             </Card>
             <Card className="p-6">
               <div className="space-y-2">
                 <h4 className="font-semibold">500 Credits</h4>
-                <p className="text-sm text-neutral-500">$45</p>
+                <p className="text-sm text-slate-400">$45</p>
                 <Button className="w-full">Purchase</Button>
               </div>
             </Card>
             <Card className="p-6">
               <div className="space-y-2">
                 <h4 className="font-semibold">1000 Credits</h4>
-                <p className="text-sm text-neutral-500">$80</p>
+                <p className="text-sm text-slate-400">$80</p>
                 <Button className="w-full">Purchase</Button>
               </div>
             </Card>
           </div>
         </div>
 
-        <div className="rounded-lg border border-neutral-200 p-6 dark:border-neutral-800">
+        <div className="app-panel rounded-2xl p-6">
           <h3 className="text-lg font-semibold">Billing History</h3>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-sm text-slate-400">
             View your past transactions
           </p>
 
           <div className="mt-6">
-            <p className="text-sm text-neutral-500">No transactions yet</p>
+            <p className="text-sm text-slate-400">No transactions yet</p>
           </div>
         </div>
       </div>

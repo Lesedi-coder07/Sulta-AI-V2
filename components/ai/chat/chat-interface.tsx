@@ -199,11 +199,11 @@ export function ChatInterface({ agent_id, agentData }: ChatInterfaceProps) {
 
     return (
 
-        exists ? (<div className="flex h-screen flex-col bg-neutral-50 dark:bg-neutral-900">
+        exists ? (<div className="app-shell flex h-screen flex-col overflow-hidden">
             <ChatHeader handleSidebarToggle={handleSidebarToggle} showImage={false} agent={agent} showButton={true} />
             <ChatMessages messages={messages} isLoading={isStreaming} agentName={agentData.name} messageImages={messageImages} />
             <ChatInput sendMessage={handleSendMessage} onThinkToggle={setThinkEnabled} thinkEnabled={thinkEnabled} />
-        </div> ) : <h1 className="text-center mt-36 text-4xl font-bold">Agent not found <br /></h1>
+        </div> ) : <h1 className="mt-36 text-center text-4xl font-bold text-white">Agent not found <br /></h1>
     );
 
 }

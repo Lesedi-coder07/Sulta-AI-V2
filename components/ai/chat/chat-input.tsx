@@ -148,11 +148,11 @@ export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInpu
 
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 w-full py-6 px-4 bg-white dark:bg-neutral-900  ">
+    <div className="fixed bottom-0 left-0 right-0 w-full border-t border-white/10 bg-[#03060D]/90 px-4 py-6 backdrop-blur-xl">
       <div className="max-w-3xl mx-auto">
         <form ref={formRef} onSubmit={handleSubmit} className="w-full">
           {/* Main Input Container */}
-          <div className="relative flex items-center gap-3 bg-neutral-100 dark:bg-neutral-800 rounded-3xl px-4 py-3 shadow-sm border border-neutral-200 dark:border-neutral-700">
+          <div className="relative flex items-center gap-3 rounded-3xl border border-white/10 bg-[#0B1220]/90 px-4 py-3 shadow-[0_18px_45px_rgba(3,6,13,0.32)]">
 
             {/* Textarea */}
             <Textarea
@@ -161,7 +161,7 @@ export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInpu
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask me anything..."
-              className="flex-1 min-h-[24px] max-h-[200px] resize-none bg-transparent border-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-base placeholder:text-neutral-500 dark:placeholder:text-neutral-400 px-2"
+              className="min-h-[24px] max-h-[200px] flex-1 resize-none border-0 bg-transparent px-2 text-base text-slate-100 placeholder:text-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               rows={1}
             />
 
@@ -173,21 +173,21 @@ export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInpu
                   type="button"
                   size="icon"
                   variant="ghost"
-                  className="h-10 w-10 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-700"
+                  className="h-10 w-10 rounded-full hover:bg-white/10"
                   onClick={handleToggleFileInput}
                 >
-                  <Paperclip className="h-5 w-5 text-neutral-600 dark:text-neutral-400" />
+                  <Paperclip className="h-5 w-5 text-slate-400" />
                 </Button>
 
                 {/* File Upload Dropdown */}
                 <div
                   ref={fileInputRef}
-                  className={`absolute bottom-full right-0 mb-2 w-56 bg-white dark:bg-neutral-800 shadow-lg rounded-lg py-2 z-50 border border-neutral-200 dark:border-neutral-700 ${showFileInput ? '' : 'hidden'}`}
+                  className={`absolute bottom-full right-0 z-50 mb-2 w-56 rounded-lg border border-white/10 bg-[#070D18]/95 py-2 shadow-[0_18px_45px_rgba(3,6,13,0.35)] backdrop-blur-xl ${showFileInput ? '' : 'hidden'}`}
                 >
                   {uploadedFileName ? (
                     <div className="flex items-center gap-2 px-4 py-2">
-                      <File className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
-                      <p className="text-sm text-neutral-700 dark:text-neutral-300 truncate">{uploadedFileName}</p>
+                      <File className="h-4 w-4 text-slate-400" />
+                      <p className="truncate text-sm text-slate-200">{uploadedFileName}</p>
                     </div>
                   ) : (
                     <>
@@ -201,7 +201,7 @@ export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInpu
                       />
                       <label
                         htmlFor="fileInput1"
-                        className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 cursor-pointer transition-colors"
+                        className="flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-sm text-slate-200 transition-colors hover:bg-white/5"
                       >
                         <Image className="h-4 w-4" />
                         <span>Upload Image</span>
@@ -215,7 +215,7 @@ export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInpu
                       />
                       <label
                         htmlFor="fileInput2"
-                        className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 cursor-pointer transition-colors"
+                        className="flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-sm text-slate-200 transition-colors hover:bg-white/5"
                       >
                         <File className="h-4 w-4" />
                         <span>Upload Document</span>
@@ -231,8 +231,8 @@ export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInpu
                 size="icon"
                 variant="ghost"
                 className={`h-10 w-10 rounded-full transition-all duration-200 ${thinkEnabled
-                  ? 'bg-neutral-200 dark:bg-neutral-700 text-purple-600 dark:text-purple-400'
-                  : 'hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-600 dark:text-neutral-400'
+                  ? 'bg-white/10 text-sky-300'
+                  : 'text-slate-400 hover:bg-white/10'
                   }`}
                 onClick={() => onThinkToggle(!thinkEnabled)}
                 title={thinkEnabled ? 'Thinking mode ON (uses Gemini 3 Pro)' : 'Enable thinking mode'}
@@ -244,10 +244,10 @@ export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInpu
               <Button
                 type="submit"
                 size="icon"
-                className="h-10 w-10 rounded-full bg-black dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
+                className="h-10 w-10 rounded-full bg-white text-slate-950 transition-colors hover:bg-slate-200"
                 disabled={!message.trim() || isUploading}
               >
-                <ArrowUp className="h-5 w-5 text-white dark:text-black" />
+                <ArrowUp className="h-5 w-5" />
               </Button>
             </div>
           </div>

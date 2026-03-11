@@ -23,9 +23,9 @@ import { Brain, Sparkles } from "lucide-react";
 export function TextAgentOptions({ form }: { form: any }) {
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-neutral-200 p-6 dark:border-neutral-800">
+      <div className="app-panel rounded-2xl p-6">
         <h3 className="text-lg font-semibold">Personality & Behavior</h3>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+        <p className="text-sm text-slate-400">
           Configure how your text AI agent interacts and communicates
         </p>
 
@@ -140,7 +140,7 @@ export function TextAgentOptions({ form }: { form: any }) {
             control={form.control}
             name="textConfig.extendedThinking"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 bg-gradient-to-r from-purple-50/50 to-blue-50/50 dark:from-purple-950/20 dark:to-blue-950/20">
+              <FormItem className="flex flex-row items-center justify-between rounded-xl border border-white/10 bg-gradient-to-r from-sky-500/10 to-indigo-500/10 p-4">
                 <div className="space-y-0.5 flex-1">
                   <FormLabel className="text-base flex items-center gap-2">
                     <Brain className="h-4 w-4 text-purple-500" />

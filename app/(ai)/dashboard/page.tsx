@@ -157,17 +157,10 @@ function Dashboard() {
 
     return (
         <AuthProvider>
-            <div className="relative min-h-screen">
+            <div className="relative min-h-screen bg-background text-foreground">
                 <SidebarProvider>
                     <AppSidebar />
-                    <main className='relative flex-1 overflow-hidden'>
-                        {/* Background decorations */}
-                        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                            <div className="absolute -top-[400px] -right-[400px] w-[800px] h-[800px] bg-white/[0.02] rounded-full blur-3xl" />
-                            <div className="absolute top-1/2 -left-[300px] w-[600px] h-[600px] bg-white/[0.01] rounded-full blur-3xl" />
-                            <div className="absolute inset-0 bg-grid-pattern opacity-30" />
-                        </div>
-
+                    <main className='app-shell relative flex-1 overflow-hidden'>
                         <SidebarTrigger />
 
                         {loading ? (

@@ -1,26 +1,18 @@
-import { doc, serverTimestamp, setDoc } from "firebase/firestore"; ``
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../api/firebase/firebaseConfig";
 
 export async function setUpUser(email: string, uid: string, name: string) {
+    const userRef = doc(db, 'users', uid);
+    const userData = {
+        name,
+        email,
+        agents: [],
+        createdAt: serverTimestamp(),
+        role: 'user'
+    };
 
-    try {
-        const userRef = doc(db, 'users', uid);
-        const userData = {
-            Name: email,
-            email: email,
-            Agents: [],
-            Created_At: serverTimestamp(), 
-            role: 'user'
-        }
-        await setDoc(userRef, userData);
+    await setDoc(userRef, userData, { merge: true });
 
-
-    } catch (error) {
-        return error;
-
-    } finally {
-        return { 'message': 'User Created Successfully!', 'status': 200 }
-    }
+    return { message: 'User Created Successfully!', status: 200 };
 }
-
 

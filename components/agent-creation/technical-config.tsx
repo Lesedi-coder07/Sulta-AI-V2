@@ -44,17 +44,17 @@ export function TechnicalConfig({ form, className }: TechnicalConfigProps) {
   return (
     <div className={className}>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800">
+        <div className="app-panel rounded-2xl">
           <CollapsibleTrigger asChild>
             <Button
               variant="ghost"
-              className="w-full justify-between p-6 h-auto hover:bg-neutral-50 dark:hover:bg-neutral-900"
+              className="h-auto w-full justify-between p-6 hover:bg-white/[0.03]"
             >
               <div className="flex items-center gap-3">
                 <Settings2 className="h-5 w-5 text-primary" />
                 <div className="text-left">
                   <h3 className="text-lg font-semibold">Technical Configuration</h3>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-400 font-normal">
+                  <p className="text-sm font-normal text-slate-400">
                     Advanced LLM settings, custom API tools, and system prompts
                   </p>
                 </div>
@@ -97,7 +97,7 @@ export function TechnicalConfig({ form, className }: TechnicalConfigProps) {
                               <SelectItem key={model.value} value={model.value}>
                                 <div className="flex items-center gap-2">
                                   <span>{model.label}</span>
-                                  <span className="text-xs text-neutral-500">
+                                  <span className="text-xs text-slate-400">
                                     {model.description}
                                   </span>
                                 </div>
@@ -161,13 +161,13 @@ export function TechnicalConfig({ form, className }: TechnicalConfigProps) {
               </div>
 
               {/* Custom API Tool */}
-              <div className="space-y-4 pt-4 border-t border-neutral-200 dark:border-neutral-800">
+              <div className="space-y-4 border-t border-white/10 pt-4">
                 <div className="flex items-center gap-2">
                   <Wrench className="h-4 w-4 text-blue-500" />
                   <h4 className="font-medium">Custom API Tool</h4>
                   <Badge variant="outline" className="text-xs">Experimental</Badge>
                 </div>
-                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                <p className="text-sm text-slate-400">
                   Allow your agent to call an external API as a tool. The agent will use this when appropriate.
                 </p>
 
@@ -233,12 +233,12 @@ export function TechnicalConfig({ form, className }: TechnicalConfigProps) {
               </div>
 
               {/* Custom System Prompt */}
-              <div className="space-y-4 pt-4 border-t border-neutral-200 dark:border-neutral-800">
+              <div className="space-y-4 border-t border-white/10 pt-4">
                 <div className="flex items-center gap-2">
                   <Code className="h-4 w-4 text-green-500" />
                   <h4 className="font-medium">Custom System Prompt</h4>
                 </div>
-                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                <p className="text-sm text-slate-400">
                   Override the auto-generated system prompt with your own. Use this for advanced customization.
                 </p>
 

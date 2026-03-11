@@ -31,12 +31,12 @@ function CopyButton({ textToCopy }: { textToCopy: string }) {
       className={cn(
         "p-1.5 rounded-md transition-all duration-150",
         copied
-          ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200"
-          : "hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-500 dark:text-neutral-400"
+          ? "bg-emerald-500/15 text-emerald-300"
+          : "text-slate-500 hover:bg-white/10 hover:text-slate-200"
       )}
       aria-label="Copy message"
     >
-      <Copy className={cn("w-3.5 h-3.5", copied && "text-green-600 dark:text-green-400")} />
+      <Copy className={cn("h-3.5 w-3.5", copied && "text-emerald-300")} />
     </button>
   );
 }
@@ -95,7 +95,7 @@ export function ChatMessages({
   };
 
   return (
-    <div className="flex-1 overflow-y-auto mb-7 pt-[100px] sm:mb-[180px] md:pt-16 px-4 md:px-8 pb-36 h-full messages-container bg-white dark:bg-neutral-900">
+    <div className="messages-container h-full flex-1 overflow-y-auto bg-transparent px-4 pb-36 pt-[100px] md:px-8 md:pt-16 sm:mb-[180px]">
       <div className="max-w-4xl mx-auto space-y-8">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-4">
@@ -103,7 +103,7 @@ export function ChatMessages({
               <GradientText className="text-2xl font-semibold">
                 {agentName ? `Hi, I'm ${agentName}` : 'Hello!'}
               </GradientText>
-              <p className="text-neutral-500 dark:text-neutral-400 text-base">
+              <p className="text-base text-slate-400">
                 How can I help you today?
               </p>
             </div>
@@ -172,7 +172,7 @@ export function ChatMessages({
                         </p>
                       ) : (
                         <div className="relative w-full">
-                          <div className="pr-8 text-base leading-[1.75] text-neutral-700 dark:text-neutral-300">
+                          <div className="pr-8 text-base leading-[1.75] text-slate-200">
                             <GeminiResponse content={content || ''} />
                           </div>
                           {content && content.trim().length > 0 && (
@@ -195,7 +195,7 @@ export function ChatMessages({
                 {/* Message Content */}
                 <div className="flex flex-col flex-1">
                   <div className="w-full">
-                    <div className="text-base leading-[1.75] text-neutral-700 dark:text-neutral-300">
+                    <div className="text-base leading-[1.75] text-slate-300">
                       <TextShimmerColor text="Thinking..." />
                     </div>
                   </div>

@@ -11,17 +11,13 @@ import Billing from "@/components/billings/billing";
 export default function BillingPage() {
   return (
     <SidebarProvider>
-    <AppSidebar />
-
-
-
-
-    <main className="container">
-
-        <SidebarTrigger />
-           <Billing />
-
-    </main>
-</SidebarProvider>
+      <AppSidebar />
+      <main className="app-shell min-h-screen flex-1 overflow-hidden">
+        <div className="relative z-10 px-4 py-4 md:px-6">
+          <SidebarTrigger />
+          <Billing />
+        </div>
+      </main>
+    </SidebarProvider>
   );
 }

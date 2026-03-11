@@ -13,7 +13,7 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ agent, showButton, showImage, handleSidebarToggle }: ChatHeaderProps) {
   return (
-    <div className="fixed top-0 left-0 z-40 right-0 border-b border-neutral-200 bg-white/80 backdrop-blur-md px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900/80">
+    <div className="fixed left-0 right-0 top-0 z-40 border-b border-white/10 bg-[#03060D]/80 px-4 py-3 backdrop-blur-md">
       <div className="max-w-4xl mx-auto flex items-center justify-between">
         {/* Left side - Back button */}
         <div className="flex items-center gap-2">
@@ -21,7 +21,7 @@ export function ChatHeader({ agent, showButton, showImage, handleSidebarToggle }
             <Button
               variant="ghost"
               size="sm"
-              className="h-9 px-3 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+              className="h-9 rounded-full px-3 transition-colors hover:bg-white/10"
             >
               <ArrowLeft className="h-4 w-4 mr-1.5" />
               <span className="hidden sm:inline">Dashboard</span>
@@ -31,7 +31,7 @@ export function ChatHeader({ agent, showButton, showImage, handleSidebarToggle }
         </div>
 
         {/* Center - Agent name */}
-        <h1 className="text-base sm:text-lg font-semibold text-neutral-900 dark:text-neutral-100 truncate max-w-[40%]">
+        <h1 className="max-w-[40%] truncate text-base font-semibold text-slate-100 sm:text-lg">
           {agent?.name}
         </h1>
 
@@ -40,7 +40,7 @@ export function ChatHeader({ agent, showButton, showImage, handleSidebarToggle }
           <Button
             variant="ghost"
             size="sm"
-            className="h-9 px-3 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+            className="h-9 rounded-full px-3 transition-colors hover:bg-white/10"
             onClick={() => window.location.reload()}
             title="Start new chat"
           >
