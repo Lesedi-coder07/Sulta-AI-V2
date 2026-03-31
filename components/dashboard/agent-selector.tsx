@@ -140,9 +140,9 @@ export function AgentSelector({ initialAgents, userId, onAgentSelected }: AgentS
           </div>
 
           {/* Agent cards grid */}
-          <div className="flex flex-row flex-wrap gap-4 w-full overflow-y-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
             {agents.length === 0 ? (
-              <div className="w-full flex flex-col items-center justify-center py-12 glass-card rounded-xl">
+              <div className="col-span-full flex flex-col items-center justify-center py-12 glass-card rounded-xl">
                 <div className="icon-container p-4 mb-4">
                   <Bot className="h-8 w-8 text-white/60" />
                 </div>
@@ -157,17 +157,14 @@ export function AgentSelector({ initialAgents, userId, onAgentSelected }: AgentS
               </div>
             ) : (
               agents.map((agent) => (
-                <div
+                <AgentCard
                   key={agent.id}
-                >
-                  <AgentCard
-                    name={agent.name}
-                    type={agent.type}
-                    status={agent.isPublic ? "online" : "offline"}
-                    selected={selectedAgent?.name === agent.name}
-                    onClick={() => updateSelectedAgent(agent, true)}
-                  />
-                </div>
+                  name={agent.name}
+                  type={agent.type}
+                  status={agent.isPublic ? "online" : "offline"}
+                  selected={selectedAgent?.name === agent.name}
+                  onClick={() => updateSelectedAgent(agent, true)}
+                />
               ))
             )}
           </div>

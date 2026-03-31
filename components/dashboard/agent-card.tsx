@@ -1,6 +1,6 @@
 "use client";
 
-import { Bot, Music, FileText, Pencil, CircleDot } from "lucide-react";
+import { Bot, Music, FileText, Pencil, CircleDot, Headphones, Code2, Globe, MessageCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -14,11 +14,21 @@ export default interface AgentCardProps {
   selected?: boolean;
 }
 
-const agentIcons = {
+const agentIcons: Record<string, React.ElementType> = {
   content: Pencil,
   music: Music,
   text: FileText,
-} as const;
+  'customer support': Headphones,
+  support: Headphones,
+  code: Code2,
+  web: Globe,
+  chat: MessageCircle,
+};
+
+const getAgentIcon = (type: string): React.ElementType => {
+  const key = type.toLowerCase();
+  return agentIcons[key] ?? Bot;
+};
 
 const statusConfig = {
   online: {
@@ -42,7 +52,7 @@ const statusConfig = {
 } as const;
 
 export function AgentCard({ name, type, status, onClick, selected }: AgentCardProps) {
-  const IconComponent = agentIcons.content;
+  const IconComponent = getAgentIcon(type);
   const statusInfo = statusConfig[status];
 
   return (
@@ -50,71 +60,39 @@ export function AgentCard({ name, type, status, onClick, selected }: AgentCardPr
       onClick={onClick}
       className={cn(
         "relative cursor-pointer overflow-hidden group",
-        "transition-all duration-300",
-        "glass-card hover-glow",
-        "p-5 flex flex-col justify-between",
-        "w-64 h-36",
-        "hover:scale-[1.02]",
-        selected && "ring-1 ring-white/30 scale-[1.02]"
+        "transition-colors duration-200",
+        "bg-card border-border/60",
+        "p-4 flex flex-col justify-between",
+        "h-32",
+        "hover:border-border",
+        selected && "border-white/30 bg-white/5"
       )}
     >
-      {/* Gradient overlay on hover */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
-      </div>
-
-      {/* Shine effect */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-      </div>
-
       {/* Top section: Icon and Status */}
-      <div className="relative flex items-start justify-between">
-        <div className={cn(
-          "flex h-11 w-11 items-center justify-center rounded-xl",
-          "bg-white/10 border border-white/10",
-          "group-hover:scale-110 group-hover:border-white/20",
-          "transition-all duration-300"
-        )}>
-          <IconComponent className="h-5 w-5 text-white/80" />
+      <div className="flex items-start justify-between">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/6 border border-white/8">
+          <IconComponent className="h-4 w-4 text-white/70" />
         </div>
 
         {/* Status indicator */}
         <div className="flex items-center gap-1.5">
-          <div className={cn(
-            "relative flex h-2.5 w-2.5 items-center justify-center",
-            status === 'online' && "animate-pulse"
-          )}>
+          <div className="relative flex h-2 w-2 items-center justify-center">
             <span className={cn(
               "absolute inline-flex h-full w-full rounded-full opacity-40",
               statusInfo.bgColor,
               status === 'online' && "animate-ping"
             )} />
-            <span className={cn(
-              "relative inline-flex h-2 w-2 rounded-full",
-              statusInfo.bgColor,
-              statusInfo.glow
-            )} />
+            <span className={cn("relative inline-flex h-2 w-2 rounded-full", statusInfo.bgColor)} />
           </div>
-          <span className={cn("text-xs font-medium", statusInfo.color)}>
-            {statusInfo.label}
-          </span>
+          <span className={cn("text-xs", statusInfo.color)}>{statusInfo.label}</span>
         </div>
       </div>
 
-      {/* Bottom section: Name */}
-      <div className="relative">
-        <h3 className="font-semibold text-sm text-white group-hover:text-white transition-colors duration-300 truncate">
-          {name}
-        </h3>
+      {/* Bottom section: Name + type */}
+      <div className="space-y-0.5">
+        <h3 className="font-medium text-sm text-white/90 truncate">{name}</h3>
+        <p className="text-xs text-muted-foreground capitalize truncate">{type}</p>
       </div>
-
-      {/* Bottom accent line */}
-      <div className={cn(
-        "absolute bottom-0 left-0 right-0 h-[2px]",
-        "bg-gradient-to-r from-transparent via-white/20 to-transparent",
-        "opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-      )} />
     </Card>
   );
 }

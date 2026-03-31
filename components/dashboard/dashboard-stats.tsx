@@ -23,32 +23,24 @@ export function DashboardStats({ agents }: DashboardStatsProps) {
       value: totalAgents,
       icon: Bot,
       description: `${activeAgents} active`,
-      gradient: 'from-white/10 to-white/5',
-      iconBg: 'bg-white/10',
     },
     {
       title: 'Total Queries',
       value: totalQueries.toLocaleString(),
       icon: MessageSquare,
       description: 'All time',
-      gradient: 'from-white/10 to-white/5',
-      iconBg: 'bg-white/10',
     },
     {
       title: 'Total Chats',
       value: totalChats.toLocaleString(),
       icon: Activity,
       description: 'Conversations',
-      gradient: 'from-white/10 to-white/5',
-      iconBg: 'bg-white/10',
     },
     {
       title: 'Tokens Used',
       value: totalTokens.toLocaleString(),
       icon: Zap,
       description: 'Total usage',
-      gradient: 'from-white/10 to-white/5',
-      iconBg: 'bg-white/10',
     },
   ];
 
@@ -59,28 +51,15 @@ export function DashboardStats({ agents }: DashboardStatsProps) {
         return (
           <Card
             key={stat.title}
-            className="relative overflow-hidden glass-card group cursor-default transition-all duration-300 hover:scale-[1.02]"
+            className="relative overflow-hidden group cursor-default bg-card border-border/60 transition-colors duration-200 hover:border-border"
           >
-            {/* Subtle gradient overlay */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-50`} />
-
-            {/* Shine effect on hover */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-            </div>
-
-            <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
-              <div className={`${stat.iconBg} p-2.5 rounded-xl border border-white/10 transition-all duration-300 group-hover:scale-110 group-hover:border-white/20`}>
-                <Icon className="h-4 w-4 text-white/80" />
-              </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{stat.title}</CardTitle>
+              <Icon className="h-4 w-4 text-muted-foreground/60" />
             </CardHeader>
-            <CardContent className="relative">
-              <div className="text-3xl font-bold tracking-tight number-animate">{stat.value}</div>
-              <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-white/30" />
-                {stat.description}
-              </p>
+            <CardContent>
+              <div className="text-2xl font-semibold tracking-tight number-animate">{stat.value}</div>
+              <p className="text-xs text-muted-foreground mt-1">{stat.description}</p>
             </CardContent>
           </Card>
         );

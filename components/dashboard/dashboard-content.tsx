@@ -6,7 +6,6 @@ import { DashboardStats } from '@/components/dashboard/dashboard-stats';
 import { RecentlyUsedAgent } from '@/components/dashboard/recently-used-agent';
 import { UsageSummary } from '@/components/dashboard/usage-summary';
 import { TopAgents } from '@/components/dashboard/top-agents';
-import { Sparkles } from 'lucide-react';
 import { Agent } from '@/types/agent';
 
 interface DashboardContentProps {
@@ -31,16 +30,18 @@ export function DashboardContent({ agents, userId }: DashboardContentProps) {
       {!agentSelected && (
         <>
           {/* Welcome header */}
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="icon-container p-2.5 glass-card">
-                <Sparkles className="h-5 w-5 text-white/80" />
-              </div>
-              <h1 className="text-3xl font-bold tracking-tight">{getGreeting()}</h1>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight">{getGreeting()}</h1>
+              <p className="text-muted-foreground mt-1">
+                Here&apos;s an overview of your AI agents and activity
+              </p>
             </div>
-            <p className="text-muted-foreground ml-[52px]">
-              Here's an overview of your AI agents and activity
-            </p>
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              <div className="rounded-xl border border-white/8 bg-white/5 px-4 py-2.5 text-sm text-muted-foreground">
+                <span className="text-white font-medium">{new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+              </div>
+            </div>
           </div>
 
           {/* Dashboard Stats */}

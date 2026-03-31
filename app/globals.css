@@ -4,108 +4,105 @@
 
 @layer base {
   :root {
-    --background: 222 63% 3%; /* #03060D */
-    --foreground: 210 40% 96%;
+    --background: 0 0% 5%;       /* #0d0d0d — sidebar / page base */
+    --foreground: 0 0% 93%;
 
-    --card: 219 55% 6%; /* #070D18 */
-    --card-foreground: 210 40% 96%;
+    --card: 0 0% 9%;             /* #171717 — elevated surface */
+    --card-foreground: 0 0% 93%;
 
-    --popover: 219 55% 6%;
-    --popover-foreground: 210 40% 96%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 93%;
 
-    --primary: 217 91% 60%; /* Vibrant Blue #3B82F6 */
-    --primary-foreground: 0 0% 100%;
+    --primary: 0 0% 98%;         /* near-white */
+    --primary-foreground: 0 0% 5%;
 
-    --secondary: 220 49% 8%; /* #0B1220 */
-    --secondary-foreground: 210 40% 96%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 93%;
 
-    --muted: 219 37% 12%;
-    --muted-foreground: 215 20% 70%;
+    --muted: 0 0% 13%;
+    --muted-foreground: 0 0% 48%;
 
-    --accent: 220 49% 8%;
-    --accent-foreground: 210 40% 96%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 93%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 219 32% 16%;
-    --input: 219 32% 16%;
-    --ring: 217 91% 60%;
+    --border: 0 0% 14%;
+    --input: 0 0% 14%;
+    --ring: 0 0% 70%;
 
     --radius: 1.25rem;
 
-    --sidebar-background: 219 55% 6%;
-    --sidebar-foreground: 210 40% 96%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 49% 8%;
-    --sidebar-accent-foreground: 210 40% 96%;
-    --sidebar-border: 219 32% 16%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 93%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 0 0% 5%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 93%;
+    --sidebar-border: 0 0% 11%;
+    --sidebar-ring: 0 0% 70%;
 
-    /* Financial Dashboard Accent Colors */
-    --success: 120 100% 50%; /* Vibrant green #00FF00 */
-    --success-foreground: 0 0% 0%;
-    --warning: 60 100% 50%; /* Bright yellow #FFFF00 */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
     --warning-foreground: 0 0% 0%;
-    --info: 180 100% 50%; /* Cyan #00FFFF */
-    --info-foreground: 0 0% 0%;
-    --teal: 180 100% 40%; /* Teal #00CC99 */
+    --info: 210 100% 56%;
+    --info-foreground: 0 0% 100%;
+    --teal: 174 72% 40%;
     --teal-foreground: 0 0% 100%;
-    --purple: 270 50% 70%; /* Lavender #B19CD9 */
-    --purple-foreground: 0 0% 0%;
+    --purple: 258 60% 65%;
+    --purple-foreground: 0 0% 100%;
   }
 
   .dark {
-    --background: 222 63% 3%;
-    --foreground: 210 40% 96%;
+    --background: 0 0% 5%;
+    --foreground: 0 0% 93%;
 
-    --card: 219 55% 6%;
-    --card-foreground: 210 40% 96%;
+    --card: 0 0% 9%;
+    --card-foreground: 0 0% 93%;
 
-    --popover: 219 55% 6%;
-    --popover-foreground: 210 40% 96%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 93%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 5%;
 
-    --secondary: 220 49% 8%;
-    --secondary-foreground: 210 40% 96%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 93%;
 
-    --muted: 219 37% 12%;
-    --muted-foreground: 215 20% 70%;
+    --muted: 0 0% 13%;
+    --muted-foreground: 0 0% 48%;
 
-    --accent: 220 49% 8%;
-    --accent-foreground: 210 40% 96%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 93%;
 
-    /* Destructive - red for negative indicators */
-    --destructive: 0 100% 50%; /* Red #FF0000 */
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 219 32% 16%;
-    --input: 219 32% 16%;
-    --ring: 217 91% 60%;
+    --border: 0 0% 14%;
+    --input: 0 0% 14%;
+    --ring: 0 0% 70%;
 
-    --sidebar-background: 219 55% 6%;
-    --sidebar-foreground: 210 40% 96%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 49% 8%;
-    --sidebar-accent-foreground: 210 40% 96%;
-    --sidebar-border: 219 32% 16%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 93%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 0 0% 5%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 93%;
+    --sidebar-border: 0 0% 11%;
+    --sidebar-ring: 0 0% 70%;
 
-    /* Financial Dashboard Accent Colors */
-    --success: 120 100% 50%; /* Vibrant green #00FF00 */
-    --success-foreground: 0 0% 0%;
-    --warning: 60 100% 50%; /* Bright yellow #FFFF00 */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
     --warning-foreground: 0 0% 0%;
-    --info: 180 100% 50%; /* Cyan #00FFFF */
-    --info-foreground: 0 0% 0%;
-    --teal: 180 100% 40%; /* Teal #00CC99 */
+    --info: 210 100% 56%;
+    --info-foreground: 0 0% 100%;
+    --teal: 174 72% 40%;
     --teal-foreground: 0 0% 100%;
-    --purple: 270 50% 70%; /* Lavender #B19CD9 */
-    --purple-foreground: 0 0% 0%;
+    --purple: 258 60% 65%;
+    --purple-foreground: 0 0% 100%;
   }
 }
 
@@ -118,23 +115,22 @@
   }
 }
 
+
 .app-shell {
-  background-color: hsl(var(--background));
-  background-image:
-    radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.08), transparent 28%),
-    radial-gradient(circle at 100% 18%, rgba(148, 163, 184, 0.12), transparent 24%),
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: auto, auto, 48px 48px, 48px 48px;
-  background-position: 0 0, 100% 0, 0 0, 0 0;
+  background-color: hsl(0 0% 8%);
+  border-radius: 16px 0 0 16px;
+  min-height: calc(100vh - 16px);
+  margin-top: 8px;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 10;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.5);
 }
 
 .app-panel {
-  background: linear-gradient(180deg, rgba(11, 18, 32, 0.92) 0%, rgba(7, 13, 24, 0.96) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 24px 60px rgba(3, 6, 13, 0.35);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: hsl(0 0% 9%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 }
 
 .app-panel-muted {
