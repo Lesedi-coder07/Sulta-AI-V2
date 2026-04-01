@@ -282,37 +282,37 @@ while (reader) {
     updateSelectedAgent(null, false)
   }
   return (
-    <div className="w-full overflow-x-hidden space-y-6 p-6 animate-fade-in-up">
+    <div className="w-full overflow-x-hidden space-y-4 p-6">
       {/* Header Section */}
-      <div className="glass-card relative rounded-xl p-4 sm:p-6">
+      <div className="relative rounded-xl border border-border/60 bg-card p-4 sm:p-6">
         {/* Close button - always top right */}
         <div className="absolute right-3 top-3 sm:right-6 sm:top-6 z-10">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => { handleExit() }}
-            className="text-white/60 hover:text-white hover:bg-white/10"
+            className="text-white/40 hover:text-white/80 hover:bg-white/6"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </Button>
         </div>
-        
+
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 pr-10 sm:pr-14">
           <div className="flex flex-col sm:flex-row items-start gap-4">
-            <div className="icon-container p-3 bg-white/10 border border-white/10 shrink-0">
-              <MessageSquare className="h-6 w-6 text-white/80" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/6 border border-white/8 shrink-0">
+              <MessageSquare className="h-4 w-4 text-white/60" />
             </div>
             <div className="min-w-0">
-              <h2 className="text-xl sm:text-2xl font-bold text-white break-words">{agent.name}</h2>
-              <div className="flex flex-wrap items-center gap-2 mt-2">
-                <Badge variant="secondary" className="capitalize bg-white/10 text-white/70 border-white/10">
+              <h2 className="text-lg font-semibold text-white break-words">{agent.name}</h2>
+              <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                <Badge variant="secondary" className="capitalize bg-white/6 text-white/50 border-white/8 text-xs">
                   {agent.type}
                 </Badge>
                 <Badge
-                  variant={agent.isPublic ? "default" : "outline"}
+                  variant="outline"
                   className={agent.isPublic
-                    ? "bg-green-500/20 text-green-400 border-green-500/30"
-                    : "bg-white/10 text-white/70 border-white/10"}
+                    ? "bg-green-500/10 text-green-400 border-green-500/20 text-xs"
+                    : "bg-white/6 text-white/40 border-white/8 text-xs"}
                 >
                   {agent.isPublic ? <><Globe className="h-3 w-3 mr-1" />Public</> : <><EyeOff className="h-3 w-3 mr-1" />Private</>}
                 </Badge>
@@ -329,7 +329,7 @@ while (reader) {
               variant="outline"
               size="sm"
               onClick={() => { togglePublic() }}
-              className="flex items-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-white w-full sm:w-auto justify-center"
+              className="flex items-center gap-2 bg-white/4 border-white/8 hover:bg-white/8 text-white/60 hover:text-white w-full sm:w-auto justify-center"
             >
               {agent.isPublic ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
               {agent.isPublic ? 'Public' : 'Private'}
@@ -339,74 +339,37 @@ while (reader) {
       </div>
 
       {/* Analytics Section */}
-      <div className="glass-card rounded-xl p-6">
-        <div className="flex items-center gap-3 mb-5">
-          <div className="icon-container p-2">
-            <BarChart3 className="h-4 w-4 text-white/80" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-white">Analytics</h3>
-            <p className="text-sm text-muted-foreground">Performance metrics for your agent</p>
-          </div>
-        </div>
+      <div className="rounded-xl border border-border/60 bg-card p-5">
+        <h3 className="text-sm font-medium text-white/60 uppercase tracking-wide mb-4">Analytics</h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-blue-500/20 rounded-xl border border-blue-500/30">
-                <MessageSquare className="h-4 w-4 text-blue-400" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Total Queries</p>
-                <p className="text-xl font-bold text-white number-animate">{(agent.totalQueries || 0).toLocaleString()}</p>
-              </div>
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="p-4 rounded-lg bg-white/4 border border-white/6">
+            <p className="text-xs text-muted-foreground mb-1">Total Queries</p>
+            <p className="text-2xl font-semibold text-white number-animate">{(agent.totalQueries || 0).toLocaleString()}</p>
           </div>
 
-          <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-green-500/20 rounded-xl border border-green-500/30">
-                <Zap className="h-4 w-4 text-green-400" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Tokens Used</p>
-                <p className="text-xl font-bold text-white number-animate">{(agent.tokensUsed || 0).toLocaleString()}</p>
-              </div>
-            </div>
+          <div className="p-4 rounded-lg bg-white/4 border border-white/6">
+            <p className="text-xs text-muted-foreground mb-1">Tokens Used</p>
+            <p className="text-2xl font-semibold text-white number-animate">{(agent.tokensUsed || 0).toLocaleString()}</p>
           </div>
 
-          <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-purple-500/20 rounded-xl border border-purple-500/30">
-                <Activity className="h-4 w-4 text-purple-400" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Total Chats</p>
-                <p className="text-xl font-bold text-white number-animate">{(agent.totalChats || 0).toLocaleString()}</p>
-              </div>
-            </div>
+          <div className="p-4 rounded-lg bg-white/4 border border-white/6">
+            <p className="text-xs text-muted-foreground mb-1">Total Chats</p>
+            <p className="text-2xl font-semibold text-white number-animate">{(agent.totalChats || 0).toLocaleString()}</p>
           </div>
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="glass-card rounded-xl p-6">
-        <div className="flex items-center gap-3 mb-5">
-          <div className="icon-container p-2">
-            <Settings className="h-4 w-4 text-white/80" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-white">Actions</h3>
-            <p className="text-sm text-muted-foreground">Manage and interact with your agent</p>
-          </div>
-        </div>
+      <div className="rounded-xl border border-border/60 bg-card p-5">
+        <h3 className="text-sm font-medium text-white/60 uppercase tracking-wide mb-4">Actions</h3>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2">
           <Dialog>
             <DialogTrigger asChild>
               <Button
                 variant="outline"
-                className="flex items-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-white"
+                className="flex items-center gap-2 bg-white/4 border-white/8 hover:bg-white/8 text-white/70 hover:text-white"
               >
                 <Code className="h-4 w-4" />
                 Embed Agent
@@ -531,12 +494,12 @@ while (reader) {
             </DialogContent>
           </Dialog>
 
-          <Button 
+          <Button
             onClick={() => {
               localStorage.setItem('lastUsedAgentId', agent.id);
               window.location.href = `/chat/${agent.id}`;
             }}
-            className="bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/20 text-white flex items-center gap-2"
+            className="bg-white text-black hover:bg-white/90 flex items-center gap-2"
           >
             <MessageSquare className="h-4 w-4" />
             Use Agent
@@ -546,7 +509,7 @@ while (reader) {
           <Button
             variant="outline"
             onClick={() => { toggleEditing() }}
-            className="flex items-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-white"
+            className="flex items-center gap-2 bg-white/4 border-white/8 hover:bg-white/8 text-white/70 hover:text-white"
           >
             <Edit3 className="h-4 w-4" />
             Edit Settings
@@ -611,15 +574,9 @@ while (reader) {
 
       {/* Comprehensive Edit Form */}
       <div ref={editTabRef} className={editing ? 'block' : 'hidden'}>
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Edit3 className="h-5 w-5" />
-              Edit Agent Settings
-            </CardTitle>
-            <CardDescription>Customize your agent's behavior and appearance</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <div className="rounded-xl border border-border/60 bg-card p-5">
+          <h3 className="text-sm font-medium text-white/60 uppercase tracking-wide mb-4">Edit Settings</h3>
+          <div>
             <Tabs defaultValue="basic" className="w-full">
               <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="basic">Basic Info</TabsTrigger>
@@ -957,8 +914,8 @@ while (reader) {
                 {isLoading ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   )

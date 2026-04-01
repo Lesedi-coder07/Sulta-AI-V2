@@ -148,11 +148,11 @@ export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInpu
 
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 w-full border-t border-white/10 bg-[#03060D]/90 px-4 py-6 backdrop-blur-xl">
+    <div className="fixed bottom-0 left-0 right-0 w-full border-t border-white/6 bg-[#141414]/90 px-4 py-6 backdrop-blur-md">
       <div className="max-w-3xl mx-auto">
         <form ref={formRef} onSubmit={handleSubmit} className="w-full">
           {/* Main Input Container */}
-          <div className="relative flex items-center gap-3 rounded-3xl border border-white/10 bg-[#0B1220]/90 px-4 py-3 shadow-[0_18px_45px_rgba(3,6,13,0.32)]">
+          <div className="relative flex items-center gap-3 rounded-2xl border border-white/8 bg-white/4 px-4 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
 
             {/* Textarea */}
             <Textarea
@@ -161,7 +161,7 @@ export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInpu
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask me anything..."
-              className="min-h-[24px] max-h-[200px] flex-1 resize-none border-0 bg-transparent px-2 text-base text-slate-100 placeholder:text-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="min-h-[24px] max-h-[200px] flex-1 resize-none border-0 bg-transparent px-2 text-sm text-white/90 placeholder:text-white/25 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               rows={1}
             />
 
@@ -173,16 +173,16 @@ export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInpu
                   type="button"
                   size="icon"
                   variant="ghost"
-                  className="h-10 w-10 rounded-full hover:bg-white/10"
+                  className="h-10 w-10 rounded-full hover:bg-white/6"
                   onClick={handleToggleFileInput}
                 >
-                  <Paperclip className="h-5 w-5 text-slate-400" />
+                  <Paperclip className="h-5 w-5 text-white/30" />
                 </Button>
 
                 {/* File Upload Dropdown */}
                 <div
                   ref={fileInputRef}
-                  className={`absolute bottom-full right-0 z-50 mb-2 w-56 rounded-lg border border-white/10 bg-[#070D18]/95 py-2 shadow-[0_18px_45px_rgba(3,6,13,0.35)] backdrop-blur-xl ${showFileInput ? '' : 'hidden'}`}
+                  className={`absolute bottom-full right-0 z-50 mb-2 w-56 rounded-lg border border-white/8 bg-[#141414] py-2 shadow-[0_8px_24px_rgba(0,0,0,0.4)] ${showFileInput ? '' : 'hidden'}`}
                 >
                   {uploadedFileName ? (
                     <div className="flex items-center gap-2 px-4 py-2">
@@ -231,8 +231,8 @@ export function ChatInput({ sendMessage, thinkEnabled, onThinkToggle }: ChatInpu
                 size="icon"
                 variant="ghost"
                 className={`h-10 w-10 rounded-full transition-all duration-200 ${thinkEnabled
-                  ? 'bg-white/10 text-sky-300'
-                  : 'text-slate-400 hover:bg-white/10'
+                  ? 'bg-white/10 text-white'
+                  : 'text-white/30 hover:bg-white/6 hover:text-white/60'
                   }`}
                 onClick={() => onThinkToggle(!thinkEnabled)}
                 title={thinkEnabled ? 'Thinking mode ON (uses Gemini 3 Pro)' : 'Enable thinking mode'}
