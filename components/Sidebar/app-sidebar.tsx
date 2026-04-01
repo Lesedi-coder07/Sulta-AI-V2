@@ -12,7 +12,7 @@ import {
     SidebarMenuItem,
 
 } from "@/components/ui/sidebar"
-import { HomeIcon, PlusIcon, SettingsIcon, DollarSignIcon, LogOutIcon } from "lucide-react"
+import { HomeIcon, PlusIcon, SettingsIcon, DollarSignIcon, LogOutIcon, FlaskConical } from "lucide-react"
 import { Button } from "../ui/button"
 import { auth } from "@/app/api/firebase/firebaseConfig"
 import { usePathname } from "next/navigation";
@@ -34,6 +34,10 @@ const items = [
 
 
     , {
+        title: "Playground",
+        href: "/playground",
+        icon: FlaskConical,
+    }, {
         title: "Settings",
         href: "/settings",
         icon: SettingsIcon,

@@ -39,8 +39,8 @@ export default function CreateAgentPage() {
                 <SidebarTrigger />
                 <div className="container mx-auto max-w-4xl px-4 py-8">
                     <div className="space-y-2">
-                        <h1 className="text-3xl font-bold tracking-tight">Create AI Agent</h1>
-                        <p className="text-muted-foreground">
+                        <h1 className="text-2xl font-semibold tracking-tight">Create Agent</h1>
+                        <p className="text-muted-foreground text-sm">
                             Configure your custom AI agent with specialized capabilities
                         </p>
                     </div>

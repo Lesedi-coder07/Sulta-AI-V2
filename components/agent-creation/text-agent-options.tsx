@@ -18,18 +18,15 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Brain, Sparkles } from "lucide-react";
+import { Brain } from "lucide-react";
 
 export function TextAgentOptions({ form }: { form: any }) {
   return (
     <div className="space-y-6">
-      <div className="app-panel rounded-2xl p-6">
-        <h3 className="text-lg font-semibold">Personality & Behavior</h3>
-        <p className="text-sm text-slate-400">
-          Configure how your text AI agent interacts and communicates
-        </p>
+      <div className="rounded-xl border border-border/60 bg-card p-5">
+        <h3 className="text-sm font-medium text-white/60 uppercase tracking-wide mb-4">Personality & Behavior</h3>
 
-        <div className="mt-6 space-y-6">
+        <div className="space-y-6">
           <FormField
             control={form.control}
             name="textConfig.personality"
@@ -140,12 +137,11 @@ export function TextAgentOptions({ form }: { form: any }) {
             control={form.control}
             name="textConfig.extendedThinking"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-xl border border-white/10 bg-gradient-to-r from-sky-500/10 to-indigo-500/10 p-4">
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border border-white/8 bg-white/4 p-4">
                 <div className="space-y-0.5 flex-1">
-                  <FormLabel className="text-base flex items-center gap-2">
-                    <Brain className="h-4 w-4 text-purple-500" />
+                  <FormLabel className="text-sm flex items-center gap-2">
+                    <Brain className="h-4 w-4 text-white/50" />
                     Extended Thinking
-                    <Sparkles className="h-3 w-3 text-amber-500" />
                   </FormLabel>
                   <FormDescription>
                     Enable deeper reasoning for complex tasks. Uses more tokens and costs more.
