@@ -4,7 +4,8 @@ import { PipelineNode, PipelineNodeKind, NODE_KIND_META } from "@/types/playgrou
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Trash2, Copy } from "lucide-react";
+import { Trash2, Copy, Check } from "lucide-react";
+import { TOOL_REGISTRY } from "@/lib/ai/tools";
 
 interface NodeInspectorProps {
   node: PipelineNode | null;
@@ -86,49 +87,80 @@ function TypeSpecificFields({
         </div>
       );
 
-    case "tool":
+    case "tool": {
+      const enabledIds: string[] = Array.isArray(config.toolIds)
+        ? (config.toolIds as string[])
+        : [];
+
+      const toggleTool = (toolId: string) => {
+        const next = enabledIds.includes(toolId)
+          ? enabledIds.filter((id) => id !== toolId)
+          : [...enabledIds, toolId];
+        updateConfig(node, "toolIds", next, onUpdate);
+      };
+
+      // Group by category
+      const categories = Array.from(new Set(TOOL_REGISTRY.map((t) => t.category)));
+
       return (
         <>
-          <div className="space-y-1">
-            <Label className="inspector-label">Tool</Label>
-            <select
-              value={(config.toolId as string) ?? ""}
-              onChange={(e) => updateConfig(node, "toolId", e.target.value, onUpdate)}
-              className="inspector-select"
-            >
-              <option value="" disabled>Select a tool...</option>
-              <optgroup label="Search & Web">
-                <option value="web-search">Web Search</option>
-                <option value="web-scraper">Web Scraper</option>
-              </optgroup>
-              <optgroup label="Data & Files">
-                <option value="file-reader">File Reader</option>
-                <option value="code-interpreter">Code Interpreter</option>
-                <option value="calculator">Calculator</option>
-                <option value="database-query">Database Query</option>
-              </optgroup>
-              <optgroup label="Communication">
-                <option value="send-email">Send Email</option>
-                <option value="send-slack">Send Slack Message</option>
-              </optgroup>
-              <optgroup label="APIs">
-                <option value="http-request">HTTP Request</option>
-                <option value="webhook-call">Webhook Call</option>
-              </optgroup>
-            </select>
-          </div>
-          <div className="space-y-1">
-            <Label className="inspector-label">Custom instructions</Label>
-            <Textarea
-              value={(config.instructions as string) ?? ""}
-              onChange={(e) => updateConfig(node, "instructions", e.target.value, onUpdate)}
-              placeholder="Any specific instructions for how this tool should be used..."
-              rows={4}
-              className="inspector-input resize-none"
-            />
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <Label className="inspector-label">Available tools</Label>
+              {enabledIds.length > 0 && (
+                <span className="text-[9px] text-amber-400/70 font-medium">
+                  {enabledIds.length} enabled
+                </span>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              {categories.map((cat) => (
+                <div key={cat}>
+                  <p className="text-[9px] font-semibold tracking-widest uppercase text-white/20 mb-1.5">
+                    {cat}
+                  </p>
+                  <div className="space-y-1">
+                    {TOOL_REGISTRY.filter((t) => t.category === cat).map((tool) => {
+                      const active = enabledIds.includes(tool.id);
+                      return (
+                        <button
+                          key={tool.id}
+                          onClick={() => toggleTool(tool.id)}
+                          className={`w-full text-left flex items-start gap-2 px-2 py-1.5 rounded-lg border transition-all ${
+                            active
+                              ? "border-amber-500/40 bg-amber-500/8"
+                              : "border-white/6 bg-white/2 hover:bg-white/5 hover:border-white/12"
+                          }`}
+                        >
+                          <div
+                            className={`mt-0.5 w-3.5 h-3.5 rounded flex-shrink-0 flex items-center justify-center border transition-colors ${
+                              active
+                                ? "bg-amber-500 border-amber-500"
+                                : "bg-transparent border-white/20"
+                            }`}
+                          >
+                            {active && <Check className="w-2.5 h-2.5 text-black" strokeWidth={3} />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-[11px] font-medium leading-tight ${active ? "text-white/90" : "text-white/60"}`}>
+                              {tool.label}
+                            </p>
+                            <p className="text-[10px] text-white/30 leading-snug mt-0.5">
+                              {tool.description}
+                            </p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </>
       );
+    }
 
     case "response":
       return (

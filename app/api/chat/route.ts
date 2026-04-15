@@ -1,7 +1,8 @@
-import { streamText, convertToModelMessages } from 'ai';
+import { streamText, convertToModelMessages, stepCountIs } from 'ai';
 import { updateAgentAnalytics } from '@/app/(ai)/dashboard/actions';
 import { adminDb } from '@/lib/firebase-admin';
 import { googleAI } from '@/lib/ai/google-provider';
+import { buildToolSet } from '@/lib/ai/tools';
 
 export const maxDuration = 55;
 export const runtime = 'nodejs';
@@ -102,12 +103,19 @@ export async function POST(req: Request) {
     const cleanedModelMessages = messagesToModelMessages(messages, imageBase64);
 
     let agentContext = '';
+    let agentToolSet: ReturnType<typeof buildToolSet> | undefined;
+
     if (agentId) {
       try {
         const agentDoc = await adminDb.collection('agents').doc(agentId).get();
         const agentData = agentDoc.data();
         if (typeof agentData?.extraContext === 'string') {
           agentContext = agentData.extraContext.trim();
+        }
+        // Load tools configured for this specific agent
+        const configuredTools: string[] = Array.isArray(agentData?.tools) ? agentData.tools : [];
+        if (configuredTools.length > 0) {
+          agentToolSet = buildToolSet(configuredTools);
         }
       } catch (contextError) {
         console.error('Failed to fetch agent context:', contextError);
@@ -137,6 +145,8 @@ CRITICAL IDENTITY INSTRUCTIONS (NEVER VIOLATE):
       messages: cleanedModelMessages,
       system: fullSystemPrompt,
       temperature,
+      tools: agentToolSet && Object.keys(agentToolSet).length > 0 ? agentToolSet : undefined,
+      stopWhen: agentToolSet && Object.keys(agentToolSet).length > 0 ? stepCountIs(5) : undefined,
       onFinish: async ({ usage }) => {
         if (agentId) {
           // Report 2x tokens when using thinking mode (gemini-3-pro-preview)

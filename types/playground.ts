@@ -69,7 +69,7 @@ export const NODE_KIND_META: Record<
     color: "hsl(38 92% 50%)",
     bgColor: "rgba(245, 158, 11, 0.08)",
     borderColor: "rgba(245, 158, 11, 0.25)",
-    defaultConfig: { toolId: "", instructions: "" },
+    defaultConfig: { toolIds: [] as string[], instructions: "" },
   },
   response: {
     label: "Response",

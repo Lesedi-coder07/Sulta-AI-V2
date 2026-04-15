@@ -53,6 +53,7 @@ export async function getAgents(userId: string): Promise<Agent[]> {
         customApiTool: agentData?.customApiTool,
         customSystemPrompt: agentData?.customSystemPrompt,
         extraContext: agentData?.extraContext || '',
+        tools: Array.isArray(agentData?.tools) ? agentData.tools : [],
       } as Agent;
     });
 
@@ -89,6 +90,17 @@ export async function updateAgentAnalytics(agentId: string, totalQueries: number
   } catch (error) {
     // Log error but don't throw - this is fire-and-forget
     console.error('Error updating agent analytics:', error);
+  }
+}
+
+export async function updateAgentTools(agentId: string, tools: string[]): Promise<{ success: boolean; error?: string }> {
+  try {
+    if (!agentId) return { success: false, error: 'Missing agent ID' };
+    await adminDb.collection('agents').doc(agentId).update({ tools });
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating agent tools:', error);
+    return { success: false, error: 'Failed to save tools' };
   }
 }
 

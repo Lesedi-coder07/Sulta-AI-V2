@@ -4,6 +4,7 @@ import { memo } from "react";
 import { Handle, Position, NodeProps } from "@xyflow/react";
 import { PipelineNodeData, PipelineNodeKind, NODE_KIND_META } from "@/types/playground";
 import { Bot, MessageSquare, Wrench, Send } from "lucide-react";
+import { TOOL_REGISTRY } from "@/lib/ai/tools";
 
 const NODE_ICONS: Record<PipelineNodeKind, React.ElementType> = {
   agent: Bot,
@@ -19,20 +20,13 @@ function getConfigSummary(kind: PipelineNodeKind, config: Record<string, unknown
     case "input":
       return `Source: ${config.source ?? "chat"}`;
     case "tool": {
-      const toolLabels: Record<string, string> = {
-        "web-search": "Web Search",
-        "web-scraper": "Web Scraper",
-        "file-reader": "File Reader",
-        "code-interpreter": "Code Interpreter",
-        "calculator": "Calculator",
-        "database-query": "Database Query",
-        "send-email": "Send Email",
-        "send-slack": "Send Slack Message",
-        "http-request": "HTTP Request",
-        "webhook-call": "Webhook Call",
-      };
-      const id = config.toolId as string | undefined;
-      return id ? (toolLabels[id] ?? id) : "No tool selected";
+      const ids = Array.isArray(config.toolIds) ? (config.toolIds as string[]) : [];
+      if (ids.length === 0) return "No tools selected";
+      if (ids.length === 1) {
+        const meta = TOOL_REGISTRY.find((t) => t.id === ids[0]);
+        return meta ? meta.label : ids[0];
+      }
+      return `${ids.length} tools enabled`;
     }
     case "response":
       return `Format: ${config.format ?? "text"}`;

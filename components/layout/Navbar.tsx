@@ -2,150 +2,122 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowUpRight, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { onAuthStateChanged } from 'firebase/auth';
 
 import { Button } from '@/components/ui/button';
 import { auth } from '@/app/api/firebase/firebaseConfig';
 import { navLinks } from '@/data/navLinks';
-import { cn } from '@/lib/utils';
 
-const isExternalHref = (href: string) => href.startsWith('http://') || href.startsWith('https://');
+const isExternal = (href: string) => href.startsWith('http://') || href.startsWith('https://');
 
 const Navbar = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setLoggedIn(Boolean(user));
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 14);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const unsub = onAuthStateChanged(auth, (user) => setLoggedIn(Boolean(user)));
+    return () => unsub();
   }, []);
 
   return (
-    <nav
-      className={cn(
-        'fixed inset-x-0 top-0 z-50 border-b border-white/10 transition-all duration-300',
-        scrolled
-          ? 'bg-[#060A12]/90 shadow-[0_10px_50px_rgba(15,23,42,0.45)] backdrop-blur-xl'
-          : 'bg-[#060A12]/70 backdrop-blur-md',
-      )}
-    >
-      <div className="mx-auto flex h-[64px] w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center">
-          <Image src="/logos/Sulta/White.png" alt="Sulta AI" width={98} height={30} priority />
+    <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/8 bg-[#0a0a0a]/90 backdrop-blur-md">
+      <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2">
+          <div className="w-5 h-5 bg-white rounded flex items-center justify-center flex-shrink-0">
+            <span className="text-black font-bold text-xs leading-none">S</span>
+          </div>
+          <span className="text-sm font-semibold text-white/80">Sulta AI</span>
         </Link>
 
-        <ul className="hidden items-center gap-1 lg:flex">
-          {navLinks.map((link) => {
-            const external = isExternalHref(link.href);
-
-            return (
-              <li key={link.title}>
-                <Link
-                  href={link.href}
-                  target={external ? '_blank' : undefined}
-                  rel={external ? 'noreferrer noopener' : undefined}
-                  className="rounded-md px-4 py-2 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
-                >
-                  {link.title}
-                </Link>
-              </li>
-            );
-          })}
+        {/* Desktop nav */}
+        <ul className="hidden items-center gap-0.5 lg:flex">
+          {navLinks.map((link) => (
+            <li key={link.title}>
+              <Link
+                href={link.href}
+                target={isExternal(link.href) ? '_blank' : undefined}
+                rel={isExternal(link.href) ? 'noreferrer noopener' : undefined}
+                className="block rounded px-3 py-1.5 text-sm text-white/40 transition-colors hover:bg-white/5 hover:text-white/80"
+              >
+                {link.title}
+              </Link>
+            </li>
+          ))}
         </ul>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        {/* Desktop actions */}
+        <div className="hidden items-center gap-2 lg:flex">
           {loggedIn ? (
             <Link href="/dashboard">
-              <Button className="rounded-lg border border-white/15 bg-white text-slate-950 hover:bg-slate-200">
-                Go to Dashboard
+              <Button className="h-8 rounded px-4 text-xs font-semibold border border-white/15 bg-white text-slate-950 hover:bg-slate-100">
+                Dashboard
               </Button>
             </Link>
           ) : (
             <>
               <Link href="/login">
-                <Button
-                  variant="ghost"
-                  className="rounded-lg text-slate-200 hover:bg-white/5 hover:text-white"
-                >
-                  Sign In
+                <Button variant="ghost" className="h-8 rounded px-3 text-xs text-white/40 hover:bg-white/5 hover:text-white/80">
+                  Sign in
                 </Button>
               </Link>
               <Link href="/signup">
-                <Button className="rounded-lg border border-white/15 bg-white text-slate-950 hover:bg-slate-200">
-                  Get Started
-                  <ArrowUpRight className="ml-2 h-4 w-4" />
+                <Button className="h-8 rounded px-4 text-xs font-semibold border border-white/15 bg-white text-slate-950 hover:bg-slate-100">
+                  Get started
                 </Button>
               </Link>
             </>
           )}
         </div>
 
+        {/* Mobile toggle */}
         <button
-          onClick={() => setMobileMenuOpen((current) => !current)}
-          className="inline-flex rounded-lg border border-white/15 bg-white/5 p-2 text-slate-200 transition hover:border-white/30 hover:text-white lg:hidden"
+          onClick={() => setMobileOpen((v) => !v)}
+          className="rounded border border-white/10 p-1.5 text-white/40 transition hover:border-white/20 hover:text-white/70 lg:hidden"
           aria-label="Toggle menu"
         >
-          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
         </button>
       </div>
 
-      {mobileMenuOpen && (
-        <div className="border-t border-white/10 bg-[#070b14]/95 px-4 pb-6 pt-5 backdrop-blur-xl lg:hidden">
-          <ul className="space-y-2">
-            {navLinks.map((link) => {
-              const external = isExternalHref(link.href);
-
-              return (
-                <li key={link.title}>
-                  <Link
-                    href={link.href}
-                    target={external ? '_blank' : undefined}
-                    rel={external ? 'noreferrer noopener' : undefined}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block rounded-lg border border-transparent px-3 py-2.5 text-sm text-slate-200 transition hover:border-white/10 hover:bg-white/5 hover:text-white"
-                  >
-                    {link.title}
-                  </Link>
-                </li>
-              );
-            })}
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="border-t border-white/8 bg-[#0a0a0a] px-4 pb-5 pt-3 lg:hidden">
+          <ul className="space-y-0.5">
+            {navLinks.map((link) => (
+              <li key={link.title}>
+                <Link
+                  href={link.href}
+                  target={isExternal(link.href) ? '_blank' : undefined}
+                  rel={isExternal(link.href) ? 'noreferrer noopener' : undefined}
+                  onClick={() => setMobileOpen(false)}
+                  className="block rounded px-3 py-2 text-sm text-white/40 transition hover:bg-white/5 hover:text-white/70"
+                >
+                  {link.title}
+                </Link>
+              </li>
+            ))}
           </ul>
 
-          <div className="mt-5 grid grid-cols-1 gap-3">
+          <div className="mt-4 flex flex-col gap-2 border-t border-white/8 pt-4">
             {loggedIn ? (
-              <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                <Button className="w-full rounded-lg border border-white/15 bg-white text-slate-950 hover:bg-slate-200">
-                  Go to Dashboard
+              <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
+                <Button className="w-full h-9 rounded text-sm font-semibold border border-white/15 bg-white text-slate-950 hover:bg-slate-100">
+                  Dashboard
                 </Button>
               </Link>
             ) : (
               <>
-                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button
-                    variant="outline"
-                    className="w-full rounded-lg border-white/20 bg-transparent text-slate-200 hover:bg-white/5 hover:text-white"
-                  >
-                    Sign In
+                <Link href="/login" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" className="w-full h-9 rounded text-sm border-white/10 bg-transparent text-white/50 hover:bg-white/5 hover:text-white/80">
+                    Sign in
                   </Button>
                 </Link>
-                <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="w-full rounded-lg border border-white/15 bg-white text-slate-950 hover:bg-slate-200">
-                    Start Free
+                <Link href="/signup" onClick={() => setMobileOpen(false)}>
+                  <Button className="w-full h-9 rounded text-sm font-semibold border border-white/15 bg-white text-slate-950 hover:bg-slate-100">
+                    Get started
                   </Button>
                 </Link>
               </>

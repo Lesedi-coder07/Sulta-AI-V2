@@ -13,6 +13,7 @@ import {
   Download,
   AlertTriangle,
   XCircle,
+  Loader2,
 } from "lucide-react";
 
 interface PlaygroundToolbarProps {
@@ -21,6 +22,8 @@ interface PlaygroundToolbarProps {
   onNewGraph: () => void;
   onSave: () => void;
   onValidate: () => void;
+  saveStatus?: "idle" | "saving" | "saved" | "error";
+  agentSelector?: React.ReactNode;
 }
 
 export function PlaygroundToolbar({
@@ -29,16 +32,41 @@ export function PlaygroundToolbar({
   onNewGraph,
   onSave,
   onValidate,
+  saveStatus = "idle",
+  agentSelector,
 }: PlaygroundToolbarProps) {
   const errorCount = validationIssues.filter((i) => i.severity === "error").length;
   const warnCount = validationIssues.filter((i) => i.severity === "warning").length;
 
   return (
-    <div className="flex items-center justify-between px-3 py-2 border-b border-white/6 bg-[#111]/60 backdrop-blur-sm flex-shrink-0">
-      {/* Left: graph actions */}
-      <div className="flex items-center gap-1">
+    <div className="flex items-center justify-between px-3 py-2 border-b border-white/6 bg-[#111]/60 backdrop-blur-sm flex-shrink-0 gap-3">
+      {/* Left: agent selector + graph actions */}
+      <div className="flex items-center gap-2">
+        {/* Agent selector slot */}
+        {agentSelector}
+
+        <div className="w-px h-4 bg-white/8" />
+
         <ToolbarButton icon={<FilePlus className="w-3.5 h-3.5" />} label="New" onClick={onNewGraph} />
-        <ToolbarButton icon={<Save className="w-3.5 h-3.5" />} label="Save" onClick={onSave} />
+        <ToolbarButton
+          icon={
+            saveStatus === "saving" ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Save className="w-3.5 h-3.5" />
+            )
+          }
+          label={saveStatus === "saved" ? "Saved" : saveStatus === "error" ? "Error" : "Save"}
+          onClick={onSave}
+          disabled={saveStatus === "saving"}
+          className={
+            saveStatus === "saved"
+              ? "text-green-400"
+              : saveStatus === "error"
+              ? "text-red-400"
+              : undefined
+          }
+        />
         <ToolbarButton
           icon={<ShieldCheck className="w-3.5 h-3.5" />}
           label="Validate"
@@ -103,12 +131,14 @@ function ToolbarButton({
   onClick,
   disabled,
   title,
+  className,
 }: {
   icon: React.ReactNode;
   label: string;
   onClick?: () => void;
   disabled?: boolean;
   title?: string;
+  className?: string;
 }) {
   return (
     <button
@@ -118,7 +148,7 @@ function ToolbarButton({
       className={`flex items-center gap-1.5 px-2 py-1 rounded text-[11px] transition-colors ${
         disabled
           ? "text-white/20 cursor-not-allowed"
-          : "text-white/50 hover:text-white/80 hover:bg-white/5"
+          : `text-white/50 hover:text-white/80 hover:bg-white/5 ${className ?? ""}`
       }`}
     >
       {icon}
