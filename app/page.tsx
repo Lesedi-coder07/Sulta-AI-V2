@@ -22,18 +22,23 @@ const capabilities = [
     outcome: 'Technical teams can launch new agents fast instead of building one-off tooling each time.',
   },
   {
+    title: 'Design pipelines in the playground',
+    description: 'Wire input, agent, tool, and response nodes on a visual canvas. Select which built-in tools each agent can call, then save the full pipeline back to the agent in one click.',
+    outcome: 'Teams can prototype and reconfigure agent behavior without touching backend code.',
+  },
+  {
+    title: 'Equip agents with real tools',
+    description: 'Attach built-in tools — calculator, live weather, date & time, URL fetch — directly to agents from the playground tool node.',
+    outcome: 'Agents move beyond pure text generation and can look up live data or run calculations during a conversation.',
+  },
+  {
     title: 'Tune behavior with prompts',
     description: 'Generate a system prompt, add custom instructions, and set model parameters.',
     outcome: 'Teams get more predictable outputs and spend less time debugging prompt drift.',
   },
   {
-    title: 'Host agents for your team',
-    description: 'Each agent is stored in your account and available through chat and dashboard views.',
-    outcome: 'Operations stay centralized so engineers and operators manage agents from one place.',
-  },
-  {
     title: 'Deploy hosted chat experiences',
-    description: 'Open agents in chat routes with role and context behavior already configured.',
+    description: 'Open agents in chat routes with role, context, and tool behavior already configured. Jump straight from the playground with "Use Agent".',
     outcome: 'Internal users get a consistent interface without custom frontend work for every agent.',
   },
   {
@@ -49,10 +54,11 @@ const capabilities = [
 ];
 
 const features = [
+  'Visual pipeline editor',
+  'Per-agent tool configuration',
+  'Built-in tool library',
   'Custom system prompts',
   'Guardrails field',
-  'Extra context',
-  'Model settings',
   'Streaming API responses',
   'Per-agent usage tracking',
 ];
@@ -68,10 +74,10 @@ export default function Home() {
         <section className="border-b border-white/8 pb-16 pt-12">
           <p className="text-[10px] font-semibold uppercase tracking-widest text-white/25">Sulta AI</p>
           <h1 className="mt-4 max-w-2xl text-3xl font-semibold leading-snug text-white sm:text-4xl">
-            Build, host, and deploy AI agents
+            Build, configure, and deploy AI agents
           </h1>
           <p className="mt-4 max-w-xl text-sm leading-7 text-white/50">
-            Create agents in the dashboard, run them in hosted chat pages, and connect them to your apps through a simple agent API. Less setup, less maintenance.
+            Create agents in the dashboard, design their pipelines and tool configs in the visual playground, run them in hosted chat, and connect them to your apps through the API. Less setup, less maintenance.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link href="/signup">

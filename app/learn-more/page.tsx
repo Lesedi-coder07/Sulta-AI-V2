@@ -20,8 +20,12 @@ const launchSteps = [
     description: 'Set prompts, context, guardrails, and model settings without building a custom backend flow.',
   },
   {
+    title: 'Wire tools and pipelines in the playground',
+    description: 'Open the visual editor, connect input, agent, tool, and response nodes, and pick which built-in tools the agent can call. Save the full pipeline to the agent in one click.',
+  },
+  {
     title: 'Use it in chat or through the API',
-    description: 'Run the same agent in the hosted UI or integrate it into your own tools with API keys.',
+    description: 'Jump straight from the playground to the live chat, or integrate the agent into your own tools with API keys.',
   },
 ];
 
@@ -32,13 +36,23 @@ const productAreas = [
     outcome: 'Teams can standardize new agent setup instead of starting from scratch every time.',
   },
   {
+    title: 'Pipeline playground',
+    description: 'A visual node editor for designing agent pipelines. Drag input, agent, tool, and response nodes onto a canvas, connect them, and inspect or edit each node in the right panel. Each agent stores its own pipeline graph.',
+    outcome: 'Teams can see, modify, and test agent architecture without reading configuration files or writing backend code.',
+  },
+  {
+    title: 'Tool configuration',
+    description: 'Pick which built-in tools — calculator, live weather, current date & time, URL fetch — each agent can use. Tool selection is per-agent and stored alongside the pipeline.',
+    outcome: 'Agents gain real capabilities like live data lookup and computation, scoped precisely per agent so there are no unexpected side-effects.',
+  },
+  {
     title: 'Behavior control',
     description: 'Use system prompts, extra context, model settings, and restrictions to shape outputs.',
     outcome: 'Technical teams get more reliable responses with less prompt drift in production.',
   },
   {
     title: 'Hosted chat delivery',
-    description: 'Run agents through the built-in chat routes with their configured behavior already applied.',
+    description: 'Run agents through the built-in chat routes with their configured behavior and tools already applied. Tool calls surface inline in the conversation so users can see what the agent is doing.',
     outcome: 'You can ship usable internal or customer-facing agent experiences faster.',
   },
   {
@@ -56,15 +70,19 @@ const productAreas = [
 const useCases = [
   {
     title: 'Support teams',
-    description: 'Create agents that answer repetitive questions and keep responses aligned with support tone and policy.',
+    description: 'Create agents that answer repetitive questions and keep responses aligned with support tone and policy. Attach a URL fetch tool so agents can pull in live product docs or status pages mid-conversation.',
   },
   {
     title: 'Internal enablement',
-    description: 'Give teams a fast way to package internal knowledge into agents people can actually use.',
+    description: 'Give teams a fast way to package internal knowledge into agents people can actually use. Use the playground to wire up tool nodes that give agents access to calculators, date utilities, or external data.',
   },
   {
     title: 'Technical products',
-    description: 'Expose agent behavior through the API so product teams can integrate it into existing workflows.',
+    description: 'Expose agent behavior through the API so product teams can integrate it into existing workflows. Configure pipelines in the playground and promote changes to production without code deploys.',
+  },
+  {
+    title: 'Rapid prototyping',
+    description: 'Use the playground to sketch out a new agent pipeline, test tool combinations visually, and hand off the saved configuration to production — all without leaving the browser.',
   },
 ];
 
@@ -80,7 +98,7 @@ export default function LearnMorePage() {
           <p className="text-[10px] font-semibold uppercase tracking-widest text-white/25">Product</p>
           <h1 className="mt-3 text-2xl font-semibold text-white">Built to make AI ops easier</h1>
           <p className="mt-2 max-w-xl text-sm text-white/50">
-            Sulta AI gives teams a practical way to create agents, host them in chat, and integrate them through the API — without rebuilding the same operational layer every time.
+            Sulta AI gives teams a practical way to create agents, design their pipelines and tool configurations in the visual playground, host them in chat, and integrate them through the API — without rebuilding the same operational layer every time.
           </p>
           <div className="mt-6 flex gap-3">
             <Link href="/signup">
@@ -101,7 +119,7 @@ export default function LearnMorePage() {
         <section className="py-12">
           <p className="mb-6 text-[10px] font-semibold uppercase tracking-widest text-white/25">Workflow</p>
           <div className="overflow-hidden rounded-lg border border-white/8">
-            <div className="grid divide-y divide-white/8 md:grid-cols-3 md:divide-x md:divide-y-0">
+            <div className="grid divide-y divide-white/8 md:grid-cols-4 md:divide-x md:divide-y-0">
               {launchSteps.map((step, i) => (
                 <article key={step.title} className="px-5 py-6">
                   <p className="font-mono text-xs text-white/20">{String(i + 1).padStart(2, '0')}</p>
