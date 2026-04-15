@@ -16,7 +16,7 @@ const NODE_ICONS: Record<PipelineNodeKind, React.ElementType> = {
 function getConfigSummary(kind: PipelineNodeKind, config: Record<string, unknown>): string {
   switch (kind) {
     case "agent":
-      return config.model ? String(config.model) : "No model set";
+      return config.agentName ? String(config.agentName) : "No agent linked";
     case "input":
       return `Source: ${config.source ?? "chat"}`;
     case "tool": {

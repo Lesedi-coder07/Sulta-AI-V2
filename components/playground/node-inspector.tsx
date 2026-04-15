@@ -34,20 +34,25 @@ function TypeSpecificFields({
   const config = node.data.config;
 
   switch (kind) {
-    case "agent":
+    case "agent": {
+      const agentName = (config.agentName as string) ?? "";
       return (
         <>
+          {/* Agent name — read-only, set by the agent selector */}
           <div className="space-y-1">
-            <Label className="inspector-label">Model</Label>
-            <select
-              value={(config.model as string) ?? "claude-sonnet-4-6"}
-              onChange={(e) => updateConfig(node, "model", e.target.value, onUpdate)}
-              className="inspector-select"
-            >
-              <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
-              <option value="claude-opus-4-6">Claude Opus 4.6</option>
-              <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5</option>
-            </select>
+            <Label className="inspector-label">Agent</Label>
+            {agentName ? (
+              <div className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border border-violet-500/30 bg-violet-500/8">
+                <div className="w-2 h-2 rounded-full bg-violet-400 flex-shrink-0" />
+                <span className="text-[11px] text-white/80 font-medium truncate">{agentName}</span>
+              </div>
+            ) : (
+              <div className="px-2 py-1.5 rounded-lg border border-white/6 bg-white/2">
+                <span className="text-[11px] text-white/25 italic">
+                  Select an agent from the toolbar
+                </span>
+              </div>
+            )}
           </div>
           <div className="space-y-1">
             <Label className="inspector-label">Goal</Label>
@@ -59,17 +64,18 @@ function TypeSpecificFields({
             />
           </div>
           <div className="space-y-1">
-            <Label className="inspector-label">System prompt</Label>
+            <Label className="inspector-label">System prompt override</Label>
             <Textarea
               value={(config.systemPrompt as string) ?? ""}
               onChange={(e) => updateConfig(node, "systemPrompt", e.target.value, onUpdate)}
-              placeholder="You are a helpful assistant..."
+              placeholder="Leave blank to use agent's existing prompt..."
               rows={5}
               className="inspector-input resize-none"
             />
           </div>
         </>
       );
+    }
 
     case "input":
       return (

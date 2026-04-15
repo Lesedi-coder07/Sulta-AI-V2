@@ -39,7 +39,8 @@ const STARTER_GRAPH: PipelineGraph = {
       data: {
         label: "Agent",
         config: {
-          model: "claude-sonnet-4-6",
+          agentName: "",
+          model: "gemini-3-flash-preview",
           goal: "",
           systemPrompt: "",
         },

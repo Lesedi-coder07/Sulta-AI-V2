@@ -14,7 +14,9 @@ import {
   AlertTriangle,
   XCircle,
   Loader2,
+  ExternalLink,
 } from "lucide-react";
+import Link from "next/link";
 
 interface PlaygroundToolbarProps {
   graph: PipelineGraph;
@@ -24,6 +26,7 @@ interface PlaygroundToolbarProps {
   onValidate: () => void;
   saveStatus?: "idle" | "saving" | "saved" | "error";
   agentSelector?: React.ReactNode;
+  selectedAgentId?: string | null;
 }
 
 export function PlaygroundToolbar({
@@ -34,6 +37,7 @@ export function PlaygroundToolbar({
   onValidate,
   saveStatus = "idle",
   agentSelector,
+  selectedAgentId,
 }: PlaygroundToolbarProps) {
   const errorCount = validationIssues.filter((i) => i.severity === "error").length;
   const warnCount = validationIssues.filter((i) => i.severity === "warning").length;
@@ -120,6 +124,20 @@ export function PlaygroundToolbar({
           <Download className="w-3 h-3" />
           Export
         </button>
+
+        {/* Use Agent — only when an agent is selected */}
+        {selectedAgentId && (
+          <>
+            <div className="w-px h-4 bg-white/10" />
+            <Link
+              href={`/chat/${selectedAgentId}`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-violet-500/15 text-violet-300 border border-violet-500/30 hover:bg-violet-500/25 transition-colors"
+            >
+              <ExternalLink className="w-3 h-3" />
+              Use Agent
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );

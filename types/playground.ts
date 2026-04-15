@@ -53,7 +53,7 @@ export const NODE_KIND_META: Record<
     color: "hsl(258 60% 70%)",
     bgColor: "rgba(139, 92, 246, 0.10)",
     borderColor: "rgba(139, 92, 246, 0.30)",
-    defaultConfig: { model: "claude-sonnet-4-6", systemPrompt: "", goal: "" },
+    defaultConfig: { agentName: "", model: "gemini-3-flash-preview", systemPrompt: "", goal: "" },
   },
   input: {
     label: "Input",

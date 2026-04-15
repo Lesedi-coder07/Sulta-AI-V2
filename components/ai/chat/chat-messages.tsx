@@ -1,7 +1,7 @@
 "use client"
 import { cn } from "@/lib/utils";
 import { logger } from "@/lib/logger";
-import { Copy, User } from "lucide-react";
+import { Copy, User, Calculator, Clock, Cloud, Globe, Loader2, CheckCircle2, ChevronDown, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import GeminiResponse from "./gemini-responses";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,6 +9,73 @@ import { TextShimmer } from '@/components/ui/text-shimmer';
 import { UIMessage } from "ai";
 
 
+
+// Map tool IDs to display metadata
+const TOOL_META: Record<string, { label: string; icon: React.ElementType; color: string }> = {
+  calculator:         { label: 'Calculator',        icon: Calculator, color: 'text-amber-400' },
+  getCurrentDateTime: { label: 'Date & Time',       icon: Clock,      color: 'text-blue-400'  },
+  dateDiff:           { label: 'Date Difference',   icon: Clock,      color: 'text-blue-400'  },
+  getWeather:         { label: 'Weather',           icon: Cloud,      color: 'text-cyan-400'  },
+  fetchUrl:           { label: 'Fetch URL',         icon: Globe,      color: 'text-violet-400'},
+};
+
+function getToolMeta(toolName: string) {
+  return TOOL_META[toolName] ?? {
+    label: toolName.replace(/([A-Z])/g, ' $1').trim(),
+    icon: Globe,
+    color: 'text-white/40',
+  };
+}
+
+function ToolCallPart({ part }: { part: any }) {
+  const [expanded, setExpanded] = useState(false);
+  const meta = getToolMeta(part.toolName);
+  const Icon = meta.icon;
+  const isDone = part.state === 'result';
+  const hasResult = isDone && part.result !== undefined;
+
+  // Build a short result preview
+  const resultPreview = hasResult
+    ? typeof part.result === 'string'
+      ? part.result.slice(0, 120)
+      : JSON.stringify(part.result).slice(0, 120)
+    : null;
+
+  return (
+    <div className="my-2 w-fit max-w-sm">
+      <button
+        onClick={() => hasResult && setExpanded(v => !v)}
+        className={cn(
+          "flex items-center gap-2 px-3 py-1.5 rounded-xl border text-[11px] font-medium transition-colors w-full text-left",
+          isDone
+            ? "bg-white/4 border-white/8 text-white/50 hover:bg-white/6"
+            : "bg-white/5 border-white/10 text-white/60"
+        )}
+      >
+        {isDone ? (
+          <CheckCircle2 className={cn("w-3.5 h-3.5 shrink-0", meta.color)} />
+        ) : (
+          <Loader2 className={cn("w-3.5 h-3.5 shrink-0 animate-spin", meta.color)} />
+        )}
+        <Icon className={cn("w-3 h-3 shrink-0", meta.color)} />
+        <span className={meta.color}>{meta.label}</span>
+        <span className="text-white/25">{isDone ? "done" : "running…"}</span>
+        {hasResult && (
+          expanded
+            ? <ChevronDown className="w-3 h-3 ml-auto text-white/25" />
+            : <ChevronRight className="w-3 h-3 ml-auto text-white/25" />
+        )}
+      </button>
+
+      {expanded && resultPreview && (
+        <div className="mt-1 px-3 py-2 rounded-xl border border-white/6 bg-white/3 text-[10px] text-white/40 leading-relaxed font-mono break-words whitespace-pre-wrap">
+          {resultPreview}
+          {(typeof part.result === 'string' ? part.result : JSON.stringify(part.result)).length > 120 && '…'}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function CopyButton({ textToCopy }: { textToCopy: string }) {
   const [copied, setCopied] = useState(false);
@@ -171,13 +238,21 @@ export function ChatMessages({
                         </p>
                       ) : (
                         <div className="relative w-full">
-                          <div className="pr-8 text-sm leading-[1.8] text-white/80">
-                            <GeminiResponse content={content || ''} />
-                          </div>
+                          {/* Tool call parts — shown before or between text */}
+                          {message.parts
+                            .filter((p: any) => p.type === 'tool-invocation')
+                            .map((p: any) => (
+                              <ToolCallPart key={p.toolInvocationId} part={p} />
+                            ))}
                           {content && content.trim().length > 0 && (
-                            <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
-                              <CopyButton textToCopy={content} />
-                            </div>
+                            <>
+                              <div className="pr-8 text-sm leading-[1.8] text-white/80">
+                                <GeminiResponse content={content} />
+                              </div>
+                              <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
+                                <CopyButton textToCopy={content} />
+                              </div>
+                            </>
                           )}
                         </div>
                       )}
@@ -188,16 +263,28 @@ export function ChatMessages({
               );
             })}
 
-            {/* Show thinking indicator when loading */}
-            {isLoading && (
-              <div className="flex gap-3 group">
-                <div className="flex flex-col flex-1">
-                  <div className="inline-flex w-fit rounded-2xl rounded-tl-sm px-4 py-3">
-                    <TextShimmerColor text="Thinking..." />
+            {/* Show thinking/tool indicator when loading */}
+            {isLoading && (() => {
+              // Check if the last assistant message has an in-flight tool call
+              const lastMsg = messages[messages.length - 1];
+              const activeTool = lastMsg?.role === 'assistant'
+                ? (lastMsg.parts as any[]).find(
+                    (p: any) => p.type === 'tool-invocation' && p.state !== 'result'
+                  )
+                : null;
+              const toolLabel = activeTool
+                ? `Using ${getToolMeta(activeTool.toolName).label}…`
+                : 'Thinking…';
+              return (
+                <div className="flex gap-3 group">
+                  <div className="flex flex-col flex-1">
+                    <div className="inline-flex w-fit rounded-2xl rounded-tl-sm px-4 py-3">
+                      <TextShimmerColor text={toolLabel} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
             <div ref={messagesEndRef} />
           </>
         )}

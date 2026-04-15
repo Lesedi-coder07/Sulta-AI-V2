@@ -11,7 +11,11 @@ import { AgentSelector } from "./agent-selector";
 import { PipelineNodeKind } from "@/types/playground";
 import { saveDraft } from "@/lib/playground/serialization";
 import { Agent } from "@/types/agent";
-import { getAgents, updateAgentTools } from "@/app/(ai)/dashboard/actions";
+import {
+  getAgents,
+  getAgentGraph,
+  saveAgentPlayground,
+} from "@/app/(ai)/dashboard/actions";
 
 export function PlaygroundShell() {
   const {
@@ -29,12 +33,14 @@ export function PlaygroundShell() {
     deleteNode,
     duplicateNode,
     resetGraph,
+    loadGraph,
   } = usePlaygroundState();
 
   // Agent selector state
   const [agents, setAgents] = useState<Agent[]>([]);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [agentsLoading, setAgentsLoading] = useState(true);
+  const [graphLoading, setGraphLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
   // Load agents once Firebase auth is ready
@@ -47,7 +53,7 @@ export function PlaygroundShell() {
             const list = await getAgents(user.uid);
             setAgents(list);
           } catch {
-            // silently ignore — agents list just stays empty
+            // silently ignore
           } finally {
             setAgentsLoading(false);
           }
@@ -59,23 +65,86 @@ export function PlaygroundShell() {
     return () => unsub?.();
   }, []);
 
-  // When an agent is selected, sync its configured tools into every tool node
+  // When an agent is selected, load their saved graph from Firestore
   const handleSelectAgent = useCallback(
-    (agent: Agent) => {
+    async (agent: Agent) => {
       setSelectedAgent(agent);
-      const agentToolIds: string[] = Array.isArray(agent.tools) ? agent.tools : [];
-
-      // Update all existing tool nodes to reflect this agent's tools
       setSelectedNodeId(null);
-      // We propagate via updateNode for every tool node
-      const toolNodes = nodes.filter((n) => n.type === "tool");
-      for (const toolNode of toolNodes) {
-        updateNode(toolNode.id, {
-          config: { ...toolNode.data.config, toolIds: agentToolIds },
-        });
+      setGraphLoading(true);
+
+      try {
+        // Load the agent's saved graph (or fall back to an empty starter)
+        const savedGraph = await getAgentGraph(agent.id);
+        const graph = savedGraph ?? {
+          nodes: [
+            {
+              id: "node-1",
+              type: "input" as const,
+              position: { x: 80, y: 200 },
+              data: { label: "Input", config: { source: "chat" } },
+            },
+            {
+              id: "node-2",
+              type: "agent" as const,
+              position: { x: 340, y: 200 },
+              data: {
+                label: agent.name,
+                config: {
+                  agentName: agent.name,
+                  model: agent.llmConfig?.model ?? "gemini-3-flash-preview",
+                  goal: "",
+                  systemPrompt: "",
+                },
+              },
+            },
+            {
+              id: "node-3",
+              type: "tool" as const,
+              position: { x: 600, y: 120 },
+              data: {
+                label: "Tools",
+                config: { toolIds: Array.isArray(agent.tools) ? agent.tools : [] },
+              },
+            },
+            {
+              id: "node-4",
+              type: "response" as const,
+              position: { x: 600, y: 280 },
+              data: { label: "Response", config: { format: "text" } },
+            },
+          ],
+          edges: [
+            { id: "e1-2", source: "node-1", target: "node-2" },
+            { id: "e2-3", source: "node-2", target: "node-3" },
+            { id: "e2-4", source: "node-2", target: "node-4" },
+          ],
+        };
+
+        loadGraph(graph);
+
+        // After loading, stamp the agent name + tools onto the relevant nodes.
+        // We do this after loadGraph via a separate pass so the state is fresh.
+        const agentToolIds: string[] = Array.isArray(agent.tools) ? agent.tools : [];
+
+        // Update nodes that were just loaded
+        for (const node of graph.nodes) {
+          if (node.type === "agent") {
+            updateNode(node.id, {
+              label: agent.name,
+              config: { ...node.data.config, agentName: agent.name },
+            });
+          }
+          if (node.type === "tool") {
+            updateNode(node.id, {
+              config: { ...node.data.config, toolIds: agentToolIds },
+            });
+          }
+        }
+      } finally {
+        setGraphLoading(false);
       }
     },
-    [nodes, updateNode, setSelectedNodeId]
+    [loadGraph, updateNode, setSelectedNodeId]
   );
 
   const handleAddNodeFromPalette = useCallback(
@@ -108,17 +177,17 @@ export function PlaygroundShell() {
   }, [nodes]);
 
   const handleSave = useCallback(async () => {
-    // Always save the local draft
+    // Always persist the local draft
     saveDraft({ nodes, edges });
 
-    // If an agent is selected, persist its tool configuration to Firestore
+    // If an agent is selected, save the full graph + tools to Firestore
     if (selectedAgent) {
       setSaveStatus("saving");
       const toolIds = collectToolIds();
-      const result = await updateAgentTools(selectedAgent.id, toolIds);
+      const result = await saveAgentPlayground(selectedAgent.id, { nodes, edges }, toolIds);
+
       if (result.success) {
-        // Update local agent state to reflect saved tools
-        setSelectedAgent((prev) => prev ? { ...prev, tools: toolIds } : prev);
+        setSelectedAgent((prev) => (prev ? { ...prev, tools: toolIds } : prev));
         setAgents((prev) =>
           prev.map((a) => (a.id === selectedAgent.id ? { ...a, tools: toolIds } : a))
         );
@@ -140,7 +209,6 @@ export function PlaygroundShell() {
 
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
-      {/* Toolbar */}
       <PlaygroundToolbar
         graph={{ nodes, edges }}
         validationIssues={validationIssues}
@@ -148,12 +216,13 @@ export function PlaygroundShell() {
         onSave={handleSave}
         onValidate={() => {}}
         saveStatus={saveStatus}
+        selectedAgentId={selectedAgent?.id ?? null}
         agentSelector={
           <AgentSelector
             agents={agents}
             selectedAgent={selectedAgent}
             onSelect={handleSelectAgent}
-            loading={agentsLoading}
+            loading={agentsLoading || graphLoading}
           />
         }
       />
@@ -174,6 +243,20 @@ export function PlaygroundShell() {
                 "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(56,139,255,0.04) 0%, transparent 70%)",
             }}
           />
+
+          {/* Graph loading overlay */}
+          {graphLoading && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+              <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#111] border border-white/10 text-xs text-white/60">
+                <svg className="w-3.5 h-3.5 animate-spin text-violet-400" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+                Loading agent pipeline…
+              </div>
+            </div>
+          )}
+
           <div className="absolute inset-0 z-10">
             <FlowCanvas
               nodes={nodes}
@@ -188,7 +271,7 @@ export function PlaygroundShell() {
           </div>
         </div>
 
-        {/* Right: Inspector + Validation stacked */}
+        {/* Right: Inspector + Validation + Save footer */}
         <aside className="w-56 flex-shrink-0 border-l border-white/6 bg-[#0e0e0e]/80 flex flex-col overflow-hidden hidden md:flex">
           <div className="flex-1 overflow-hidden flex flex-col border-b border-white/5">
             <NodeInspector
@@ -198,9 +281,46 @@ export function PlaygroundShell() {
               onDuplicate={duplicateNode}
             />
           </div>
-          <div className="h-[180px] flex-shrink-0 overflow-hidden flex flex-col">
+          <div className="h-[180px] flex-shrink-0 overflow-hidden flex flex-col border-b border-white/5">
             <ValidationPanel issues={validationIssues} />
           </div>
+
+          {/* Save footer — only shown when an agent is selected */}
+          {selectedAgent && (
+            <div className="flex-shrink-0 px-3 py-2.5 border-t border-white/6 bg-[#0e0e0e]">
+              <p className="text-[10px] text-white/30 truncate mb-2">
+                Editing{" "}
+                <span className="text-violet-400 font-medium">{selectedAgent.name}</span>
+              </p>
+              <button
+                onClick={handleSave}
+                disabled={saveStatus === "saving"}
+                className={`w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[11px] font-medium transition-all ${
+                  saveStatus === "saving"
+                    ? "bg-white/5 text-white/30 cursor-not-allowed"
+                    : saveStatus === "saved"
+                    ? "bg-green-500/15 text-green-400 border border-green-500/30"
+                    : saveStatus === "error"
+                    ? "bg-red-500/15 text-red-400 border border-red-500/30"
+                    : "bg-violet-500/15 text-violet-300 border border-violet-500/30 hover:bg-violet-500/25"
+                }`}
+              >
+                {saveStatus === "saving" && (
+                  <svg className="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                )}
+                {saveStatus === "saving"
+                  ? "Saving…"
+                  : saveStatus === "saved"
+                  ? "Saved"
+                  : saveStatus === "error"
+                  ? "Save failed"
+                  : "Save to agent"}
+              </button>
+            </div>
+          )}
         </aside>
       </div>
     </div>
