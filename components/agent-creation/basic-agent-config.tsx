@@ -63,7 +63,7 @@ export function BasicAgentConfig({ form, className }: BasicAgentConfigProps) {
             control={form.control}
             name="isPublic"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border border-white/8 bg-white/4 p-4">
                 <div className="space-y-0.5">
                   <FormLabel className="text-base">Public Agent</FormLabel>
                   <FormDescription>

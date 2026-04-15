@@ -32,4 +32,6 @@ export interface Agent {
     };
     customSystemPrompt?: string;
     extraContext?: string;
+    /** IDs of built-in tools this agent is allowed to use */
+    tools?: string[];
   }

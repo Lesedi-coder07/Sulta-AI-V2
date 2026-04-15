@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Bot, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Home } from "lucide-react";
@@ -32,14 +32,9 @@ export function ChatHeader({ agent, showButton, showImage, handleSidebarToggle }
 
         {/* Center - Agent identity */}
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/6 border border-white/10">
-            <Bot className="h-3.5 w-3.5 text-white/60" />
-          </div>
-          <div className="min-w-0">
-            <h1 className="text-sm font-medium text-white/90 truncate leading-none">
-              {agent?.name}
-            </h1>
-          </div>
+          <h1 className="text-sm font-medium text-white/90 truncate leading-none">
+            {agent?.name}
+          </h1>
         </div>
 
         {/* Right side - New chat button */}

@@ -5,9 +5,9 @@ function AgentCreatedSuccessfully({url, name, setAgentCreated} : {url: string | 
   return (
     <div>
       <div className="flex flex-col items-center justify-center space-y-6 p-8 text-center">
-        <div className="rounded-full bg-green-100 p-3 dark:bg-green-900">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/6 border border-white/10">
           <svg
-            className="h-8 w-8 text-green-600 dark:text-green-400"
+            className="h-5 w-5 text-white/70"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -21,33 +21,24 @@ function AgentCreatedSuccessfully({url, name, setAgentCreated} : {url: string | 
           </svg>
         </div>
 
-        <h2 className="text-2xl font-bold tracking-tight">
-          {name} Created Successfully!
-        </h2>
-        
-        <p className="text-muted-foreground">
-          Your AI agent has been created and is ready to be deployed.
-        </p>
+        <div className="space-y-1">
+          <h2 className="text-xl font-semibold tracking-tight">{name} created</h2>
+          <p className="text-sm text-muted-foreground">Your agent is ready to use.</p>
+        </div>
 
-        <div className="flex flex-col gap-4 sm:flex-row">
+        <div className="flex flex-col gap-2 sm:flex-row">
           <Link
             href={url ? `/chat/${url}` : '/dashboard'}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-lg bg-white px-4 py-2 text-sm font-medium text-black hover:bg-white/90"
           >
             Use Agent
           </Link>
-          
-          <button
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-          >
-            Deploy Agent
-          </button>
 
           <button
            onClick={() => setAgentCreated()}
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+            className="inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/4 px-4 py-2 text-sm font-medium text-white/70 hover:bg-white/8 hover:text-white"
           >
-            Create Another Agent
+            Create Another
           </button>
         </div>
       </div>

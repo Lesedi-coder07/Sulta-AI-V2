@@ -25,7 +25,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { Settings2, ChevronDown, Wrench, Code, Sparkles } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface TechnicalConfigProps {
@@ -44,23 +44,15 @@ export function TechnicalConfig({ form, className }: TechnicalConfigProps) {
   return (
     <div className={className}>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <div className="app-panel rounded-2xl">
+        <div className="rounded-xl border border-border/60 bg-card">
           <CollapsibleTrigger asChild>
             <Button
               variant="ghost"
-              className="h-auto w-full justify-between p-6 hover:bg-white/[0.03]"
+              className="h-auto w-full justify-between p-5 hover:bg-white/4 rounded-xl"
             >
-              <div className="flex items-center gap-3">
-                <Settings2 className="h-5 w-5 text-primary" />
-                <div className="text-left">
-                  <h3 className="text-lg font-semibold">Technical Configuration</h3>
-                  <p className="text-sm font-normal text-slate-400">
-                    Advanced LLM settings, custom API tools, and system prompts
-                  </p>
-                </div>
-              </div>
+              <span className="text-sm font-medium text-white/60 uppercase tracking-wide">Technical Configuration</span>
               <ChevronDown
-                className={`h-5 w-5 transition-transform duration-200 ${
+                className={`h-4 w-4 text-white/40 transition-transform duration-200 ${
                   isOpen ? "rotate-180" : ""
                 }`}
               />
@@ -68,13 +60,10 @@ export function TechnicalConfig({ form, className }: TechnicalConfigProps) {
           </CollapsibleTrigger>
 
           <CollapsibleContent>
-            <div className="p-6 pt-0 space-y-8">
+            <div className="px-5 pb-5 space-y-8">
               {/* LLM Configuration */}
               <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-purple-500" />
-                  <h4 className="font-medium">LLM Configuration</h4>
-                </div>
+                <h4 className="text-xs font-medium text-white/40 uppercase tracking-wide">LLM Configuration</h4>
                 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <FormField
@@ -161,13 +150,12 @@ export function TechnicalConfig({ form, className }: TechnicalConfigProps) {
               </div>
 
               {/* Custom API Tool */}
-              <div className="space-y-4 border-t border-white/10 pt-4">
+              <div className="space-y-4 border-t border-white/8 pt-4">
                 <div className="flex items-center gap-2">
-                  <Wrench className="h-4 w-4 text-blue-500" />
-                  <h4 className="font-medium">Custom API Tool</h4>
-                  <Badge variant="outline" className="text-xs">Experimental</Badge>
+                  <h4 className="text-xs font-medium text-white/40 uppercase tracking-wide">Custom API Tool</h4>
+                  <Badge variant="outline" className="text-xs border-white/10 text-white/40">Experimental</Badge>
                 </div>
-                <p className="text-sm text-slate-400">
+                <p className="text-sm text-muted-foreground">
                   Allow your agent to call an external API as a tool. The agent will use this when appropriate.
                 </p>
 
@@ -233,12 +221,9 @@ export function TechnicalConfig({ form, className }: TechnicalConfigProps) {
               </div>
 
               {/* Custom System Prompt */}
-              <div className="space-y-4 border-t border-white/10 pt-4">
-                <div className="flex items-center gap-2">
-                  <Code className="h-4 w-4 text-green-500" />
-                  <h4 className="font-medium">Custom System Prompt</h4>
-                </div>
-                <p className="text-sm text-slate-400">
+              <div className="space-y-4 border-t border-white/8 pt-4">
+                <h4 className="text-xs font-medium text-white/40 uppercase tracking-wide">Custom System Prompt</h4>
+                <p className="text-sm text-muted-foreground">
                   Override the auto-generated system prompt with your own. Use this for advanced customization.
                 </p>
 

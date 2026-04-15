@@ -2,6 +2,7 @@
 
 import { adminDb } from '@/lib/firebase-admin';
 import { Agent } from '@/types/agent';
+import { PipelineGraph } from '@/types/playground';
 import { FieldValue } from 'firebase-admin/firestore';
 
 export async function getAgents(userId: string): Promise<Agent[]> {
@@ -53,6 +54,7 @@ export async function getAgents(userId: string): Promise<Agent[]> {
         customApiTool: agentData?.customApiTool,
         customSystemPrompt: agentData?.customSystemPrompt,
         extraContext: agentData?.extraContext || '',
+        tools: Array.isArray(agentData?.tools) ? agentData.tools : [],
       } as Agent;
     });
 
@@ -89,6 +91,47 @@ export async function updateAgentAnalytics(agentId: string, totalQueries: number
   } catch (error) {
     // Log error but don't throw - this is fire-and-forget
     console.error('Error updating agent analytics:', error);
+  }
+}
+
+/** Load the saved pipeline graph for an agent (null if none saved yet) */
+export async function getAgentGraph(agentId: string): Promise<PipelineGraph | null> {
+  try {
+    const doc = await adminDb.collection('agents').doc(agentId).get();
+    const graph = doc.data()?.pipelineGraph;
+    if (graph && Array.isArray(graph.nodes) && Array.isArray(graph.edges)) {
+      return graph as PipelineGraph;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/** Save the pipeline graph and tools for an agent in one write */
+export async function saveAgentPlayground(
+  agentId: string,
+  graph: PipelineGraph,
+  tools: string[]
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    if (!agentId) return { success: false, error: 'Missing agent ID' };
+    await adminDb.collection('agents').doc(agentId).update({ pipelineGraph: graph, tools });
+    return { success: true };
+  } catch (error) {
+    console.error('Error saving agent playground:', error);
+    return { success: false, error: 'Failed to save' };
+  }
+}
+
+export async function updateAgentTools(agentId: string, tools: string[]): Promise<{ success: boolean; error?: string }> {
+  try {
+    if (!agentId) return { success: false, error: 'Missing agent ID' };
+    await adminDb.collection('agents').doc(agentId).update({ tools });
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating agent tools:', error);
+    return { success: false, error: 'Failed to save tools' };
   }
 }
 

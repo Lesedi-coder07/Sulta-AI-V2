@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { AgentSelector } from '@/components/dashboard/agent-selector';
 import { DashboardStats } from '@/components/dashboard/dashboard-stats';
-import { RecentlyUsedAgent } from '@/components/dashboard/recently-used-agent';
+import { QuickActionsCard } from '@/components/dashboard/quick-actions-card';
 import { UsageSummary } from '@/components/dashboard/usage-summary';
 import { TopAgents } from '@/components/dashboard/top-agents';
 import { Agent } from '@/types/agent';
@@ -47,9 +47,9 @@ export function DashboardContent({ agents, userId }: DashboardContentProps) {
           {/* Dashboard Stats */}
           <DashboardStats agents={agents} />
 
-          {/* Recently Used Agent and Usage Summary */}
+          {/* Quick Actions and Usage Summary */}
           <div className='grid gap-6 md:grid-cols-2'>
-            <RecentlyUsedAgent agents={agents} />
+            <QuickActionsCard />
             <UsageSummary agents={agents} />
           </div>
 

@@ -9,7 +9,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { Shield, AlertTriangle } from "lucide-react";
 
 interface GuardrailsConfigProps {
   form: any;
@@ -19,12 +18,9 @@ interface GuardrailsConfigProps {
 export function GuardrailsConfig({ form, className }: GuardrailsConfigProps) {
   return (
     <div className={className}>
-      <div className="app-panel rounded-2xl p-6">
-        <div className="flex items-center gap-2 mb-2">
-          <Shield className="h-5 w-5 text-amber-500" />
-          <h3 className="text-lg font-semibold">Guardrails & Restrictions</h3>
-        </div>
-        <p className="mb-4 text-sm text-slate-400">
+      <div className="rounded-xl border border-border/60 bg-card p-5">
+        <h3 className="text-sm font-medium text-white/60 uppercase tracking-wide mb-4">Guardrails & Restrictions</h3>
+        <p className="mb-4 text-sm text-muted-foreground">
           Define what your agent should NOT do. These restrictions help keep your agent secure and focused.
         </p>
 
@@ -33,10 +29,7 @@ export function GuardrailsConfig({ form, className }: GuardrailsConfigProps) {
           name="guardrails"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-amber-500" />
-                Restrictions
-              </FormLabel>
+              <FormLabel>Restrictions</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Example:&#10;- Never share personal customer data&#10;- Do not discuss competitors&#10;- Avoid making promises about pricing&#10;- Don't provide legal or medical advice"
